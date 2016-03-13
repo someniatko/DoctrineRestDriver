@@ -1,0 +1,5 @@
+circle_doctrine_rest_driver_mock:
+    resource:  "@CircleDoctrineRestDriverBundle/Tests/Controller/MockController.php"
+    type:      annotation
+    prefix:    /mockapi
+    condition: "request.getScriptName() == '/app_dev.php'"

@@ -1,0 +1,95 @@
+<?php
+/**
+ * This file is part of DoctrineRestDriverBundle.
+ *
+ * DoctrineRestDriverBundle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * DoctrineRestDriverBundle is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with DoctrineRestDriverBundle.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace Circle\DoctrineRestDriverBundle;
+
+use Circle\DoctrineRestDriverBundle\Factory\RestClientFactory;
+use Circle\DoctrineRestDriverBundle\Types\RestClientOptions;
+use Circle\RestClientBundle\Services\RestClient;
+use Doctrine\DBAL\Driver as DriverInterface;
+use Doctrine\DBAL\Connection as AbstractConnection;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Schema\MySqlSchemaManager;
+
+/**
+ * Rest driver class
+ *
+ * @author    Tobias Hauck <tobias.hauck@teeage-beatz.de>
+ * @copyright 2015 TeeAge-Beatz UG
+ */
+class Driver implements DriverInterface {
+
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var RestClient
+     */
+    private $restClient;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function connect(array $params, $username = null, $password = null, array $driverOptions = array()) {
+        $this->restClient = empty($this->restClient) ? $this->restClient($params) : $this->restClient;
+        $this->connection = empty($this->connection) ? new Connection($params, $this, $this->restClient) : $this->connection;
+
+        return $this->connection;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDatabasePlatform() {
+        return new MySqlPlatform();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSchemaManager(AbstractConnection $conn) {
+        return new MySqlSchemaManager($conn);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName() {
+        return 'circle_rest';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDatabase(AbstractConnection $conn) {
+        return 'rest_database';
+    }
+
+    /**
+     * returns a new instance of the rest client
+     *
+     * @param  array      $params
+     * @return RestClient
+     */
+    private function restClient(array $params) {
+        $restClientFactory = new RestClientFactory();
+        return $restClientFactory->createOne(new RestClientOptions($params));
+    }
+}
