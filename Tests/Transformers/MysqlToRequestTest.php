@@ -56,7 +56,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectOne() {
-        $query  = 'SELECT name FROM product WHERE id = ?';
+        $query  = 'SELECT name FROM products WHERE id = ?';
         $params = [
             1
         ];
@@ -73,7 +73,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectOneBy() {
-        $query  = 'SELECT name FROM product WHERE id=? AND name=?';
+        $query  = 'SELECT name FROM products WHERE id=? AND name=?';
         $params = [
             1,
             'myName'
@@ -91,7 +91,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectBy() {
-        $query  = 'SELECT name FROM product WHERE name=?';
+        $query  = 'SELECT name FROM products WHERE name=?';
         $params = [
             'myName'
         ];
@@ -108,7 +108,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectAll() {
-        $query    = 'SELECT name FROM product';
+        $query    = 'SELECT name FROM products';
         $expected = new Request('get', $this->apiUrl . '/products', null, null);
 
         $this->assertEquals($expected, $this->mysqlToRequest->trans($query));
@@ -122,7 +122,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectJoined() {
-        $query    = 'SELECT p.name FROM product p JOIN product.categories c ON c.id = p.categories_id';
+        $query    = 'SELECT p.name FROM products p JOIN product.categories c ON c.id = p.categories_id';
         $expected = new Request('get', $this->apiUrl . '/products', null, null);
 
         $this->assertEquals($expected, $this->mysqlToRequest->trans($query));
@@ -136,7 +136,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function insert() {
-        $query    = 'INSERT INTO product ("name") VALUES ("myName")';
+        $query    = 'INSERT INTO products ("name") VALUES ("myName")';
         $expected = new Request('post', $this->apiUrl . '/products', null, json_encode([
             'name' => 'myName'
         ]));
@@ -152,8 +152,8 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function update() {
-        $query    = 'UPDATE product SET name="myValue" WHERE id=?';
-        $params   = [
+        $query  = 'UPDATE products SET name="myValue" WHERE id=?';
+        $params = [
             1
         ];
         $expected = new Request('put', $this->apiUrl . '/products/1', null, json_encode([
@@ -171,7 +171,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function updateAll() {
-        $query    = 'UPDATE product SET name="myValue"';
+        $query    = 'UPDATE products SET name="myValue"';
         $expected = new Request('put', $this->apiUrl . '/products', null, json_encode([
             'name' => 'myValue'
         ]));
@@ -187,8 +187,8 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function delete() {
-        $query    = 'DELETE FROM product WHERE id=?';
-        $params   = [
+        $query  = 'DELETE FROM products WHERE id=?';
+        $params = [
             1
         ];
         $expected = new Request('delete', $this->apiUrl . '/products/1', null, null);
@@ -205,8 +205,8 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @expectedException \Exception
      */
     public function brokenQuery() {
-        $query    = 'SHIT product WHERE dirt=?';
-        $params   = [
+        $query  = 'SHIT products WHERE dirt=?';
+        $params = [
             1
         ];
         $this->mysqlToRequest->trans($query, $params);

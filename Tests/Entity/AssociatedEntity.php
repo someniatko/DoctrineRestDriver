@@ -27,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @ORM\Entity
- * @ORM\Table(name="category")
+ * @ORM\Table(name="categories")
  */
 class AssociatedEntity {
     /**

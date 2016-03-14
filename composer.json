@@ -36,7 +36,6 @@
     "php": ">=5.5",
     "symfony/framework-bundle": "^3.0",
     "doctrine/dbal": "^2.5",
-    "icanboogie/inflector": "^1.4",
     "greenlion/php-sql-parser": "^4.0",
     "doctrine/orm": "^2.5",
     "doctrine/doctrine-bundle": "^1.6",

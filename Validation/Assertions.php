@@ -161,4 +161,14 @@ trait Assertions {
         $this->assertHashMap($varName, $hashMap);
         return array_key_exists($entryName, $hashMap) ? $this : $this->invalidTypeException('HashMapEntry', $varName . '[\'' . $entryName . '\']', 'undefined');
     }
+
+    /**
+     * checkes if the given value is a url
+     *
+     * @param  mixed $value
+     * @return bool
+     */
+    private function isUrl($value) {
+        return (preg_match('/^(http|ftp|https):\/\/[0-9a-zA-Z_-]+(\.[0-9a-zA-Z_-]+)+([0-9a-zA-Z_\-.,@?^=%&amp;:\/~+#-]*[0-9a-zA-Z_\-@?^=%&amp;\/~+#-])?/', $value));
+    }
 }

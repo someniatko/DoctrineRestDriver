@@ -29,7 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @ORM\Entity
- * @ORM\Table(name="product")
+ * @ORM\Table(name="products")
  */
 class TestEntity {
     /**

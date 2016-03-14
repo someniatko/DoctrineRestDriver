@@ -19,8 +19,9 @@
 namespace Circle\DoctrineRestDriver\Transformers;
 
 use Circle\DoctrineRestDriver\Types\Request;
+use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 use PHPSQLParser\PHPSQLParser;
-use ICanBoogie\Inflector;
 
 /**
  * Mysql to Request transformer
@@ -29,16 +30,12 @@ use ICanBoogie\Inflector;
  * @copyright 2015 TeeAge-Beatz UG
  */
 class MysqlToRequest {
+    use Assertions;
 
     /**
      * @var string
      */
     private $apiUrl;
-
-    /**
-     * @var Inflector;
-     */
-    private $inflector;
 
     /**
      * @var PHPSQLParser
@@ -53,9 +50,8 @@ class MysqlToRequest {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct($apiUrl) {
-        $this->apiUrl    = $apiUrl;
-        $this->inflector = Inflector::get('en');
-        $this->parser    = new PHPSQLParser();
+        $this->apiUrl = $apiUrl;
+        $this->parser = new PHPSQLParser();
     }
 
     /**
@@ -112,8 +108,10 @@ class MysqlToRequest {
      * @return string
      */
     private function getUrl(array $tokens, $operator) {
-        $id = $this->getId($tokens);
-        return $this->apiUrl . '/' . $this->getPathName($tokens, $operator) . (empty($id) ? '' : '/' . $id);
+        $table = $this->getTable($tokens, $operator);
+        $id    = empty($this->getId($tokens)) ? '' : '/' . $this->getId($tokens);
+
+        return $this->isUrl($table) ? $table . $id : $this->apiUrl . '/' . $table . $id;
     }
 
     /**
@@ -129,16 +127,16 @@ class MysqlToRequest {
     }
 
     /**
-     * returns the path name
+     * returns the table name
      *
      * @param  array  $tokens
      * @param  string $operator
      * @return string
      */
-    private function getPathName(array $tokens, $operator) {
-        if ($operator === 'update') return $this->inflector->pluralize($tokens['UPDATE'][0]['table']);
-        if ($operator === 'insert') return $this->inflector->pluralize($tokens['INSERT'][1]['table']);
-        return $this->inflector->pluralize($tokens['FROM'][0]['table']);
+    private function getTable(array $tokens, $operator) {
+        if ($operator === 'update') return str_replace('\'', '', $tokens['UPDATE'][0]['table']);
+        if ($operator === 'insert') return str_replace('\'', '', $tokens['INSERT'][1]['table']);
+        return str_replace('\'', '', $tokens['FROM'][0]['table']);
     }
 
     /**
@@ -154,7 +152,7 @@ class MysqlToRequest {
 
         $query = '';
         foreach ($tokens['WHERE'] as $token) $query .= str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($this->getTableAlias($tokens) . '.', '', $token['base_expr']))));
-        return preg_replace('/' . $this->getIdAlias($tokens) . '\=\d*&*/', '', $query);
+        return preg_replace('/id\=\d*&*/', '', $query);
     }
 
     /**
