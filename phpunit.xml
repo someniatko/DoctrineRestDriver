@@ -38,7 +38,7 @@
                 <directory>Entity</directory>
                 <directory>Tests</directory>
                 <directory>vendor</directory>
-                <file>CircleDoctrineRestDriverBundle.php</file>
+                <file>CircleDoctrineRestDriver.php</file>
             </exclude>
         </whitelist>
     </filter>

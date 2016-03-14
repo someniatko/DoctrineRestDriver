@@ -1,20 +1,20 @@
 <?php
 
 /**
- * This file is part of DoctrineRestDriverBundle.
+ * This file is part of DoctrineRestDriver.
  *
- * DoctrineRestDriverBundle is free software: you can redistribute it and/or modify
+ * DoctrineRestDriver is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * DoctrineRestDriverBundle is distributed in the hope that it will be useful,
+ * DoctrineRestDriver is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with DoctrineRestDriverBundle.  If not, see <http://www.gnu.org/licenses/>.
+ * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use Symfony\Component\HttpKernel\Kernel;
@@ -23,7 +23,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 /**
  * AppKernel for integration testing
  *
- * @author    Tobias Hauck <tobias.hauck@teeage-beatz.de>
+ * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
 class AppKernel extends Kernel {
@@ -39,8 +39,6 @@ class AppKernel extends Kernel {
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \Circle\DoctrineRestDriverBundle\CircleDoctrineRestDriverBundle(),
-            new \Circle\RestClientBundle\CircleRestClientBundle(),
         );
     }
 

@@ -1,33 +1,33 @@
 <?php
 /**
- * This file is part of DoctrineRestDriverBundle.
+ * This file is part of DoctrineRestDriver.
  *
- * DoctrineRestDriverBundle is free software: you can redistribute it and/or modify
+ * DoctrineRestDriver is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * DoctrineRestDriverBundle is distributed in the hope that it will be useful,
+ * DoctrineRestDriver is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with DoctrineRestDriverBundle.  If not, see <http://www.gnu.org/licenses/>.
+ * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriverBundle\Tests\Transformers;
+namespace Circle\DoctrineRestDriver\Tests\Transformers;
 
-use Circle\DoctrineRestDriverBundle\Transformers\MysqlToRequest;
-use Circle\DoctrineRestDriverBundle\Types\Request;
+use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
+use Circle\DoctrineRestDriver\Types\Request;
 
 /**
  * Tests the mysql to request transformer
  *
- * @author    Tobias Hauck <tobias.hauck@teeage-beatz.de>
+ * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriverBundle\Transformers\MysqlToRequest
+ * @coversDefaultClass Circle\DoctrineRestDriver\Transformers\MysqlToRequest
  */
 class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
 

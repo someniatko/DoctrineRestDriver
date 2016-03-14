@@ -4,8 +4,8 @@
   "type": "library",
   "authors": [
     {
-      "name": "Circle.ai",
-      "email": "info@circle.ai"
+      "name": "Circle",
+      "email": "hi@circle.ai"
     }
   ],
   "keywords": [
@@ -23,10 +23,10 @@
   },
   "autoload": {
     "psr-0": {
-      "Circle\\DoctrineRestDriverBundle": ""
+      "Circle\\DoctrineRestDriver": ""
     }
   },
-  "target-dir": "Circle/DoctrineRestDriverBundle",
+  "target-dir": "Circle/DoctrineRestDriver",
   "extra": {
     "branch-alias": {
       "dev-master": "0.1-dev"

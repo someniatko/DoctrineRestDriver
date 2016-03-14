@@ -1,22 +1,22 @@
 <?php
 /**
- * This file is part of DoctrineRestDriverBundle.
+ * This file is part of DoctrineRestDriver.
  *
- * DoctrineRestDriverBundle is free software: you can redistribute it and/or modify
+ * DoctrineRestDriver is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * DoctrineRestDriverBundle is distributed in the hope that it will be useful,
+ * DoctrineRestDriver is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with DoctrineRestDriverBundle.  If not, see <http://www.gnu.org/licenses/>.
+ * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriverBundle\Tests\Entity;
+namespace Circle\DoctrineRestDriver\Tests\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * This is a test entity
  *
- * @author    Tobias Hauck <tobias.hauck@teeage-beatz.de>
+ * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @ORM\Entity
@@ -50,7 +50,7 @@ class TestEntity {
     protected $value;
 
     /**
-     * @ORM\OneToMany(targetEntity="Circle\DoctrineRestDriverBundle\Tests\Entity\AssociatedEntity", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="Circle\DoctrineRestDriver\Tests\Entity\AssociatedEntity", mappedBy="product")
      */
     protected $categories;
 

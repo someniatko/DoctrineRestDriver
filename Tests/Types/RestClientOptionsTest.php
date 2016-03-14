@@ -1,32 +1,32 @@
 <?php
 /**
- * This file is part of DoctrineRestDriverBundle.
+ * This file is part of DoctrineRestDriver.
  *
- * DoctrineRestDriverBundle is free software: you can redistribute it and/or modify
+ * DoctrineRestDriver is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * DoctrineRestDriverBundle is distributed in the hope that it will be useful,
+ * DoctrineRestDriver is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with DoctrineRestDriverBundle.  If not, see <http://www.gnu.org/licenses/>.
+ * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriverBundle\Tests\Types;
+namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriverBundle\Types\RestClientOptions;
+use Circle\DoctrineRestDriver\Types\RestClientOptions;
 
 /**
  * Tests the rest client options
  *
- * @author    Tobias Hauck <tobias.hauck@teeage-beatz.de>
+ * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriverBundle\Types\RestClientOptions
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\RestClientOptions
  */
 class RestClientOptionsTest extends \PHPUnit_Framework_TestCase {
 
@@ -45,7 +45,7 @@ class RestClientOptionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function setUp() {
         $this->options = [
-            'driver_class'  => 'Circle\DoctrineRestDriverBundle\Driver',
+            'driver_class'  => 'Circle\DoctrineRestDriver\Driver',
             'host'          => 'http://www.circle.ai',
             'port'          => '8080',
             'dbname'        => 'circle',
@@ -76,9 +76,9 @@ class RestClientOptionsTest extends \PHPUnit_Framework_TestCase {
      * @covers ::__construct
      * @covers ::all
      * @covers ::<private>
-     * @covers \Circle\DoctrineRestDriverBundle\Types\RestClientSecurityOptions::__construct
-     * @covers \Circle\DoctrineRestDriverBundle\Types\RestClientSecurityOptions::all
-     * @covers \Circle\DoctrineRestDriverBundle\Types\RestClientSecurityOptions::<private>
+     * @covers \Circle\DoctrineRestDriver\Types\RestClientSecurityOptions::__construct
+     * @covers \Circle\DoctrineRestDriver\Types\RestClientSecurityOptions::all
+     * @covers \Circle\DoctrineRestDriver\Types\RestClientSecurityOptions::<private>
      */
     public function all() {
         $options  = new RestClientOptions($this->options);
@@ -93,9 +93,9 @@ class RestClientOptionsTest extends \PHPUnit_Framework_TestCase {
      * @covers ::__construct
      * @covers ::all
      * @covers ::<private>
-     * @covers \Circle\DoctrineRestDriverBundle\Types\RestClientSecurityOptions::__construct
-     * @covers \Circle\DoctrineRestDriverBundle\Types\RestClientSecurityOptions::all
-     * @covers \Circle\DoctrineRestDriverBundle\Types\RestClientSecurityOptions::<private>
+     * @covers \Circle\DoctrineRestDriver\Types\RestClientSecurityOptions::__construct
+     * @covers \Circle\DoctrineRestDriver\Types\RestClientSecurityOptions::all
+     * @covers \Circle\DoctrineRestDriver\Types\RestClientSecurityOptions::<private>
      */
     public function allWithBasicHttpAuth() {
         $options                                       = $this->options;

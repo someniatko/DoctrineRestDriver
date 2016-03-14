@@ -32,7 +32,7 @@ framework:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver_class:   Circle\DoctrineRestDriverBundle\Driver
+        driver_class:   Circle\DoctrineRestDriver\Driver
         host:     "%database_host%"
         port:     "%database_port%"
         dbname:   "%database_name%"
@@ -41,7 +41,6 @@ doctrine:
         charset:  UTF8
         options:
             security_strategy:  "basic_http"
-            format:             "json"
             CURLOPT_MAXREDIRS:  25
             CURLOPT_HTTPHEADER: "Content-Type: application/json"
         # if using pdo_sqlite as your database driver:
@@ -61,6 +60,6 @@ doctrine:
                         mapping: true
                         type:    "annotation"
                         dir:     "%kernel.root_dir%/../Entity"
-                        prefix:  "Circle\\DoctrineRestDriverBundle\\Tests\\Entity"
-                        alias:   "CircleDoctrineRestDriverBundle"
+                        prefix:  "Circle\\DoctrineRestDriver\\Tests\\Entity"
+                        alias:   "CircleDoctrineRestDriver"
                         is_bundle: false

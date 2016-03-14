@@ -1,32 +1,32 @@
 <?php
 /**
- * This file is part of DoctrineRestDriverBundle.
+ * This file is part of DoctrineRestDriver.
  *
- * DoctrineRestDriverBundle is free software: you can redistribute it and/or modify
+ * DoctrineRestDriver is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * DoctrineRestDriverBundle is distributed in the hope that it will be useful,
+ * DoctrineRestDriver is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with DoctrineRestDriverBundle.  If not, see <http://www.gnu.org/licenses/>.
+ * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriverBundle\Tests;
+namespace Circle\DoctrineRestDriver\Tests;
 
-use Circle\DoctrineRestDriverBundle\Driver;
+use Circle\DoctrineRestDriver\Driver;
 
 /**
  * Tests the driver
  *
- * @author    Tobias Hauck <tobias.hauck@teeage-beatz.de>
+ * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriverBundle\Driver
+ * @coversDefaultClass Circle\DoctrineRestDriver\Driver
  */
 class DriverTest extends \PHPUnit_Framework_TestCase {
 
@@ -57,7 +57,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase {
      * @covers ::getSchemaManager
      */
     public function getSchemaManager() {
-        $connection = $this->getMockBuilder('Circle\DoctrineRestDriverBundle\Connection')->disableOriginalConstructor()->getMock();
+        $connection = $this->getMockBuilder('Circle\DoctrineRestDriver\Connection')->disableOriginalConstructor()->getMock();
         $this->assertInstanceOf('Doctrine\DBAL\Schema\MySqlSchemaManager', $this->driver->getSchemaManager($connection));
     }
 
@@ -76,7 +76,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase {
      * @covers ::getDatabase
      */
     public function getDatabase() {
-        $connection = $this->getMockBuilder('Circle\DoctrineRestDriverBundle\Connection')->disableOriginalConstructor()->getMock();
+        $connection = $this->getMockBuilder('Circle\DoctrineRestDriver\Connection')->disableOriginalConstructor()->getMock();
         $this->assertSame('rest_database', $this->driver->getDatabase($connection));
     }
 
@@ -96,6 +96,6 @@ class DriverTest extends \PHPUnit_Framework_TestCase {
             'host'     => 'localhost'
         ];
         $connection = $this->driver->connect($params);
-        $this->assertInstanceOf('Circle\DoctrineRestDriverBundle\Connection', $connection);
+        $this->assertInstanceOf('Circle\DoctrineRestDriver\Connection', $connection);
     }
 }
