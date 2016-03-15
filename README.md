@@ -20,7 +20,51 @@ doctrine:
 ```
 
 # Usage
-Once the driver is configured you can use all doctrine functions as usual:
+Once the driver is configured you can use doctrine as described in its documentation. Let's first build an entity.
+
+```php
+namespace Some;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * This annotation marks the class as managed entity:
+ * @ORM\Entity
+ *
+ * This annotation is used to define the target resource of the API. You can whether 
+ * use the resource name (then the target url will consist of the configured host 
+ * parameter and the resource name) or the target url itself
+ * @ORM\Table("product|http://www.yourSite.com/api")
+ */
+class Namespace {
+
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $someAttribute;
+    
+    public function getId() {
+        return $this->id;
+    }
+    
+    public function setSomeAttribute($someAttribute) {
+        $this->someAttribute = $someAttribute;
+        return $this;
+    }
+    
+    public function getSomeAttribute() {
+        return $this->someAttribute;
+    }
+}
+```
+
 ```php
 /* @var $em Doctrine\ORM\EntityManager */
 
