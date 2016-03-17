@@ -16,28 +16,41 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Factory;
+namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Factory\RestClientFactory;
+use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Tests the restclient factory
+ * NonCurlOptions type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @coversDefaultClass Circle\DoctrineRestDriver\Factory\RestClientFactory
  */
-class RestClientFactoryTest extends \PHPUnit_Framework_TestCase {
+class NonCurlOptions extends \ArrayObject {
+    use Assertions;
 
     /**
-     * @test
-     * @group  unit
-     * @covers ::createOne
+     * Request constructor
+     *
+     * @param array $options
      */
-    public function complete() {
-        $factory           = new RestClientFactory();
-        $restClientOptions = $this->getMockBuilder('Circle\DoctrineRestDriver\Types\RestClientOptions')->disableOriginalConstructor()->getMock();
-        $this->assertInstanceOf('Circle\RestClientBundle\Services\RestClient', $factory->createOne($restClientOptions));
+    public function __construct(array $options) {
+        $this->validate($options);
+
+        $options = array_filter($options, function($key) {
+            return !preg_match('/^CURLOPT/', $key);
+        }, ARRAY_FILTER_USE_KEY);
+
+        parent::__construct($options);
+    }
+
+    /**
+     * validates the given input
+     *
+     * @param  array $options
+     * @return void
+     */
+    private function validate(array $options) {
+        $this->assertHashMap('options', $options);
     }
 }

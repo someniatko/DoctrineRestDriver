@@ -18,15 +18,16 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Factory\RestClientFactory;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Options type for basic http authentication
+ * Options type for oauth authentication
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class BasicHttpOptions extends \ArrayObject {
+abstract class OAuthOptions extends \ArrayObject {
     use Assertions;
 
     /**
@@ -38,9 +39,26 @@ class BasicHttpOptions extends \ArrayObject {
      */
     public function __construct($username, $password, array $options) {
         $this->validate($username, $password, $options);
-
         parent::__construct($this->format($username, $password, $options));
     }
+
+    /**
+     * creates the request to get the auth token
+     *
+     * @param  string $username
+     * @param  string $password
+     * @param  array $options
+     * @return Request
+     */
+    protected abstract function createTokenRequest($username, $password, array $options);
+
+    /**
+     * returns the header string
+     *
+     * @param  mixed $content
+     * @return string
+     */
+    protected abstract function createOAuthHeaderString($content);
 
     /**
      * returns the formatted options
@@ -52,18 +70,43 @@ class BasicHttpOptions extends \ArrayObject {
      */
     private function format($username, $password, array $options) {
         $headers = $options[CURLOPT_HTTPHEADER];
-        array_push($headers, 'Authorization: Basic ' . base64_encode($username . ':' . $password));
+        array_push($headers, $this->getOAuthHeaderString($username, $password, $options));
         $headers = [ CURLOPT_HTTPHEADER => $headers ];
 
         return $headers + $options;
     }
 
     /**
+     * creates the oauth header string including the security token
+     *
+     * @param  string $username
+     * @param  string $password
+     * @param  array $options
+     * @return string
+     */
+    private function getOAuthHeaderString($username, $password, array $options) {
+        $restClientFactory = new RestClientFactory();
+        $restClient        = $restClientFactory->createOne(new RestClientOptions([
+            'user'     => $username,
+            'password' => $password,
+            'driverOptions' => [
+                'security_strategy' => 'basic_http'
+            ]
+        ]));
+
+        $request  = $this->createTokenRequest($username, $password, $options);
+        $method   = strtolower($request->getMethod());
+        $response = $method === 'get' || $method === 'delete' ? $restClient->$method($request->getUrl()) : $restClient->$method($request->getUrl(), $request->getPayload());
+
+        return $this->createOAuthHeaderString($response->getContent());
+    }
+
+    /**
      * validates the given input
      *
-     * @param string      $username
-     * @param string|null $password
-     * @param array       $options
+     * @param  string      $username
+     * @param  string|null $password
+     * @param  array       $options
      * @return void
      */
     private function validate($username, $password, $options) {

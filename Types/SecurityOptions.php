@@ -26,13 +26,8 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class RestClientSecurityOptions {
+class SecurityOptions extends \ArrayObject {
     use Assertions;
-
-    /**
-     * @var array
-     */
-    private $options;
 
     /**
      * Security constructor
@@ -41,19 +36,12 @@ class RestClientSecurityOptions {
      * @param string $password
      * @param string $strategy
      * @param array  $options
+     * @param array  $nonCurlOptions
      */
-    public function __construct($username, $password, $strategy, array $options) {
+    public function __construct($username, $password, $strategy, array $options, array $nonCurlOptions = array()) {
         $this->validate($username, $password, $strategy, $options);
-        $this->options = $this->format($username, $password, $strategy, $options);
-    }
 
-    /**
-     * returns all options
-     *
-     * @return array
-     */
-    public function all() {
-        return $this->options;
+        parent::__construct($this->format($username, $password, $strategy, $options, $nonCurlOptions));
     }
 
     /**
@@ -63,10 +51,12 @@ class RestClientSecurityOptions {
      * @param  string $password
      * @param  string $strategy
      * @param  array  $options
+     * @param  array  $nonCurlOptions
      * @return array
      */
-    private function format($username, $password, $strategy, array $options) {
-        return $strategy === 'basic_http' ? $this->basicHttpAuthentication($username, $password, $options) : [];
+    private function format($username, $password, $strategy, array $options, $nonCurlOptions) {
+        if ($strategy === 'basic_http') return (array) new BasicHttpOptions($username, $password, $options);
+        return $strategy === 'oauth' ? $this->oAuthAuthentication($username, $password, $options, $nonCurlOptions) : [];
     }
 
     /**
@@ -75,11 +65,12 @@ class RestClientSecurityOptions {
      * @param  string $username
      * @param  string $password
      * @param  array  $options
+     * @param  array  $nonCurlOptions
      * @return array
      */
-    private function basicHttpAuthentication($username, $password, array $options) {
-        $basicHttpOptions = new BasicHttpOptions($username, $password, $options);
-        return $basicHttpOptions->all();
+    private function oAuthAuthentication($username, $password, array $options, array $nonCurlOptions) {
+        $oAuthClass = $nonCurlOptions['oauth_options_class'];
+        return (array) new $oAuthClass($username, $password, $options);
     }
 
     /**

@@ -248,7 +248,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
     /**
      * handles the statement if the execution failed
      *
-     * @param  Request $request
+     * @param  Request  $request
      * @param  Response $response
      * @throws \Exception
      */

@@ -16,28 +16,32 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Factory;
+namespace Circle\DoctrineRestDriver\Tests\Types\Stubs;
 
-use Circle\DoctrineRestDriver\Factory\RestClientFactory;
+use Circle\DoctrineRestDriver\Types\OAuthOptions;
+use Circle\DoctrineRestDriver\Types\Request;
 
 /**
- * Tests the restclient factory
+ * Stub to simulate using twitters oauth authentication
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @coversDefaultClass Circle\DoctrineRestDriver\Factory\RestClientFactory
  */
-class RestClientFactoryTest extends \PHPUnit_Framework_TestCase {
+class TwitterOAuthStub extends OAuthOptions {
 
     /**
-     * @test
-     * @group  unit
-     * @covers ::createOne
+     * {@inheritdoc}
      */
-    public function complete() {
-        $factory           = new RestClientFactory();
-        $restClientOptions = $this->getMockBuilder('Circle\DoctrineRestDriver\Types\RestClientOptions')->disableOriginalConstructor()->getMock();
-        $this->assertInstanceOf('Circle\RestClientBundle\Services\RestClient', $factory->createOne($restClientOptions));
+    protected function createTokenRequest($username, $password, array $options) {
+        return new Request('POST', 'http://localhost:3000/app_dev.php/mockapi/oauth2/token', null, 'grant_type=client_credentials');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createOAuthHeaderString($content) {
+        $obj = json_decode($content);
+        if (empty($obj)) throw new \Exception('Wrong Response from TwitterOAuthMockController: ' . $content);
+        return 'Authorization: ' . ucfirst($obj->token_type) . ' ' . $obj->access_token;
     }
 }

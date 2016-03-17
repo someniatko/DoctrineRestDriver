@@ -27,3 +27,9 @@ circle_doctrine_rest_driver_mock_delete:
     defaults:  { _controller: Circle\DoctrineRestDriver\Tests\Controller\MockController::deleteAction }
     methods: [ DELETE ]
     condition: "request.getScriptName() == '/app_dev.php'"
+
+circle_doctrine_rest_driver_twitter_o_auth_mock_token:
+    path:   /mockapi/oauth2/token
+    defaults:  { _controller: Circle\DoctrineRestDriver\Tests\Controller\TwitterOAuthMockController::tokenAction }
+    methods: [ POST ]
+    condition: "request.getScriptName() == '/app_dev.php'"

@@ -40,6 +40,6 @@ class RestClientFactory {
      * @return RestClient
      */
     public function createOne(RestClientOptions $driverOptions) {
-        return new RestClient(new Curl(new CurlOptionsHandler($driverOptions->all())));
+        return new RestClient(new Curl(new CurlOptionsHandler((array) $driverOptions)));
     }
 }

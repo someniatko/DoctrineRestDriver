@@ -18,17 +18,42 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\BasicHttpOptions;
+use Circle\DoctrineRestDriver\Types\NonCurlOptions;
 
 /**
- * Tests the basic http options type
+ * Tests the non curl options
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\BasicHttpOptions
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\NonCurlOptions
  */
-class BasicHttpOptionsTest extends \PHPUnit_Framework_TestCase {
+class NonCurlOptionsTest extends \PHPUnit_Framework_TestCase {
+
+    /**
+     * @var array
+     */
+    private $options;
+
+    /**
+     * @var array
+     */
+    private $expected;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp() {
+        $this->options = [
+            'security_strategy'  => 'none',
+            'CURLOPT_MAXREDIRS'  => 22,
+            'CURLOPT_HTTPHEADER' => 'Content-Type: text/plain'
+        ];
+
+        $this->expected = [
+            'security_strategy'  => 'none',
+        ];
+    }
 
     /**
      * @test
@@ -37,17 +62,9 @@ class BasicHttpOptionsTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function cast() {
-        $options = new BasicHttpOptions('user', 'password', [
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json']
-        ]);
+        $options  = new NonCurlOptions($this->options);
+        $expected = $this->expected;
 
-        $expected = [
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'Authorization: Basic dXNlcjpwYXNzd29yZA=='
-            ]
-        ];
-
-        $this->assertSame($expected, (array) $options);
+        $this->assertEquals($expected, (array) $options);
     }
 }

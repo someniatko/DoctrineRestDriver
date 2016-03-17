@@ -18,7 +18,9 @@
 
 namespace Circle\DoctrineRestDriver;
 
+use Circle\DoctrineRestDriver\Factory\RestClientFactory;
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
+use Circle\DoctrineRestDriver\Types\RestClientOptions;
 use Circle\RestClientBundle\Services\RestInterface;
 use Doctrine\DBAL\Connection as AbstractConnection;
 
@@ -29,11 +31,6 @@ use Doctrine\DBAL\Connection as AbstractConnection;
  * @copyright 2015 TeeAge-Beatz UG
  */
 class Connection extends AbstractConnection {
-
-    /**
-     * @var RestInterface
-     */
-    private $restClient;
 
     /**
      * @var Statement
@@ -50,11 +47,9 @@ class Connection extends AbstractConnection {
      *
      * @param array         $params
      * @param Driver        $driver
-     * @param RestInterface $restClient
      */
-    public function __construct(array $params, Driver $driver, RestInterface $restClient) {
-        $this->restClient = $restClient;
-        $this->apiUrl     = $params['host'];
+    public function __construct(array $params, Driver $driver) {
+        $this->apiUrl = $params['host'];
 
         parent::__construct($params, $driver);
     }
@@ -68,7 +63,7 @@ class Connection extends AbstractConnection {
     public function prepare($statement) {
         $this->connect();
 
-        $this->statement = new Statement($statement, $this, $this->restClient, new MysqlToRequest($this->apiUrl));
+        $this->statement = new Statement($statement, $this, $this->restClient($this->getParams()), new MysqlToRequest($this->apiUrl));
         $this->statement->setFetchMode($this->defaultFetchMode);
 
         return $this->statement;
@@ -96,5 +91,16 @@ class Connection extends AbstractConnection {
         $statement->execute();
 
         return $statement;
+    }
+
+    /**
+     * returns a new instance of the rest client
+     *
+     * @param  array      $params
+     * @return RestInterface
+     */
+    private function restClient(array $params) {
+        $restClientFactory = new RestClientFactory();
+        return $restClientFactory->createOne(new RestClientOptions($params));
     }
 }

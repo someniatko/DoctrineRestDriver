@@ -40,16 +40,10 @@ class Driver implements DriverInterface {
     private $connection;
 
     /**
-     * @var RestClient
-     */
-    private $restClient;
-
-    /**
      * {@inheritdoc}
      */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array()) {
-        $this->restClient = empty($this->restClient) ? $this->restClient($params) : $this->restClient;
-        $this->connection = empty($this->connection) ? new Connection($params, $this, $this->restClient) : $this->connection;
+        $this->connection = empty($this->connection) ? new Connection($params, $this) : $this->connection;
 
         return $this->connection;
     }
@@ -80,16 +74,5 @@ class Driver implements DriverInterface {
      */
     public function getDatabase(AbstractConnection $conn) {
         return 'rest_database';
-    }
-
-    /**
-     * returns a new instance of the rest client
-     *
-     * @param  array      $params
-     * @return RestClient
-     */
-    private function restClient(array $params) {
-        $restClientFactory = new RestClientFactory();
-        return $restClientFactory->createOne(new RestClientOptions($params));
     }
 }

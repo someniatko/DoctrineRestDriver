@@ -26,26 +26,8 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class RestClientOptions {
+class RestClientOptions extends \ArrayObject {
     use Assertions;
-
-    /**
-     * @var array
-     */
-    private $defaultOptions = [
-        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-        CURLOPT_MAXREDIRS      => 25,
-        CURLOPT_TIMEOUT        => 25,
-        CURLOPT_CONNECTTIMEOUT => 25,
-        CURLOPT_CRLF           => true,
-        CURLOPT_SSLVERSION     => 3,
-        CURLOPT_FOLLOWLOCATION => true,
-    ];
-
-    /**
-     * @var array
-     */
-    private $options;
 
     /**
      * Request constructor
@@ -55,55 +37,16 @@ class RestClientOptions {
     public function __construct(array $options) {
         $this->validate($options);
 
-        $restClientOptions = $this->format($options['driverOptions']);
-        $securityOptions   = new RestClientSecurityOptions($options['user'], $options['password'], $options['driverOptions']['security_strategy'], $restClientOptions);
+        $user          = $options['user'];
+        $password      = $options['password'];
+        $driverOptions = $options['driverOptions'];
+        $strategy      = $driverOptions['security_strategy'];
 
-        $this->options = $securityOptions->all() + $restClientOptions;
-    }
+        $nonCurlOptions  = (array) new NonCurlOptions($driverOptions);
+        $curlOptions     = (array) new CurlOptions($driverOptions);
+        $securityOptions = (array) new SecurityOptions($user, $password, $strategy, $curlOptions, $nonCurlOptions);
 
-    /**
-     * returns all rest client options
-     *
-     * @return array
-     */
-    public function all() {
-        return $this->options;
-    }
-
-    /**
-     * formats the given options array
-     *
-     * @param  array $options
-     * @return array
-     */
-    private function format(array $options) {
-        return $this->formatHttpHeader($this->convertStringKeysToIntKeys($options));
-    }
-
-    /**
-     * formats the http header
-     *
-     * @param  array $options
-     * @return array
-     */
-    private function formatHttpHeader(array $options) {
-        $options[CURLOPT_HTTPHEADER] = empty($options[CURLOPT_HTTPHEADER]) ? [] : $options[CURLOPT_HTTPHEADER];
-        $options[CURLOPT_HTTPHEADER] = is_string($options[CURLOPT_HTTPHEADER]) ? explode(',', $options[CURLOPT_HTTPHEADER]) : $options[CURLOPT_HTTPHEADER];
-
-        return $options;
-    }
-
-    /**
-     * converts all string keys to int keys by using php constant() function
-     *
-     * @param  array $options
-     * @return array
-     */
-    private function convertStringKeysToIntKeys(array $options) {
-        $newOptions = [];
-        unset($options['security_strategy']);
-        foreach ($options as $key => $value) $newOptions[constant($key)] = $value;
-        return $newOptions + $this->defaultOptions;
+        parent::__construct($securityOptions + $curlOptions);
     }
 
     /**

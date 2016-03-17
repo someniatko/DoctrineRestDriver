@@ -16,28 +16,38 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Factory;
+namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Factory\RestClientFactory;
+use Circle\DoctrineRestDriver\Tests\Types\Stubs\TwitterOAuthStub;
 
 /**
- * Tests the restclient factory
+ * Tests the basic http options type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Factory\RestClientFactory
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\OAuthOptions
  */
-class RestClientFactoryTest extends \PHPUnit_Framework_TestCase {
+class OAuthOptionsTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
      * @group  unit
-     * @covers ::createOne
+     * @covers ::__construct
+     * @covers ::<private>
      */
-    public function complete() {
-        $factory           = new RestClientFactory();
-        $restClientOptions = $this->getMockBuilder('Circle\DoctrineRestDriver\Types\RestClientOptions')->disableOriginalConstructor()->getMock();
-        $this->assertInstanceOf('Circle\RestClientBundle\Services\RestClient', $factory->createOne($restClientOptions));
+    public function cast() {
+        $options = new TwitterOAuthStub('circleUser', 'mySecretPassword', [
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json']
+        ]);
+
+        $expected = [
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+            ]
+        ];
+
+        $this->assertEquals($expected, (array) $options);
     }
 }
