@@ -18,9 +18,10 @@
 
 namespace Circle\DoctrineRestDriver\Transformers;
 
+use Circle\DoctrineRestDriver\Enums\HttpMethods;
+use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Validation\Assertions;
-use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 use PHPSQLParser\PHPSQLParser;
 
 /**
@@ -92,10 +93,10 @@ class MysqlToRequest {
      * @throws \Exception
      */
     private function getMethod($operator) {
-        if ($operator === 'insert') return 'post';
-        if ($operator === 'select') return 'get';
-        if ($operator === 'update') return 'put';
-        if ($operator === 'delete') return 'delete';
+        if ($operator === SqlOperations::INSERT) return HttpMethods::POST;
+        if ($operator === SqlOperations::SELECT) return HttpMethods::GET;
+        if ($operator === SqlOperations::UPDATE) return HttpMethods::PUT;
+        if ($operator === SqlOperations::DELETE) return HttpMethods::DELETE;
 
         throw new \Exception('Invalid operator ' . $operator . ' in sql query');
     }
@@ -122,8 +123,8 @@ class MysqlToRequest {
      * @return null|string
      */
     private function getPayload(array $tokens, $operator) {
-        if ($operator === 'select' || $operator === 'delete') return null;
-        return $operator === 'insert' ? $this->getInsertPayload($tokens) : $this->getUpdatePayload($tokens);
+        if ($operator === SqlOperations::SELECT || $operator === SqlOperations::DELETE) return null;
+        return $operator === SqlOperations::INSERT ? $this->getInsertPayload($tokens) : $this->getUpdatePayload($tokens);
     }
 
     /**
@@ -134,8 +135,8 @@ class MysqlToRequest {
      * @return string
      */
     private function getTable(array $tokens, $operator) {
-        if ($operator === 'update') return str_replace('\'', '', $tokens['UPDATE'][0]['table']);
-        if ($operator === 'insert') return str_replace('\'', '', $tokens['INSERT'][1]['table']);
+        if ($operator === SqlOperations::UPDATE) return str_replace('\'', '', $tokens['UPDATE'][0]['table']);
+        if ($operator === SqlOperations::INSERT) return str_replace('\'', '', $tokens['INSERT'][1]['table']);
         return str_replace('\'', '', $tokens['FROM'][0]['table']);
     }
 
@@ -148,10 +149,13 @@ class MysqlToRequest {
      * @throws \Exception
      */
     private function getQuery(array $tokens, $operator) {
-        if ($operator !== 'select' || empty($tokens['WHERE'])) return null;
+        if ($operator !== SqlOperations::SELECT || empty($tokens['WHERE'])) return null;
 
-        $query = '';
-        foreach ($tokens['WHERE'] as $token) $query .= str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($this->getTableAlias($tokens) . '.', '', $token['base_expr']))));
+        $tableAlias = $this->getTableAlias($tokens);
+        $query      = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
+            return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($tableAlias . '.', '', $token['base_expr']))));
+        });
+
         return preg_replace('/id\=\d*&*/', '', $query);
     }
 
@@ -167,9 +171,10 @@ class MysqlToRequest {
 
         $idAlias = $this->getIdAlias($tokens);
 
-        foreach ($tokens['WHERE'] as $key => $token) {
-            if ($token['expr_type'] === 'colref' && $token['base_expr'] === $idAlias) return $tokens['WHERE'][$key+2]['base_expr'];
-        }
+        return array_reduce($tokens['WHERE'], function($carry, $token) use ($tokens, $idAlias) {
+            if (!is_int($carry)) return $carry;
+            if ($token['expr_type'] === 'colref' && $token['base_expr'] === $idAlias) return $tokens['WHERE'][$carry+2]['base_expr'];
+        }, 0);
     }
 
     /**
@@ -240,10 +245,13 @@ class MysqlToRequest {
      * @param  string $query
      * @param  array  $params
      * @return string
+     *
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     private function setParams($query, array $params) {
-        foreach ($params as $param) $query = $this->setParam($query, $param);
-        return $query;
+        return array_reduce($params, function($newQuery, $param) {
+            return $this->setParam($newQuery, $param);
+        }, $query);
     }
 
     /**
@@ -255,8 +263,6 @@ class MysqlToRequest {
      */
     private function setParam($query, $param) {
         $pos = strpos($query, '?');
-        if ($pos === false) return $query;
-
-        return substr_replace($query, $param, $pos, strlen('?'));
+        return $pos ? substr_replace($query, $param, $pos, strlen('?')) : $query;
     }
 }

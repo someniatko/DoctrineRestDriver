@@ -110,10 +110,10 @@ class TestEntity {
     }
 
     /**
-     * @param  TestEntity $category
+     * @param  AssociatedEntity $category
      * @return TestEntity
      */
-    public function addCategory(TestEntity $category) {
+    public function addCategory(AssociatedEntity $category) {
         $this->categories->add($category);
         return $this;
     }

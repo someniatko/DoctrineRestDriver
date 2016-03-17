@@ -21,8 +21,6 @@ namespace Circle\DoctrineRestDriver\Tests\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * Mock controller for functional testing
@@ -33,9 +31,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class MockController extends Controller {
 
     /**
-     * @Route("/products/{id}")
-     * @Method({"GET"})
-     *
      * Mock action for testing get
      *
      * @param  string   $id
@@ -55,9 +50,6 @@ class MockController extends Controller {
      * Mock action for testing getAll
      *
      * @return Response
-     *
-     * @Route("/products")
-     * @Method({"GET"})
      */
     public function getAllAction() {
         return new Response(json_encode([
@@ -79,9 +71,6 @@ class MockController extends Controller {
      *
      * @param  Request  $request
      * @return Response
-     *
-     * @Route("/products")
-     * @Method({"POST"})
      */
     public function postAction(Request $request) {
         $payload = json_decode($request->getContent());
@@ -98,9 +87,6 @@ class MockController extends Controller {
      *
      * @param  string   $id
      * @return Response
-     *
-     * @Route("/products/{id}")
-     * @Method({"PUT"})
      */
     public function putAction($id) {
         if ($id != 1) return new Response('', 404);
@@ -117,13 +103,26 @@ class MockController extends Controller {
      *
      * @param  string   $id
      * @return Response
-     *
-     * @Route("/products/{id}")
-     * @Method({"DELETE"})
      */
     public function deleteAction($id) {
         if ($id != 1) return new Response('', 404);
 
         return new Response('', 204);
+    }
+
+    /**
+     * Mock action for testing associated entities
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function postCategoriesAction(Request $request) {
+        $payload = json_decode($request->getContent());
+
+        return new Response(json_encode([
+            'id'         => 1,
+            'name'       => $payload->name,
+            'product_id' => $payload->product_id,
+        ]));
     }
 }

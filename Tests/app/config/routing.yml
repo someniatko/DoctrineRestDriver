@@ -33,3 +33,9 @@ circle_doctrine_rest_driver_twitter_o_auth_mock_token:
     defaults:  { _controller: Circle\DoctrineRestDriver\Tests\Controller\TwitterOAuthMockController::tokenAction }
     methods: [ POST ]
     condition: "request.getScriptName() == '/app_dev.php'"
+
+circle_doctrine_rest_driver_mock_post_association:
+    path:   /mockapi/categories
+    defaults:  { _controller: Circle\DoctrineRestDriver\Tests\Controller\MockController::postCategoriesAction }
+    methods: [ POST ]
+    condition: "request.getScriptName() == '/app_dev.php'"

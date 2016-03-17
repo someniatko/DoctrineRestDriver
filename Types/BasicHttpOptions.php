@@ -53,9 +53,8 @@ class BasicHttpOptions extends \ArrayObject {
     private function format($username, $password, array $options) {
         $headers = $options[CURLOPT_HTTPHEADER];
         array_push($headers, 'Authorization: Basic ' . base64_encode($username . ':' . $password));
-        $headers = [ CURLOPT_HTTPHEADER => $headers ];
 
-        return $headers + $options;
+        return [ CURLOPT_HTTPHEADER => $headers ] + $options;
     }
 
     /**
@@ -67,10 +66,10 @@ class BasicHttpOptions extends \ArrayObject {
      * @return void
      */
     private function validate($username, $password, $options) {
-        $this->assertList('options',                     $options);
-        $this->assertString('username',                  $username);
-        $this->assertMaybeString('password',             $password);
-        $this->assertListEntryExists('options',          $options, CURLOPT_HTTPHEADER);
+        $this->assertList('options', $options);
+        $this->assertString('username', $username);
+        $this->assertMaybeString('password', $password);
+        $this->assertListEntryExists('options', $options, CURLOPT_HTTPHEADER);
         $this->assertList('options[CURLOPT_HTTPHEADER]', $options[CURLOPT_HTTPHEADER]);
     }
 }

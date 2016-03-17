@@ -36,28 +36,18 @@ class StatementTest extends \PHPUnit_Framework_TestCase {
     private $statement;
 
     /**
-     * @var mockup
-     */
-    private $connection;
-
-    /**
-     * @var mockup
-     */
-    private $restClient;
-
-    /**
-     * @var mockup
-     */
-    private $mysqlToRequest;
-
-    /**
      * {@inheritdoc}
      */
     public function setUp() {
-        $this->connection     = $this->getMockBuilder('Circle\DoctrineRestDriver\Connection')->disableOriginalConstructor()->getMock();
-        $this->restClient     = $this->getMock('Circle\RestClientBundle\Services\RestInterface');
-        $this->mysqlToRequest = $this->getMockBuilder('Circle\DoctrineRestDriver\Transformers\MysqlToRequest')->disableOriginalConstructor()->getMock();
-        $this->statement      = new Statement('SELECT name FROM product WHERE id=1', $this->connection, $this->restClient, $this->mysqlToRequest);
+        $params = [
+            'host'          => 'http://www.circle.ai',
+            'user'          => 'Aladdin',
+            'password'      => 'OpenSesame',
+            'driverOptions' => [
+                'security_strategy' => 'none'
+            ]
+        ];
+        $this->statement = new Statement('SELECT name FROM product WHERE id=1', $params);
     }
 
     /**

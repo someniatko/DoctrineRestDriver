@@ -18,12 +18,14 @@
 
 namespace Circle\DoctrineRestDriver;
 
+use Circle\DoctrineRestDriver\Enums\HttpMethods;
+use Circle\DoctrineRestDriver\Factory\RestClientFactory;
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
 use Circle\DoctrineRestDriver\Transformers\ResponseToArray;
 use Circle\DoctrineRestDriver\Types\Request;
-use Circle\RestClientBundle\Services\RestInterface;
+use Circle\DoctrineRestDriver\Types\RestClientOptions;
+use Circle\DoctrineRestDriver\Validation\Assertions;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
-use Doctrine\DBAL\Types\Type;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -35,16 +37,12 @@ use Symfony\Component\HttpFoundation\Response;
  * @SuppressWarnings("PHPMD.TooManyPublicMethods")
  */
 class Statement implements \IteratorAggregate, StatementInterface {
+    use Assertions;
 
     /**
      * @var string
      */
     private $query;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
 
     /**
      * @var MysqlToRequest
@@ -55,11 +53,6 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @var array
      */
     private $params = [];
-
-    /**
-     * @var array
-     */
-    private $types = [];
 
     /**
      * @var \Circle\RestClientBundle\Services\RestClient
@@ -94,30 +87,21 @@ class Statement implements \IteratorAggregate, StatementInterface {
     /**
      * Statement constructor
      *
-     * @param string         $query
-     * @param Connection     $connection
-     * @param RestInterface  $restClient
-     * @param MysqlToRequest $mysqlToRequest
+     * @param string $query
+     * @param array  $params
      */
-    public function __construct($query, Connection $connection, RestInterface $restClient, MysqlToRequest $mysqlToRequest) {
+    public function __construct($query, array $params) {
         $this->query          = $query;
-        $this->connection     = $connection;
-        $this->mysqlToRequest = $mysqlToRequest;
-        $this->restClient     = $restClient;
+        $this->mysqlToRequest = new MysqlToRequest($params['host']);
+        $restClientFactory    = new RestClientFactory();
+        $this->restClient     = $restClientFactory->createOne(new RestClientOptions($params));
     }
 
     /**
      * {@inheritdoc}
      */
     public function bindValue($param, $value, $type = null) {
-        $type = $this->getType($type);
-
-        $value = $type instanceof Type ? $type->convertToDatabaseValue($value, $this->connection->getDatabasePlatform()) : $value;
-        $type  = $type instanceof Type ? $type->getBindingType() : $type;
-
         $this->params[$param] = $value;
-        $this->types[$param]  = $type;
-
         return true;
     }
 
@@ -148,11 +132,11 @@ class Statement implements \IteratorAggregate, StatementInterface {
     public function execute($params = null) {
         $request  = $this->mysqlToRequest->trans($this->query, $this->params);
         $method   = strtolower($request->getMethod());
-        $response = $method === 'get' || $method === 'delete' ? $this->restClient->$method($request->getUrl()) : $this->restClient->$method($request->getUrl(), $request->getPayload());
+        $response = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? $this->restClient->$method($request->getUrl()) : $this->restClient->$method($request->getUrl(), $request->getPayload());
 
         $statusCode = $response->getStatusCode();
 
-        return $statusCode === 200 || $method === 'delete' && $statusCode === 204 ? $this->onSuccess($response, $method) : $this->onError($request, $response);
+        return $statusCode === 200 || $method === HttpMethods::DELETE && $statusCode === 204 ? $this->onSuccess($response, $method) : $this->onError($request, $response);
     }
 
     /**
@@ -190,7 +174,8 @@ class Statement implements \IteratorAggregate, StatementInterface {
      */
     public function fetch($fetchMode = null) {
         $fetchMode = empty($fetchMode) ? $this->fetchMode : $fetchMode;
-        if ($fetchMode !== \PDO::FETCH_ASSOC) throw new \Exception('Fetch mode ' . $fetchMode . ' not implemented');
+        $this->assertSupportedFetchMode($fetchMode);
+
         return count($this->resultSet) === 0 ? false : array_pop($this->resultSet);
     }
 
@@ -239,7 +224,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
     private function onSuccess(Response $response, $method) {
         $responseToArray = new ResponseToArray();
         $this->resultSet = $responseToArray->trans($response, $this->query);
-        $this->id        = $method === 'post' ? $this->resultSet['id'] : null;
+        $this->id        = $method === HttpMethods::POST ? $this->resultSet['id'] : null;
         krsort($this->resultSet);
 
         return true;
@@ -257,18 +242,5 @@ class Statement implements \IteratorAggregate, StatementInterface {
         $this->errorMessage = $response->getContent();
 
         throw new \Exception('Execution failed for request: ' . $request . ': HTTPCode ' . $this->errorCode() . ', body ' . $this->errorMessage);
-    }
-
-    /**
-     * returns the type
-     *
-     * @param  string      $type
-     * @return string|Type
-     * @throws \Doctrine\DBAL\DBALException
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    private function getType($type) {
-        return is_string($type) ? Type::getType($type) : $type;
     }
 }

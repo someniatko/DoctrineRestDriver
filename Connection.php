@@ -18,10 +18,6 @@
 
 namespace Circle\DoctrineRestDriver;
 
-use Circle\DoctrineRestDriver\Factory\RestClientFactory;
-use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
-use Circle\DoctrineRestDriver\Types\RestClientOptions;
-use Circle\RestClientBundle\Services\RestInterface;
 use Doctrine\DBAL\Connection as AbstractConnection;
 
 /**
@@ -38,19 +34,12 @@ class Connection extends AbstractConnection {
     private $statement;
 
     /**
-     * @var string
-     */
-    private $apiUrl;
-
-    /**
      * Connection constructor
      *
      * @param array         $params
      * @param Driver        $driver
      */
     public function __construct(array $params, Driver $driver) {
-        $this->apiUrl = $params['host'];
-
         parent::__construct($params, $driver);
     }
 
@@ -63,7 +52,7 @@ class Connection extends AbstractConnection {
     public function prepare($statement) {
         $this->connect();
 
-        $this->statement = new Statement($statement, $this, $this->restClient($this->getParams()), new MysqlToRequest($this->apiUrl));
+        $this->statement = new Statement($statement, $this->getParams());
         $this->statement->setFetchMode($this->defaultFetchMode);
 
         return $this->statement;
@@ -91,16 +80,5 @@ class Connection extends AbstractConnection {
         $statement->execute();
 
         return $statement;
-    }
-
-    /**
-     * returns a new instance of the rest client
-     *
-     * @param  array      $params
-     * @return RestInterface
-     */
-    private function restClient(array $params) {
-        $restClientFactory = new RestClientFactory();
-        return $restClientFactory->createOne(new RestClientOptions($params));
     }
 }

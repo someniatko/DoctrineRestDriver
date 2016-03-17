@@ -52,4 +52,14 @@ trait Exceptions {
     private function notNilException($varName) {
         throw new NotNilException($varName);
     }
+
+    /**
+     * throws an unsupported fetch mode exception
+     *
+     * @param  int $fetchMode
+     * @throws UnsupportedFetchModeException
+     */
+    private function unsupportedFetchModeException($fetchMode) {
+        throw new UnsupportedFetchModeException($fetchMode);
+    }
 }

@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Validation;
 
+use Circle\DoctrineRestDriver\Exceptions\UnsupportedFetchModeException;
 use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
@@ -163,12 +164,26 @@ trait Assertions {
     }
 
     /**
-     * checkes if the given value is a url
+     * checks if the given value is a url
      *
      * @param  mixed $value
      * @return bool
      */
     private function isUrl($value) {
         return (preg_match('/^(http|ftp|https):\/\/[0-9a-zA-Z_-]+(\.[0-9a-zA-Z_-]+)+([0-9a-zA-Z_\-.,@?^=%&amp;:\/~+#-]*[0-9a-zA-Z_\-@?^=%&amp;\/~+#-])?/', $value));
+    }
+
+    /**
+     * checks if the given fetch mode is supported
+     *
+     * @param  int $fetchMode
+     * @return Assertions
+     * @throws UnsupportedFetchModeException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    private function assertSupportedFetchMode($fetchMode) {
+        if ($fetchMode !== \PDO::FETCH_ASSOC) $this->unsupportedFetchModeException($fetchMode);
+        return $this;
     }
 }

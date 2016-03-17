@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Tests;
 
+use Circle\DoctrineRestDriver\Tests\Entity\AssociatedEntity;
 use Circle\DoctrineRestDriver\Tests\Entity\TestEntity;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -62,6 +63,7 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Driver
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
+     * @covers Circle\DoctrineRestDriver\Statement::<private>
      */
     public function find() {
         $entity = $this->em->find('Circle\DoctrineRestDriver\Tests\Entity\TestEntity', 1);
@@ -76,6 +78,7 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Driver
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
+     * @covers Circle\DoctrineRestDriver\Statement::<private>
      * @expectedException \Exception
      */
     public function findNonExisting() {
@@ -142,12 +145,18 @@ class FunctionalTest extends WebTestCase {
         $entity = new TestEntity();
         $entity->setName('MyName');
         $entity->setValue('MyValue');
+
+        $associatedEntity = new AssociatedEntity();
+        $entity->addCategory($associatedEntity);
+
+        $this->em->persist($associatedEntity);
         $this->em->persist($entity);
         $this->em->flush();
 
-        $this->assertSame(1,          $entity->getId());
-        $this->assertSame('MyName',   $entity->getName());
-        $this->assertSame('MyValue',  $entity->getValue());
+        $this->assertSame(1,         $entity->getId());
+        $this->assertSame('MyName',  $entity->getName());
+        $this->assertSame('MyValue', $entity->getValue());
+        $this->assertSame(1,         $entity->getCategories()->first()->getId());
     }
 
     /**
@@ -162,9 +171,9 @@ class FunctionalTest extends WebTestCase {
         $entity->setName('newName');
         $this->em->flush();
 
-        $this->assertSame(1,          $entity->getId());
-        $this->assertSame('newName',  $entity->getName());
-        $this->assertSame('MyValue',  $entity->getValue());
+        $this->assertSame(1,         $entity->getId());
+        $this->assertSame('newName', $entity->getName());
+        $this->assertSame('MyValue', $entity->getValue());
     }
 
     /**

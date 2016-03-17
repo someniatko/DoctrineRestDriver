@@ -50,4 +50,17 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase {
     public function notNilExceptionTest() {
         $this->notNilException('test');
     }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::unsupportedFetchModeException
+     * @covers Circle\DoctrineRestDriver\Exceptions\UnsupportedFetchModeException::__construct
+     * @expectedException \Circle\DoctrineRestDriver\Exceptions\UnsupportedFetchModeException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function unsupportedFetchModeExceptionTest() {
+        $this->unsupportedFetchModeException(\PDO::FETCH_CLASS);
+    }
 }
