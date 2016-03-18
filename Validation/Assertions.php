@@ -22,6 +22,7 @@ use Circle\DoctrineRestDriver\Exceptions\UnsupportedFetchModeException;
 use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Prophecy\Exception\Doubler\ClassNotFoundException;
 
 /**
  * Trait including assertions
@@ -58,59 +59,6 @@ trait Assertions {
     private function assertString($varName, $value) {
         $this->assertNotNil($varName, $value);
         if(!is_string($value)) return $this->invalidTypeException('string', $varName, $value);
-
-        return $this;
-    }
-
-    /**
-     * asserts if the given value is a string or null
-     *
-     * @param  string     $varName
-     * @param  mixed      $value
-     * @return Assertions
-     * @throws InvalidTypeException
-     */
-    private function assertMaybeString($varName, $value) {
-        if(!is_string($value) && $value !== null) return $this->invalidTypeException('string', $varName, $value);
-
-        return $this;
-    }
-
-    /**
-     * asserts if the given value is a list
-     *
-     * @param  string     $varName
-     * @param  mixed      $value
-     * @return Assertions
-     * @throws InvalidTypeException
-     * @throws NotNilException
-     */
-    private function assertList($varName, $value) {
-        $this->assertNotNil($varName, $value);
-        if(!is_array($value)) return $this->invalidTypeException('array', $varName, $value);
-
-        $nonNumericalKeys = array_filter(array_keys($value), function($key) {
-            return !is_numeric($key);
-        });
-        if(count($nonNumericalKeys) > 0) return $this->invalidTypeException('int', $varName, $nonNumericalKeys[0]);
-
-        return $this;
-    }
-
-    /**
-     * asserts if the given value is a list
-     *
-     * @param  string     $varName
-     * @param  array      $list
-     * @param  int        $key
-     * @return Assertions
-     * @throws InvalidTypeException
-     * @throws NotNilException
-     */
-    private function assertListEntryExists($varName, $list, $key) {
-        $this->assertList($varName, $list);
-        if (!is_int($key)) return $this->invalidTypeException('int', $varName . '[-->KEY<--]', $key);
-        if (!array_key_exists($key, $list)) return $this->invalidTypeException('ListEntry', $varName . '[\'' . $key . '\']', 'undefined');
 
         return $this;
     }
@@ -184,6 +132,18 @@ trait Assertions {
      */
     private function assertSupportedFetchMode($fetchMode) {
         if ($fetchMode !== \PDO::FETCH_ASSOC) $this->unsupportedFetchModeException($fetchMode);
+        return $this;
+    }
+
+    /**
+     * checks if the given class exists
+     *
+     * @param  string $className
+     * @return Assertions
+     * @throws ClassNotFoundException
+     */
+    private function assertClassExists($className) {
+        if (!empty($className) && !class_exists($className)) throw new ClassNotFoundException('Class not found', $className);
         return $this;
     }
 }

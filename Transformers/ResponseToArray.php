@@ -18,6 +18,8 @@
 
 namespace Circle\DoctrineRestDriver\Transformers;
 
+use Circle\DoctrineRestDriver\Enums\SqlOperations;
+use Circle\DoctrineRestDriver\Mapping\ResultMapping;
 use PHPSQLParser\PHPSQLParser;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,10 +37,16 @@ class ResponseToArray {
     private $parser;
 
     /**
+     * @var ResultMapping
+     */
+    private $mapping;
+
+    /**
      * ResponseToArray constructor
      */
     public function __construct() {
-        $this->parser = new PHPSQLParser();
+        $this->parser  = new PHPSQLParser();
+        $this->mapping = new ResultMapping();
     }
 
     /**
@@ -51,130 +59,28 @@ class ResponseToArray {
      * @return array
      * @throws \Exception
      */
-    public function trans(Response $response, $query) {
+    public function transform(Response $response, $query) {
         $parsed   = $this->parser->parse($query);
         $operator = strtolower(array_keys($parsed)[0]);
+        $content  = json_decode($response->getContent(), true);
 
-        return $this->createResultSet($operator, $parsed, $response);
+        return $this->createResultSet($operator, $parsed, is_array($content) ? $content : []);
     }
 
     /**
      * returns the result set that is needed to fetch the data
      *
      * @param  string $operator
-     * @param  array $tokens
-     * @param  Response $response
+     * @param  array  $tokens
+     * @param  array  $content
      * @return array
      * @throws \Exception
      */
-    private function createResultSet($operator, array $tokens, Response $response) {
-        if ($operator === 'delete')                           return [];
-        if ($operator === 'insert' || $operator === 'update') return $this->getContent($response);
+    private function createResultSet($operator, array $tokens, array $content) {
+        if ($operator === SqlOperations::DELETE) return $this->mapping->delete();
+        if ($operator === SqlOperations::INSERT) return $this->mapping->insert($content);
+        if ($operator === SqlOperations::UPDATE) return $this->mapping->update($content);
 
-        return $this->select($tokens, $response);
-    }
-
-    /**
-     * returns the select result set
-     *
-     * @param  array $tokens
-     * @param  Response $response
-     * @return array
-     * @throws \Exception
-     */
-    private function select(array $tokens, Response $response) {
-        $content = $this->getContent($response);
-        if (empty($content)) throw new \Exception('ResponseToArray.select: unhandled');
-        return empty($content[0]) ? $this->selectSingle($tokens, $content) : $this->selectAll($tokens, $content);
-    }
-
-    /**
-     * returns the select single result set
-     *
-     * @param  array $tokens
-     * @param  array $content
-     * @return array
-     * @throws \Exception
-     */
-    private function selectSingle(array $tokens, array $content) {
-        $tableAlias = $this->getTableAlias($tokens);
-
-        $attributeValueMap = array_map(function($token) use ($content, $tableAlias) {
-            $key   = empty($token['alias']['name']) ? $token['base_expr'] : $token['alias']['name'];
-            $value = $content[str_replace($tableAlias . '.', '', $token['base_expr'])];
-            return [$key => $value];
-        }, $tokens['SELECT']);
-
-        return [ array_reduce($attributeValueMap, 'array_merge', []) ];
-    }
-
-    /**
-     * returns the select all result set
-     *
-     * @param  array $tokens
-     * @param  array $content
-     * @return array
-     */
-    private function selectAll(array $tokens, array $content) {
-        $content = $this->orderBy($tokens, $content);
-
-        return array_map(function($entry) use ($tokens) {
-            $row = $this->selectSingle($tokens, $entry);
-            return array_pop($row);
-        }, $content);
-    }
-
-    /**
-     * returns the table alias
-     *
-     * @param  array $tokens
-     * @return mixed
-     * @throws \Exception
-     */
-    private function getTableAlias(array $tokens) {
-        return $tokens['FROM'][0]['alias']['name'];
-    }
-
-    /**
-     * returns the content
-     *
-     * @param  Response $response
-     * @return array
-     */
-    private function getContent(Response $response) {
-        return json_decode($response->getContent(), true);
-    }
-
-    /**
-     * orders the content with the given order by criteria
-     *
-     * @param  array $tokens
-     * @param  array $content
-     * @return array
-     */
-    private function orderBy(array $tokens, array $content) {
-        if (empty($tokens['ORDER'])) return $content;
-
-        $sortingRules = array_map(function($token) use ($content) {
-            return [
-                end($token['no_quotes']['parts']),
-                $token['direction']
-            ];
-        }, $tokens['ORDER']);
-
-        $reducedSortingRules = array_reduce($sortingRules, 'array_merge', []);
-        $sortArgs            = array_map(function($value) use ($content) {
-            if ($value === 'ASC')  return SORT_ASC;
-            if ($value === 'DESC') return SORT_DESC;
-
-            $contents = [];
-            foreach ($content as $c) array_push($contents, $c[$value]);
-            return $contents;
-        }, $reducedSortingRules);
-
-        $sortArgs[] = &$content;
-        call_user_func_array('array_multisort', $sortArgs);
-
-        return end($sortArgs);
+        return $this->mapping->select($tokens, $content);
     }
 }

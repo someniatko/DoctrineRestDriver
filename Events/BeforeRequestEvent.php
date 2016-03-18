@@ -16,41 +16,37 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
-
-use Circle\DoctrineRestDriver\Validation\Assertions;
+namespace Circle\DoctrineRestDriver\Events;
+use Circle\DoctrineRestDriver\Types\Request;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
- * NonCurlOptions type
+ * This event is emitted before a request is sent
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class NonCurlOptions extends \ArrayObject {
-    use Assertions;
+class BeforeRequestEvent extends Event {
+    const NAME = 'before.request';
 
     /**
-     * Request constructor
-     *
-     * @param array $options
+     * @var Request
      */
-    public function __construct(array $options) {
-        $this->validate($options);
-
-        $options = array_filter($options, function($key) {
-            return !preg_match('/^CURLOPT/', $key);
-        }, ARRAY_FILTER_USE_KEY);
-
-        parent::__construct($options);
-    }
+    public $request;
 
     /**
-     * validates the given input
-     *
-     * @param  array $options
-     * @return void
+     * @var array
      */
-    private function validate(array $options) {
-        $this->assertHashMap('options', $options);
+    public $options;
+
+    /**
+     * BeforeRequestEvent constructor
+     *
+     * @param Request $request
+     * @param array   $options
+     */
+    public function __construct(Request $request, array $options) {
+        $this->request = $request;
+        $this->options = $options;
     }
 }

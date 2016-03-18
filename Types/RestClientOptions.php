@@ -37,16 +37,7 @@ class RestClientOptions extends \ArrayObject {
     public function __construct(array $options) {
         $this->validate($options);
 
-        $user          = $options['user'];
-        $password      = $options['password'];
-        $driverOptions = $options['driverOptions'];
-        $strategy      = $driverOptions['security_strategy'];
-
-        $nonCurlOptions  = (array) new NonCurlOptions($driverOptions);
-        $curlOptions     = (array) new CurlOptions($driverOptions);
-        $securityOptions = (array) new SecurityOptions($user, $password, $strategy, $curlOptions, $nonCurlOptions);
-
-        parent::__construct($securityOptions + $curlOptions);
+        parent::__construct((array) new CurlOptions($options['driverOptions']));
     }
 
     /**
@@ -59,11 +50,5 @@ class RestClientOptions extends \ArrayObject {
         $this->assertHashMap('params', $params);
         $this->assertHashMapEntryExists('params', $params, 'driverOptions');
         $this->assertHashMap('params["driverOptions"]', $params['driverOptions']);
-        $this->assertHashMapEntryExists('params["driverOptions"]', $params['driverOptions'], 'security_strategy');
-        $this->assertString('params["driverOptions"]["security_strategy"]', $params['driverOptions']['security_strategy']);
-        $this->assertHashMapEntryExists('params', $params, 'user');
-        $this->assertString('params["user"]', $params['user']);
-        $this->assertHashMapEntryExists('params', $params, 'password');
-        $this->assertMaybeString('params["password"]', $params['password']);
     }
 }

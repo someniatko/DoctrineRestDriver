@@ -52,7 +52,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function selectOne() {
@@ -62,14 +62,14 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         ];
         $expected = new Request('get', $this->apiUrl . '/products/1', null, null);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->trans($query, $params));
+        $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function selectOneBy() {
@@ -80,14 +80,14 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         ];
         $expected = new Request('get', $this->apiUrl . '/products/1', 'name=myName', null);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->trans($query, $params));
+        $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function selectBy() {
@@ -97,42 +97,42 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         ];
         $expected = new Request('get', $this->apiUrl . '/products', 'name=myName', null);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->trans($query, $params));
+        $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function selectAll() {
         $query    = 'SELECT name FROM products';
         $expected = new Request('get', $this->apiUrl . '/products', null, null);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->trans($query));
+        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function selectJoined() {
         $query    = 'SELECT p.name FROM products p JOIN product.categories c ON c.id = p.categories_id';
         $expected = new Request('get', $this->apiUrl . '/products', null, null);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->trans($query));
+        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function insert() {
@@ -141,14 +141,14 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'name' => 'myName'
         ]));
 
-        $this->assertEquals($expected, str_replace('\\"', '', $this->mysqlToRequest->trans($query)));
+        $this->assertEquals($expected, str_replace('\\"', '', $this->mysqlToRequest->transform($query)));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function update() {
@@ -160,14 +160,14 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'name' => 'myValue'
         ]));
 
-        $this->assertEquals($expected, str_replace('\\"', '', $this->mysqlToRequest->trans($query, $params)));
+        $this->assertEquals($expected, str_replace('\\"', '', $this->mysqlToRequest->transform($query, $params)));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function updateAll() {
@@ -176,14 +176,14 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'name' => 'myValue'
         ]));
 
-        $this->assertEquals($expected, str_replace('\\"', '', $this->mysqlToRequest->trans($query)));
+        $this->assertEquals($expected, str_replace('\\"', '', $this->mysqlToRequest->transform($query)));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function delete() {
@@ -193,14 +193,14 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         ];
         $expected = new Request('delete', $this->apiUrl . '/products/1', null, null);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->trans($query, $params));
+        $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      * @expectedException \Exception
      */
@@ -209,6 +209,6 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         $params = [
             1
         ];
-        $this->mysqlToRequest->trans($query, $params);
+        $this->mysqlToRequest->transform($query, $params);
     }
 }

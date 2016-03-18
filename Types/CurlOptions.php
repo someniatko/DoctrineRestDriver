@@ -49,19 +49,12 @@ class CurlOptions extends \ArrayObject {
      */
     public function __construct(array $options) {
         $this->validate($options);
-        $options = $this->createCurlOptions($options) + $this->defaultOptions;
 
-        parent::__construct($options);
-    }
+        $curlOptions = array_filter($options, function($key) {
+            return preg_match('/^CURLOPT_/', $key);
+        }, ARRAY_FILTER_USE_KEY);
 
-    /**
-     * creates the curl options
-     *
-     * @param  array $options
-     * @return array
-     */
-    private function createCurlOptions(array $options) {
-        return $this->httpHeaderToArray($this->filterCurlOptions($this->resolveConstants($options)));
+        parent::__construct($this->formatHttpHeader($this->resolveConstants($curlOptions)) + $this->defaultOptions);
     }
 
     /**
@@ -70,7 +63,7 @@ class CurlOptions extends \ArrayObject {
      * @param  array $options
      * @return array
      */
-    private function httpHeaderToArray(array $options) {
+    private function formatHttpHeader(array $options) {
         $options[CURLOPT_HTTPHEADER] = empty($options[CURLOPT_HTTPHEADER]) ? [] : $options[CURLOPT_HTTPHEADER];
         $options[CURLOPT_HTTPHEADER] = is_string($options[CURLOPT_HTTPHEADER]) ? explode(',', $options[CURLOPT_HTTPHEADER]) : $options[CURLOPT_HTTPHEADER];
 
@@ -84,35 +77,11 @@ class CurlOptions extends \ArrayObject {
      * @return array
      */
     private function resolveConstants(array $options) {
-        $newOptions = [];
-        foreach ($options as $key => $value) $newOptions[$this->resolveConstant($key)] = $value;
-        return $newOptions;
-    }
+        $keys = array_map(function($key) {
+            return constant($key);
+        }, array_keys($options));
 
-    /**
-     * resolves the value if it is a constant alias
-     *
-     * @param  string $value
-     * @return string
-     */
-    private function resolveConstant($value) {
-        try {
-            return constant($value);
-        } catch(\PHPUnit_Framework_Error_Warning $e) {
-            return $value;
-        }
-    }
-
-    /**
-     * returns the rest client options of the given driver options array
-     *
-     * @param  array $driverOptions
-     * @return array
-     */
-    private function filterCurlOptions(array $driverOptions) {
-        return array_filter($driverOptions, function($key) {
-            return is_int($key);
-        }, ARRAY_FILTER_USE_KEY);
+        return array_combine($keys, array_values($options));
     }
 
     /**

@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver;
 
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
+use Circle\DoctrineRestDriver\Events\BeforeRequestEvent;
 use Circle\DoctrineRestDriver\Factory\RestClientFactory;
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
 use Circle\DoctrineRestDriver\Transformers\ResponseToArray;
@@ -26,6 +27,7 @@ use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\RestClientOptions;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -55,9 +57,9 @@ class Statement implements \IteratorAggregate, StatementInterface {
     private $params = [];
 
     /**
-     * @var \Circle\RestClientBundle\Services\RestClient
+     * @var \Circle\DoctrineRestDriver\Factory\RestClientFactory
      */
-    private $restClient;
+    private $restClientFactory;
 
     /**
      * @var array
@@ -85,16 +87,31 @@ class Statement implements \IteratorAggregate, StatementInterface {
     private $fetchMode;
 
     /**
+     * @var EventDispatcher
+     */
+    private $dispatcher;
+
+    /**
+     * @var RestClientOptions
+     */
+    private $options;
+
+    /**
      * Statement constructor
      *
      * @param string $query
-     * @param array  $params
+     * @param array  $options
      */
-    public function __construct($query, array $params) {
-        $this->query          = $query;
-        $this->mysqlToRequest = new MysqlToRequest($params['host']);
-        $restClientFactory    = new RestClientFactory();
-        $this->restClient     = $restClientFactory->createOne(new RestClientOptions($params));
+    public function __construct($query, array $options) {
+        $this->query             = $query;
+        $this->mysqlToRequest    = new MysqlToRequest($options['host']);
+        $this->restClientFactory = new RestClientFactory();
+        $this->options           = $options;
+        $this->dispatcher        = new EventDispatcher();
+
+        $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : null;
+        $this->assertClassExists($authenticatorClass);
+        $this->dispatcher->addSubscriber(new $authenticatorClass);
     }
 
     /**
@@ -130,13 +147,15 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * {@inheritdoc}
      */
     public function execute($params = null) {
-        $request  = $this->mysqlToRequest->trans($this->query, $this->params);
-        $method   = strtolower($request->getMethod());
-        $response = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? $this->restClient->$method($request->getUrl()) : $this->restClient->$method($request->getUrl(), $request->getPayload());
+        $request    = $this->mysqlToRequest->transform($this->query, $this->params);
+        $event      = $this->dispatcher->dispatch(BeforeRequestEvent::NAME, new BeforeRequestEvent($request, (array) $this->options));
+        $restClient = $this->restClientFactory->createOne(new RestClientOptions($event->options));
 
+        $method     = strtolower($event->request->getMethod());
+        $response   = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? $restClient->$method($event->request->getUrl()) : $restClient->$method($event->request->getUrl(), $event->request->getPayload());
         $statusCode = $response->getStatusCode();
 
-        return $statusCode === 200 || $method === HttpMethods::DELETE && $statusCode === 204 ? $this->onSuccess($response, $method) : $this->onError($request, $response);
+        return $statusCode === 200 || $method === HttpMethods::DELETE && $statusCode === 204 ? $this->onSuccess($response, $method) : $this->onError($event->request, $response);
     }
 
     /**
@@ -223,7 +242,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
      */
     private function onSuccess(Response $response, $method) {
         $responseToArray = new ResponseToArray();
-        $this->resultSet = $responseToArray->trans($response, $this->query);
+        $this->resultSet = $responseToArray->transform($response, $this->query);
         $this->id        = $method === HttpMethods::POST ? $this->resultSet['id'] : null;
         krsort($this->resultSet);
 

@@ -75,57 +75,10 @@ class RestClientOptionsTest extends \PHPUnit_Framework_TestCase {
      * @group  unit
      * @covers ::__construct
      * @covers ::<private>
-     * @covers \Circle\DoctrineRestDriver\Types\SecurityOptions::__construct
-     * @covers \Circle\DoctrineRestDriver\Types\SecurityOptions::<private>
      */
     public function cast() {
         $options  = new RestClientOptions($this->options);
         $expected = $this->expected;
-
-        $this->assertEquals($expected, (array) $options);
-    }
-
-    /**
-     * @test
-     * @group unit
-     * @covers ::__construct
-     * @covers ::<private>
-     * @covers \Circle\DoctrineRestDriver\Types\SecurityOptions::__construct
-     * @covers \Circle\DoctrineRestDriver\Types\SecurityOptions::<private>
-     */
-    public function castWithBasicHttpAuth() {
-        $options                                       = $this->options;
-        $options['driverOptions']['security_strategy'] = 'basic_http';
-        $options                                       = new RestClientOptions($options);
-        $expected                                      = $this->expected;
-
-        $expected[CURLOPT_HTTPHEADER] = [
-            'Content-Type: text/plain',
-            'Authorization: Basic Y2lyY2xlVXNlcjpteVNlY3JldFBhc3N3b3Jk'
-        ];
-
-        $this->assertEquals($expected, (array) $options);
-    }
-
-    /**
-     * @test
-     * @group unit
-     * @covers ::__construct
-     * @covers ::<private>
-     * @covers \Circle\DoctrineRestDriver\Types\SecurityOptions::__construct
-     * @covers \Circle\DoctrineRestDriver\Types\SecurityOptions::<private>
-     */
-    public function castWithOAuthTwitter() {
-        $options                                         = $this->options;
-        $options['driverOptions']['security_strategy']   = 'oauth';
-        $options['driverOptions']['oauth_options_class'] = 'Circle\DoctrineRestDriver\Tests\Types\Stubs\TwitterOAuthStub';
-        $options                                         = new RestClientOptions($options);
-        $expected                                        = $this->expected;
-
-        $expected[CURLOPT_HTTPHEADER] = [
-            'Content-Type: text/plain',
-            'Authorization: Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-        ];
 
         $this->assertEquals($expected, (array) $options);
     }

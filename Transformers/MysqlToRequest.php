@@ -62,7 +62,7 @@ class MysqlToRequest {
      * @param  array  $params
      * @return Request
      */
-    public function trans($query, array $params = []) {
+    public function transform($query, array $params = []) {
         $query    = $this->setParams($query, $params);
         $parsed   = $this->parser->parse($query);
         $operator = strtolower(array_keys($parsed)[0]);

@@ -47,7 +47,7 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function delete() {
@@ -55,14 +55,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
         $response = new Response();
         $expected = [];
 
-        $this->assertEquals($expected, $this->responseToArray->trans($response, $query));
+        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function insert() {
@@ -78,14 +78,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             'value' => 'myValue'
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->trans($response, $query));
+        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function update() {
@@ -101,14 +101,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             'value' => 'newValue'
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->trans($response, $query));
+        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function selectOneWithoutAlias() {
@@ -124,14 +124,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->trans($response, $query));
+        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function selectOneWithAlias() {
@@ -148,14 +148,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->trans($response, $query));
+        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function selectMultiple() {
@@ -183,14 +183,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->trans($response, $query));
+        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::trans
+     * @covers ::transform
      * @covers ::<private>
      */
     public function selectMultipleOrderByName() {
@@ -236,6 +236,6 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->trans($response, $query));
+        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
     }
 }
