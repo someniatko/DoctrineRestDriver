@@ -29,22 +29,21 @@ use Prophecy\Exception\Doubler\ClassNotFoundException;
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @SuppressWarnings("PHPMD.StaticAccess")
  */
-trait Assertions {
-    use Exceptions;
+class Assertions {
 
     /**
      * asserts if the given value is not nil
      *
      * @param  string     $varName
      * @param  mixed      $value
-     * @return Assertions
+     * @return null
      * @throws NotNilException
      */
-    private function assertNotNil($varName, $value) {
-        if($value === null) return $this->notNilException($varName);
-
-        return $this;
+    public static function assertNotNil($varName, $value) {
+        return $value === null ? Exceptions::notNilException($varName) : null;
     }
 
     /**
@@ -52,15 +51,13 @@ trait Assertions {
      *
      * @param  string     $varName
      * @param  mixed      $value
-     * @return Assertions
+     * @return null
      * @throws InvalidTypeException
      * @throws NotNilException
      */
-    private function assertString($varName, $value) {
-        $this->assertNotNil($varName, $value);
-        if(!is_string($value)) return $this->invalidTypeException('string', $varName, $value);
-
-        return $this;
+    public static function assertString($varName, $value) {
+        self::assertNotNil($varName, $value);
+        return !is_string($value) ? Exceptions::invalidTypeException('string', $varName, $value) : null;
     }
 
     /**
@@ -68,14 +65,12 @@ trait Assertions {
      *
      * @param  string     $varName
      * @param  mixed      $value
-     * @return Assertions
+     * @return void
      * @throws InvalidTypeException
      */
-    private function assertHashMap($varName, $value) {
-        if(!is_array($value)) return $this->invalidTypeException('HashMap', $varName, $value);
-        foreach($value as $key => $v) $this->assertHashMapEntry($varName, [$key => $v]);
-
-        return $this;
+    public static function assertHashMap($varName, $value) {
+        if(!is_array($value)) return Exceptions::invalidTypeException('HashMap', $varName, $value);
+        foreach($value as $key => $v) self::assertHashMapEntry($varName, [$key => $v]);
     }
 
     /**
@@ -83,18 +78,16 @@ trait Assertions {
      *
      * @param  string      $varName
      * @param  mixed       $value
-     * @return Assertions
+     * @return void
      * @throws InvalidTypeException
      */
-    private function assertHashMapEntry($varName, $value) {
-        if(!is_array($value)) return $this->invalidTypeException('HashMapEntry', $varName, $value);
-        if(count($value) > 1) return $this->invalidTypeException('HashMapEntry', $varName, $value);
+    public static function assertHashMapEntry($varName, $value) {
+        if(!is_array($value)) return Exceptions::invalidTypeException('HashMapEntry', $varName, $value);
+        if(count($value) > 1) return Exceptions::invalidTypeException('HashMapEntry', $varName, $value);
 
-        $keys   = array_keys($value);
-        $key    = end($keys);
-        $this->assertString('HashMapEntry of "' . $varName . '": "' . $key . '"', $key);
-
-        return $this;
+        $keys = array_keys($value);
+        $key  = end($keys);
+        self::assertString('HashMapEntry of "' . $varName . '": "' . $key . '"', $key);
     }
 
     /**
@@ -103,12 +96,12 @@ trait Assertions {
      * @param  string      $varName
      * @param  array       $hashMap
      * @param  string      $entryName
-     * @return Assertions
+     * @return null
      * @throws InvalidTypeException
      */
-    private function assertHashMapEntryExists($varName, $hashMap, $entryName) {
-        $this->assertHashMap($varName, $hashMap);
-        return array_key_exists($entryName, $hashMap) ? $this : $this->invalidTypeException('HashMapEntry', $varName . '[\'' . $entryName . '\']', 'undefined');
+    public static function assertHashMapEntryExists($varName, $hashMap, $entryName) {
+        self::assertHashMap($varName, $hashMap);
+        return array_key_exists($entryName, $hashMap) ? null : Exceptions::invalidTypeException('HashMapEntry', $varName . '[\'' . $entryName . '\']', 'undefined');
     }
 
     /**
@@ -117,33 +110,31 @@ trait Assertions {
      * @param  mixed $value
      * @return bool
      */
-    private function isUrl($value) {
-        return (preg_match('/^(http|ftp|https):\/\/[0-9a-zA-Z_-]+(\.[0-9a-zA-Z_-]+)+([0-9a-zA-Z_\-.,@?^=%&amp;:\/~+#-]*[0-9a-zA-Z_\-@?^=%&amp;\/~+#-])?/', $value));
+    public static function isUrl($value) {
+        return (bool) (preg_match('/^(http|ftp|https):\/\/[0-9a-zA-Z_-]+(\.[0-9a-zA-Z_-]+)+([0-9a-zA-Z_\-.,@?^=%&amp;:\/~+#-]*[0-9a-zA-Z_\-@?^=%&amp;\/~+#-])?/', $value));
     }
 
     /**
      * checks if the given fetch mode is supported
      *
      * @param  int $fetchMode
-     * @return Assertions
+     * @return null
      * @throws UnsupportedFetchModeException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    private function assertSupportedFetchMode($fetchMode) {
-        if ($fetchMode !== \PDO::FETCH_ASSOC) $this->unsupportedFetchModeException($fetchMode);
-        return $this;
+    public static function assertSupportedFetchMode($fetchMode) {
+        return $fetchMode !== \PDO::FETCH_ASSOC ? Exceptions::unsupportedFetchModeException($fetchMode) : null;
     }
 
     /**
      * checks if the given class exists
      *
-     * @param  string $className
+     * @param  string     $className
      * @return Assertions
      * @throws ClassNotFoundException
      */
-    private function assertClassExists($className) {
+    public static function assertClassExists($className) {
         if (!empty($className) && !class_exists($className)) throw new ClassNotFoundException('Class not found', $className);
-        return $this;
     }
 }

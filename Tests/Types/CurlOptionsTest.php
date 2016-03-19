@@ -67,7 +67,7 @@ class CurlOptionsTest extends \PHPUnit_Framework_TestCase {
      * @covers ::__construct
      * @covers ::<private>
      */
-    public function cast() {
+    public function create() {
         $options  = new CurlOptions($this->options);
         $expected = $this->expected;
 

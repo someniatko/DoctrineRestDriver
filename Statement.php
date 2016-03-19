@@ -39,7 +39,6 @@ use Symfony\Component\HttpFoundation\Response;
  * @SuppressWarnings("PHPMD.TooManyPublicMethods")
  */
 class Statement implements \IteratorAggregate, StatementInterface {
-    use Assertions;
 
     /**
      * @var string
@@ -101,6 +100,8 @@ class Statement implements \IteratorAggregate, StatementInterface {
      *
      * @param string $query
      * @param array  $options
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct($query, array $options) {
         $this->query             = $query;
@@ -110,7 +111,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
         $this->dispatcher        = new EventDispatcher();
 
         $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : null;
-        $this->assertClassExists($authenticatorClass);
+        Assertions::assertClassExists($authenticatorClass);
         $this->dispatcher->addSubscriber(new $authenticatorClass);
     }
 
@@ -190,10 +191,12 @@ class Statement implements \IteratorAggregate, StatementInterface {
 
     /**
      * {@inheritdoc}
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function fetch($fetchMode = null) {
         $fetchMode = empty($fetchMode) ? $this->fetchMode : $fetchMode;
-        $this->assertSupportedFetchMode($fetchMode);
+        Assertions::assertSupportedFetchMode($fetchMode);
 
         return count($this->resultSet) === 0 ? false : array_pop($this->resultSet);
     }

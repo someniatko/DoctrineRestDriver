@@ -18,33 +18,44 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\Request;
-use Circle\DoctrineRestDriver\Types\RestClientOptions;
+use Circle\DoctrineRestDriver\Types\Table;
+use PHPSQLParser\PHPSQLParser;
 
 /**
- * Tests the request type
+ * Tests the table type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\Request
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\Table
  */
-class RequestTest extends \PHPUnit_Framework_TestCase {
+class TableTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
      * @group  unit
-     * @covers ::__construct
-     * @covers ::getMethod
-     * @covers ::getUrl
-     * @covers ::getPayload
-     * @covers ::__toString
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function constructAndGetAll() {
-        $request = new Request('GET', 'http://circle.ai', 'genious=1');
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('http://circle.ai?genious=1', $request->getUrl());
-        $this->assertSame(null, $request->getPayload());
-        $this->assertSame('GET http://circle.ai?genious=1 HTTP/1.1', $request->__toString());
+    public function create() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('SELECT name FROM products p0');
+
+        $this->assertSame('products', Table::create($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::alias
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function alias() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('SELECT name FROM products p0');
+
+        $this->assertSame('p0', Table::alias($tokens));
     }
 }

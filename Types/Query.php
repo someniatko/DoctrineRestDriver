@@ -18,28 +18,36 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * RestClientOptions type
+ * Query type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class RestClientOptions extends \ArrayObject {
+class Query {
 
     /**
-     * Request constructor
+     * Creates a http query string
      *
-     * @param array $options
+     * @param  array $tokens
+     * @return string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function __construct(array $options) {
-        Assertions::assertHashMap('params', $options);
-        Assertions::assertHashMapEntryExists('params', $options, 'driverOptions');
-        Assertions::assertHashMap('params["driverOptions"]', $options['driverOptions']);
+    public static function create(array $tokens) {
+        Assertions::assertHashMap('tokens', $tokens);
 
-        parent::__construct((array) new CurlOptions($options['driverOptions']));
+        $operation = SqlOperation::create($tokens);
+        if ($operation !== SqlOperations::SELECT || empty($tokens['WHERE'])) return '';
+
+        $tableAlias = Table::alias($tokens);
+        $query      = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
+            return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($tableAlias . '.', '', $token['base_expr']))));
+        });
+
+        return preg_replace('/id\=\d*&*/', '', $query);
     }
 }

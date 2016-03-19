@@ -27,7 +27,6 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @copyright 2015 TeeAge-Beatz UG
  */
 class CurlOptions extends \ArrayObject {
-    use Assertions;
 
     /**
      * @var array
@@ -46,9 +45,11 @@ class CurlOptions extends \ArrayObject {
      * Request constructor
      *
      * @param array $options
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct(array $options) {
-        $this->validate($options);
+        Assertions::assertHashMap('options', $options);
 
         $curlOptions = array_filter($options, function($key) {
             return preg_match('/^CURLOPT_/', $key);
@@ -82,15 +83,5 @@ class CurlOptions extends \ArrayObject {
         }, array_keys($options));
 
         return array_combine($keys, array_values($options));
-    }
-
-    /**
-     * validates the given input
-     *
-     * @param  array $options
-     * @return void
-     */
-    private function validate(array $options) {
-        $this->assertHashMap('options', $options);
     }
 }

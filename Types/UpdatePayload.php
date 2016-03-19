@@ -16,33 +16,39 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Enums;
+namespace Circle\DoctrineRestDriver\Types;
+
+use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Contains all available http methods of the driver
+ * UpdatePayload type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class HttpMethods {
-    const POST   = 'post';
-    const PUT    = 'put';
-    const DELETE = 'delete';
-    const GET    = 'get';
+class UpdatePayload {
 
     /**
-     * returns the sql operators equal http method
+     * creates the update payload
      *
-     * @param  string $operator
+     * @param  array $tokens
      * @return string
-     * @throws \Exception
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function ofSqlOperation($operator) {
-        if ($operator === SqlOperations::INSERT) return HttpMethods::POST;
-        if ($operator === SqlOperations::SELECT) return HttpMethods::GET;
-        if ($operator === SqlOperations::UPDATE) return HttpMethods::PUT;
-        if ($operator === SqlOperations::DELETE) return HttpMethods::DELETE;
+    public static function create(array $tokens) {
+        Assertions::assertHashMap('tokens', $tokens);
 
-        throw new \Exception('Invalid operator ' . $operator . ' in sql query');
+        $columns = array_map(function($token) {
+            $segments = explode('=', $token['base_expr']);
+            return $segments[0];
+        }, $tokens['SET']);
+
+        $values = array_map(function($token) {
+            $segments = explode('=', $token['base_expr']);
+            return str_replace('"', '', $segments[1]);
+        }, $tokens['SET']);
+
+        return json_encode(array_combine($columns, $values));
     }
 }

@@ -16,35 +16,33 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Types;
+namespace Circle\DoctrineRestDriver\Tests\Factory;
 
+use Circle\DoctrineRestDriver\Factory\RequestFactory;
 use Circle\DoctrineRestDriver\Types\Request;
-use Circle\DoctrineRestDriver\Types\RestClientOptions;
+use PHPSQLParser\PHPSQLParser;
 
 /**
- * Tests the request type
+ * Tests the restclient factory
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\Request
+ * @coversDefaultClass Circle\DoctrineRestDriver\Factory\RequestFactory
  */
-class RequestTest extends \PHPUnit_Framework_TestCase {
+class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
      * @group  unit
-     * @covers ::__construct
-     * @covers ::getMethod
-     * @covers ::getUrl
-     * @covers ::getPayload
-     * @covers ::__toString
+     * @covers ::createOne
      */
-    public function constructAndGetAll() {
-        $request = new Request('GET', 'http://circle.ai', 'genious=1');
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('http://circle.ai?genious=1', $request->getUrl());
-        $this->assertSame(null, $request->getPayload());
-        $this->assertSame('GET http://circle.ai?genious=1 HTTP/1.1', $request->__toString());
+    public function createOne() {
+        $query             = 'SELECT name FROM products WHERE id=1';
+        $parser            = new PHPSQLParser();
+        $factory           = new RequestFactory();
+        $expected          = new Request('get', 'http://circle.ai/products/1');
+
+        $this->assertEquals($expected, $factory->createOne($parser->parse($query), 'http://circle.ai'));
     }
 }

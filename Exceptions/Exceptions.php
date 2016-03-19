@@ -29,7 +29,7 @@ use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
  *
  * @SuppressWarnings("PHPMD.StaticAccess")
  */
-trait Exceptions {
+class Exceptions {
 
     /**
      * throws an invalid type exception
@@ -39,7 +39,7 @@ trait Exceptions {
      * @param  mixed  $value
      * @throws InvalidTypeException
      */
-    private function invalidTypeException($expectedType, $key, $value) {
+    public static function invalidTypeException($expectedType, $key, $value) {
         throw new InvalidTypeException($expectedType, $key, $value);
     }
 
@@ -49,7 +49,7 @@ trait Exceptions {
      * @param  string $varName
      * @throws NotNilException
      */
-    private function notNilException($varName) {
+    public static function notNilException($varName) {
         throw new NotNilException($varName);
     }
 
@@ -59,7 +59,7 @@ trait Exceptions {
      * @param  int $fetchMode
      * @throws UnsupportedFetchModeException
      */
-    private function unsupportedFetchModeException($fetchMode) {
+    public static function unsupportedFetchModeException($fetchMode) {
         throw new UnsupportedFetchModeException($fetchMode);
     }
 }

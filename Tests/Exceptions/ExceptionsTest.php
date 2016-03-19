@@ -27,9 +27,10 @@ use Circle\DoctrineRestDriver\Exceptions\Exceptions;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @coversDefaultClass Circle\DoctrineRestDriver\Exceptions\Exceptions
+ *
+ * @SuppressWarnings("PHPMD.StaticAccess")
  */
 class ExceptionsTest extends \PHPUnit_Framework_TestCase {
-    use Exceptions;
 
     /**
      * @test
@@ -38,7 +39,7 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase {
      * @expectedException \Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException
      */
     public function invalidTypeExceptionTest() {
-        $this->invalidTypeException('expected', 'key', 'value');
+        Exceptions::invalidTypeException('expected', 'key', 'value');
     }
 
     /**
@@ -48,7 +49,7 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase {
      * @expectedException \Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException
      */
     public function notNilExceptionTest() {
-        $this->notNilException('test');
+        Exceptions::notNilException('test');
     }
 
     /**
@@ -61,6 +62,6 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function unsupportedFetchModeExceptionTest() {
-        $this->unsupportedFetchModeException(\PDO::FETCH_CLASS);
+        Exceptions::unsupportedFetchModeException(\PDO::FETCH_CLASS);
     }
 }

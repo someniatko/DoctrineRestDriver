@@ -18,33 +18,31 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\Request;
-use Circle\DoctrineRestDriver\Types\RestClientOptions;
+use Circle\DoctrineRestDriver\Enums\SqlOperations;
+use Circle\DoctrineRestDriver\Types\SqlOperation;
+use PHPSQLParser\PHPSQLParser;
 
 /**
- * Tests the request type
+ * Tests the SqlOperation type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\Request
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\SqlOperation
  */
-class RequestTest extends \PHPUnit_Framework_TestCase {
+class SqlOperationTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
      * @group  unit
-     * @covers ::__construct
-     * @covers ::getMethod
-     * @covers ::getUrl
-     * @covers ::getPayload
-     * @covers ::__toString
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function constructAndGetAll() {
-        $request = new Request('GET', 'http://circle.ai', 'genious=1');
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('http://circle.ai?genious=1', $request->getUrl());
-        $this->assertSame(null, $request->getPayload());
-        $this->assertSame('GET http://circle.ai?genious=1 HTTP/1.1', $request->__toString());
+    public function create() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('SELECT name FROM products WHERE id=1');
+
+        $this->assertSame(SqlOperations::SELECT, SqlOperation::create($tokens));
     }
 }

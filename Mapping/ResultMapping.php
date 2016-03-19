@@ -106,24 +106,13 @@ class ResultMapping {
     }
 
     /**
-     * returns the table alias
-     *
-     * @param  array $tokens
-     * @return mixed
-     * @throws \Exception
-     */
-    private function getTableAlias(array $tokens) {
-        return $tokens['FROM'][0]['alias']['name'];
-    }
-
-    /**
      * orders the content with the given order by criteria
      *
      * @param  array $tokens
      * @param  array $content
      * @return array
      */
-    private function orderBy(array $tokens, array $content) {
+    public function orderBy(array $tokens, array $content) {
         if (empty($tokens['ORDER'])) return $content;
 
         $sortingRules = array_map(function($token) use ($content) {
@@ -147,5 +136,16 @@ class ResultMapping {
         call_user_func_array('array_multisort', $sortArgs);
 
         return end($sortArgs);
+    }
+
+    /**
+     * returns the table alias
+     *
+     * @param  array $tokens
+     * @return mixed
+     * @throws \Exception
+     */
+    private function getTableAlias(array $tokens) {
+        return $tokens['FROM'][0]['alias']['name'];
     }
 }

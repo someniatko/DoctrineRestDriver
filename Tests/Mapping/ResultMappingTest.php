@@ -127,6 +127,7 @@ class ResultMappingTest extends \PHPUnit_Framework_TestCase {
      * @test
      * @group  unit
      * @covers ::selectAll
+     * @covers ::orderBy
      * @covers ::<private>
      */
     public function selectAllOrderBy() {

@@ -18,33 +18,29 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\Request;
-use Circle\DoctrineRestDriver\Types\RestClientOptions;
+use Circle\DoctrineRestDriver\Types\Value;
 
 /**
- * Tests the request type
+ * Tests the value type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\Request
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\Value
  */
-class RequestTest extends \PHPUnit_Framework_TestCase {
+class ValueTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
      * @group  unit
-     * @covers ::__construct
-     * @covers ::getMethod
-     * @covers ::getUrl
-     * @covers ::getPayload
-     * @covers ::__toString
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function constructAndGetAll() {
-        $request = new Request('GET', 'http://circle.ai', 'genious=1');
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('http://circle.ai?genious=1', $request->getUrl());
-        $this->assertSame(null, $request->getPayload());
-        $this->assertSame('GET http://circle.ai?genious=1 HTTP/1.1', $request->__toString());
+    public function create() {
+        $this->assertSame(1, Value::create('1'));
+        $this->assertSame(1.01, Value::create('1.01'));
+        $this->assertSame('hello', Value::create('hello'));
+        $this->assertSame('hello', Value::create('"hello"'));
     }
 }

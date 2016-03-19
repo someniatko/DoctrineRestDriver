@@ -16,33 +16,33 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Enums;
+namespace Circle\DoctrineRestDriver\Types;
+
+use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Contains all available http methods of the driver
+ * Value type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class HttpMethods {
-    const POST   = 'post';
-    const PUT    = 'put';
-    const DELETE = 'delete';
-    const GET    = 'get';
+class Value {
 
     /**
-     * returns the sql operators equal http method
+     * creates the value
      *
-     * @param  string $operator
+     * @param  string $value
      * @return string
      * @throws \Exception
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function ofSqlOperation($operator) {
-        if ($operator === SqlOperations::INSERT) return HttpMethods::POST;
-        if ($operator === SqlOperations::SELECT) return HttpMethods::GET;
-        if ($operator === SqlOperations::UPDATE) return HttpMethods::PUT;
-        if ($operator === SqlOperations::DELETE) return HttpMethods::DELETE;
+    public static function create($value) {
+        Assertions::assertString('value', $value);
 
-        throw new \Exception('Invalid operator ' . $operator . ' in sql query');
+        $return = preg_replace('/\"$/', '', preg_replace('/^\"/', '', $value));
+        if (!is_numeric($return)) return $return;
+
+        return ((string) intval($return) === $return) ? intval($return) : floatval($return);
     }
 }

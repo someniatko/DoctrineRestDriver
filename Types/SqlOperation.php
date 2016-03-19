@@ -16,33 +16,29 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Enums;
+namespace Circle\DoctrineRestDriver\Types;
+
+use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Contains all available http methods of the driver
+ * SQLOperator type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class HttpMethods {
-    const POST   = 'post';
-    const PUT    = 'put';
-    const DELETE = 'delete';
-    const GET    = 'get';
+class SqlOperation {
 
     /**
-     * returns the sql operators equal http method
+     * returns the sql operation
      *
-     * @param  string $operator
+     * @param  array  $tokens
      * @return string
-     * @throws \Exception
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function ofSqlOperation($operator) {
-        if ($operator === SqlOperations::INSERT) return HttpMethods::POST;
-        if ($operator === SqlOperations::SELECT) return HttpMethods::GET;
-        if ($operator === SqlOperations::UPDATE) return HttpMethods::PUT;
-        if ($operator === SqlOperations::DELETE) return HttpMethods::DELETE;
+    public static function create(array $tokens) {
+        Assertions::assertHashMap('tokens', $tokens);
 
-        throw new \Exception('Invalid operator ' . $operator . ' in sql query');
+        return strtolower(array_keys($tokens)[0]);
     }
 }
