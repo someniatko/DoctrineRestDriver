@@ -46,12 +46,18 @@ class MysqlToRequest {
     private $requestFactory;
 
     /**
+     * @var string
+     */
+    private $options;
+
+    /**
      * MysqlToRequest constructor
      *
-     * @param string $apiUrl
+     * @param array $options
      */
-    public function __construct($apiUrl) {
-        $this->apiUrl         = $apiUrl;
+    public function __construct(array $options) {
+        $this->apiUrl         = $options['host'];
+        $this->options        = $options['driverOptions'];
         $this->parser         = new PHPSQLParser();
         $this->requestFactory = new RequestFactory();
     }
@@ -68,6 +74,6 @@ class MysqlToRequest {
             return strpos($query, '?') ? substr_replace($query, $param, strpos($query, '?'), strlen('?')) : $query;
         }, $query);
 
-        return $this->requestFactory->createOne($this->parser->parse($query), $this->apiUrl);
+        return $this->requestFactory->createOne($this->parser->parse($query), $this->apiUrl, $this->options);
     }
 }

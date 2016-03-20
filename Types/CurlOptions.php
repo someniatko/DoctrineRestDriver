@@ -31,7 +31,7 @@ class CurlOptions extends \ArrayObject {
     /**
      * @var array
      */
-    private $defaultOptions = [
+    private static $defaults = [
         CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
         CURLOPT_MAXREDIRS      => 25,
         CURLOPT_TIMEOUT        => 25,
@@ -42,46 +42,29 @@ class CurlOptions extends \ArrayObject {
     ];
 
     /**
-     * Request constructor
+     * returns valid curl options from the given options array
      *
-     * @param array $options
+     * @param  array $options
+     * @return array
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function __construct(array $options) {
+    public static function create(array $options) {
         Assertions::assertHashMap('options', $options);
 
-        $curlOptions = array_filter($options, function($key) {
+        $filteredOptions = array_filter($options, function($key) {
             return preg_match('/^CURLOPT_/', $key);
         }, ARRAY_FILTER_USE_KEY);
 
-        parent::__construct($this->formatHttpHeader($this->resolveConstants($curlOptions)) + $this->defaultOptions);
-    }
-
-    /**
-     * formats the http header
-     *
-     * @param  array $options
-     * @return array
-     */
-    private function formatHttpHeader(array $options) {
-        $options[CURLOPT_HTTPHEADER] = empty($options[CURLOPT_HTTPHEADER]) ? [] : $options[CURLOPT_HTTPHEADER];
-        $options[CURLOPT_HTTPHEADER] = is_string($options[CURLOPT_HTTPHEADER]) ? explode(',', $options[CURLOPT_HTTPHEADER]) : $options[CURLOPT_HTTPHEADER];
-
-        return $options;
-    }
-
-    /**
-     * converts all string keys to int keys by using php constant() function
-     *
-     * @param  array $options
-     * @return array
-     */
-    private function resolveConstants(array $options) {
         $keys = array_map(function($key) {
             return constant($key);
-        }, array_keys($options));
+        }, array_keys($filteredOptions));
 
-        return array_combine($keys, array_values($options));
+        $optionsWithIntKeys = array_combine($keys, array_values($filteredOptions));
+
+        $optionsWithIntKeys[CURLOPT_HTTPHEADER] = empty($optionsWithIntKeys[CURLOPT_HTTPHEADER]) ? [] : $optionsWithIntKeys[CURLOPT_HTTPHEADER];
+        $optionsWithIntKeys[CURLOPT_HTTPHEADER] = is_string($optionsWithIntKeys[CURLOPT_HTTPHEADER]) ? explode(',', $optionsWithIntKeys[CURLOPT_HTTPHEADER]) : $optionsWithIntKeys[CURLOPT_HTTPHEADER];
+
+        return $optionsWithIntKeys + self::$defaults;
     }
 }

@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver\Tests\Transformers;
 
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
+use Circle\DoctrineRestDriver\Types\CurlOptions;
 use Circle\DoctrineRestDriver\Types\Request;
 
 /**
@@ -42,10 +43,34 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
     private $apiUrl = 'http://www.test.de';
 
     /**
+     * @var array
+     */
+    private $options = [
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+        CURLOPT_MAXREDIRS      => 25,
+        CURLOPT_TIMEOUT        => 25,
+        CURLOPT_CONNECTTIMEOUT => 25,
+        CURLOPT_CRLF           => true,
+        CURLOPT_SSLVERSION     => 3,
+        CURLOPT_FOLLOWLOCATION => true,
+    ];
+
+    /**
      * {@inheritdoc}
      */
     public function setUp() {
-        $this->mysqlToRequest = new MysqlToRequest($this->apiUrl);
+        $this->mysqlToRequest = new MysqlToRequest([
+            'host'          => 'http://www.test.de',
+            'driverOptions' => [
+                'CURLOPT_HTTPHEADER'     => 'Content-Type: application/json',
+                'CURLOPT_MAXREDIRS'      => 25,
+                'CURLOPT_TIMEOUT'        => 25,
+                'CURLOPT_CONNECTTIMEOUT' => 25,
+                'CURLOPT_CRLF'           => true,
+                'CURLOPT_SSLVERSION'     => 3,
+                'CURLOPT_FOLLOWLOCATION' => true,
+            ]
+        ]);
     }
 
     /**
@@ -60,7 +85,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         $params = [
             1
         ];
-        $expected = new Request('get', $this->apiUrl . '/products/1', null, null);
+        $expected = new Request('get', $this->apiUrl . '/products/1', $this->options, null, null);
 
         $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }
@@ -78,7 +103,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             1,
             'myName'
         ];
-        $expected = new Request('get', $this->apiUrl . '/products/1', 'name=myName', null);
+        $expected = new Request('get', $this->apiUrl . '/products/1', $this->options, 'name=myName', null);
 
         $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }
@@ -95,7 +120,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         $params = [
             'myName'
         ];
-        $expected = new Request('get', $this->apiUrl . '/products', 'name=myName', null);
+        $expected = new Request('get', $this->apiUrl . '/products', $this->options, 'name=myName', null);
 
         $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }
@@ -109,7 +134,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      */
     public function selectAll() {
         $query    = 'SELECT name FROM products';
-        $expected = new Request('get', $this->apiUrl . '/products', null, null);
+        $expected = new Request('get', $this->apiUrl . '/products', $this->options, null, null);
 
         $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
     }
@@ -123,7 +148,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      */
     public function selectJoined() {
         $query    = 'SELECT p.name FROM products p JOIN product.categories c ON c.id = p.categories_id';
-        $expected = new Request('get', $this->apiUrl . '/products', null, null);
+        $expected = new Request('get', $this->apiUrl . '/products', $this->options, null, null);
 
         $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
     }
@@ -137,7 +162,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      */
     public function insert() {
         $query    = 'INSERT INTO products ("name") VALUES ("myName")';
-        $expected = new Request('post', $this->apiUrl . '/products', null, json_encode([
+        $expected = new Request('post', $this->apiUrl . '/products', $this->options, null, json_encode([
             'name' => 'myName'
         ]));
 
@@ -156,7 +181,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         $params = [
             1
         ];
-        $expected = new Request('put', $this->apiUrl . '/products/1', null, json_encode([
+        $expected = new Request('put', $this->apiUrl . '/products/1', $this->options, null, json_encode([
             'name' => 'myValue'
         ]));
 
@@ -172,7 +197,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      */
     public function updateAll() {
         $query    = 'UPDATE products SET name="myValue"';
-        $expected = new Request('put', $this->apiUrl . '/products', null, json_encode([
+        $expected = new Request('put', $this->apiUrl . '/products', $this->options, null, json_encode([
             'name' => 'myValue'
         ]));
 
@@ -191,7 +216,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         $params = [
             1
         ];
-        $expected = new Request('delete', $this->apiUrl . '/products/1', null, null);
+        $expected = new Request('delete', $this->apiUrl . '/products/1', $this->options, null, null);
 
         $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }

@@ -16,30 +16,27 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Security;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Types\Request;
 
 /**
- * RestClientOptions type
+ * Basic Authentication
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class RestClientOptions extends \ArrayObject {
+class HttpBasicAuthentication implements AuthStrategy {
 
     /**
-     * Request constructor
-     *
-     * @param array $options
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
+     * {@inheritdoc}
      */
-    public function __construct(array $options) {
-        Assertions::assertHashMap('params', $options);
-        Assertions::assertHashMapEntryExists('params', $options, 'driverOptions');
-        Assertions::assertHashMap('params["driverOptions"]', $options['driverOptions']);
+    public function transformRequest(Request $request, array $config) {
+        $options  = $request->getCurlOptions();
+        $headers  = empty($options[CURLOPT_HTTPHEADER]) ? [] : $options[CURLOPT_HTTPHEADER];
+        array_push($headers, 'Authorization: Basic ' . base64_encode($config['user'] . ':' . $config['password']));
+        $options[CURLOPT_HTTPHEADER] = $headers;
 
-        parent::__construct((array) new CurlOptions($options['driverOptions']));
+        return new Request($request->getMethod(), $request->getUrl(), $options, $request->getQuery(), $request->getPayload());
     }
 }

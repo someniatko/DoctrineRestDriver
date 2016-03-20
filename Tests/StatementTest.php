@@ -44,7 +44,7 @@ class StatementTest extends \PHPUnit_Framework_TestCase {
             'user'          => 'Aladdin',
             'password'      => 'OpenSesame',
             'driverOptions' => [
-                'authenticator_class' => 'Circle\\DoctrineRestDriver\\Events\\Subscribers\\BasicHttpAuthentication'
+                'authenticator_class' => 'Circle\\DoctrineRestDriver\\Security\\HttpBasicAuthentication'
             ]
         ];
         $this->statement = new Statement('SELECT name FROM product WHERE id=1', $params);

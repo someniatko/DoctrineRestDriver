@@ -64,8 +64,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function find() {
         $entity = $this->em->find('Circle\DoctrineRestDriver\Tests\Entity\TestEntity', 1);
@@ -81,8 +79,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      * @expectedException \Exception
      */
     public function findNonExisting() {
@@ -96,8 +92,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function findOneBy() {
         $entity = $this->em->getRepository('Circle\DoctrineRestDriver\Tests\Entity\TestEntity')->findOneBy(['id' => 1]);
@@ -113,8 +107,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function findBy() {
         $entity = $this->em->getRepository('Circle\DoctrineRestDriver\Tests\Entity\TestEntity')->findBy(['id' => 1]);
@@ -131,8 +123,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function findAll() {
         $entity = $this->em->getRepository('Circle\DoctrineRestDriver\Tests\Entity\TestEntity')->findAll();
@@ -154,8 +144,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function persistAndFlush() {
         $entity = new TestEntity();
@@ -182,8 +170,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function updateAndFlush() {
         $entity = $this->em->find('Circle\DoctrineRestDriver\Tests\Entity\TestEntity', 1);
@@ -202,8 +188,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function remove() {
         $entity = $this->em->find('Circle\DoctrineRestDriver\Tests\Entity\TestEntity', 1);
@@ -218,8 +202,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function dql() {
         $entity = $this->em->createQuery('SELECT p FROM Circle\DoctrineRestDriver\Tests\Entity\TestEntity p WHERE p.id = 1')
@@ -237,8 +219,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function nativeQuery() {
         $mapping = new ResultSetMapping();
@@ -263,8 +243,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function dqlWithOrderBy() {
         $entity = $this->em->createQuery('SELECT p FROM Circle\DoctrineRestDriver\Tests\Entity\TestEntity p ORDER BY p.name DESC')
@@ -286,8 +264,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      */
     public function dqlWithObjectParameter() {
         $entity = $this->em->createQuery('SELECT p FROM Circle\DoctrineRestDriver\Tests\Entity\TestEntity p WHERE p.name = ?1')
@@ -304,8 +280,6 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
      * @covers Circle\DoctrineRestDriver\Statement::<private>
-     * @covers Circle\DoctrineRestDriver\Events\BeforeRequestEvent
-     * @covers Circle\DoctrineRestDriver\Events\Subscribers\BasicHttpAuthentication
      * @expectedException \Exception
      */
     public function nonImplementedEntity() {

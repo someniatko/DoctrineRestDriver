@@ -16,37 +16,22 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Events;
+namespace Circle\DoctrineRestDriver\Security;
+
 use Circle\DoctrineRestDriver\Types\Request;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
- * This event is emitted before a request is sent
+ * Interface for authentication strategies
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class BeforeRequestEvent extends Event {
-    const NAME = 'before.request';
+interface AuthStrategy {
 
     /**
-     * @var Request
+     * @param  Request $request
+     * @param  array   $config
+     * @return Request
      */
-    public $request;
-
-    /**
-     * @var array
-     */
-    public $options;
-
-    /**
-     * BeforeRequestEvent constructor
-     *
-     * @param Request $request
-     * @param array   $options
-     */
-    public function __construct(Request $request, array $options) {
-        $this->request = $request;
-        $this->options = $options;
-    }
+    public function transformRequest(Request $request, array $config);
 }

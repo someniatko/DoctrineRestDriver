@@ -16,54 +16,52 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Transformers;
+namespace Circle\DoctrineRestDriver\Tests\Factory;
 
-use Circle\DoctrineRestDriver\Transformers\ResponseToArray;
+use Circle\DoctrineRestDriver\Factory\ResultSetFactory;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Tests the response to array transformer
+ * Tests the result set factory
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Transformers\ResponseToArray
+ * @coversDefaultClass Circle\DoctrineRestDriver\Factory\ResultSetFactory
  */
-class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
+class ResultSetFactoryTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * @var ResponseToArray
+     * @var ResultSetFactory
      */
-    private $responseToArray;
+    private $resultSetFactory;
 
     /**
      * {@inheritdoc}
      */
     public function setUp() {
-        $this->responseToArray = new ResponseToArray();
+        $this->resultSetFactory = new ResultSetFactory();
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::transform
-     * @covers ::<private>
+     * @covers ::createOne
      */
     public function delete() {
         $query    = 'DELETE FROM product WHERE id=1';
         $response = new Response();
         $expected = [];
 
-        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
+        $this->assertEquals($expected, $this->resultSetFactory->createOne($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::transform
-     * @covers ::<private>
+     * @covers ::createOne
      */
     public function insert() {
         $query    = 'INSERT INTO product (name, value) VALUES ("myName", "myValue")';
@@ -78,15 +76,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             'value' => 'myValue'
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
+        $this->assertEquals($expected, $this->resultSetFactory->createOne($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::transform
-     * @covers ::<private>
+     * @covers ::createOne
      */
     public function update() {
         $query    = 'UPDATE product SET name="newName", value="newValue" WHERE id=1';
@@ -101,15 +98,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             'value' => 'newValue'
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
+        $this->assertEquals($expected, $this->resultSetFactory->createOne($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::transform
-     * @covers ::<private>
+     * @covers ::createOne
      */
     public function selectOneWithoutAlias() {
         $query    = 'SELECT name FROM product WHERE id=1';
@@ -124,15 +120,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
+        $this->assertEquals($expected, $this->resultSetFactory->createOne($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::transform
-     * @covers ::<private>
+     * @covers ::createOne
      */
     public function selectOneWithAlias() {
         $query    = 'SELECT p.name, p.value FROM product p WHERE p.id=1';
@@ -148,15 +143,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
+        $this->assertEquals($expected, $this->resultSetFactory->createOne($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::transform
-     * @covers ::<private>
+     * @covers ::createOne
      */
     public function selectMultiple() {
         $query    = 'SELECT p.name, p.value FROM product p';
@@ -183,15 +177,14 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
+        $this->assertEquals($expected, $this->resultSetFactory->createOne($response, $query));
     }
 
     /**
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::transform
-     * @covers ::<private>
+     * @covers ::createOne
      */
     public function selectMultipleOrderByName() {
         $query    = 'SELECT p.name, p.value FROM product p order by p.name ASC, p.value DESC';
@@ -236,6 +229,6 @@ class ResponseToArrayTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, $this->responseToArray->transform($response, $query));
+        $this->assertEquals($expected, $this->resultSetFactory->createOne($response, $query));
     }
 }

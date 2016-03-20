@@ -16,7 +16,7 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Transformers;
+namespace Circle\DoctrineRestDriver\Factory;
 
 use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Mapping\ResultMapping;
@@ -24,12 +24,12 @@ use PHPSQLParser\PHPSQLParser;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Response to array transformer
+ * Result set factory
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class ResponseToArray {
+class ResultSetFactory {
 
     /**
      * @var PHPSQLParser
@@ -59,24 +59,11 @@ class ResponseToArray {
      * @return array
      * @throws \Exception
      */
-    public function transform(Response $response, $query) {
-        $parsed   = $this->parser->parse($query);
-        $operator = strtolower(array_keys($parsed)[0]);
+    public function createOne(Response $response, $query) {
+        $tokens   = $this->parser->parse($query);
+        $operator = strtolower(array_keys($tokens)[0]);
         $content  = json_decode($response->getContent(), true);
 
-        return $this->createResultSet($operator, $parsed, is_array($content) ? $content : []);
-    }
-
-    /**
-     * returns the result set that is needed to fetch the data
-     *
-     * @param  string $operator
-     * @param  array  $tokens
-     * @param  array  $content
-     * @return array
-     * @throws \Exception
-     */
-    private function createResultSet($operator, array $tokens, array $content) {
         if ($operator === SqlOperations::DELETE) return $this->mapping->delete();
         if ($operator === SqlOperations::INSERT) return $this->mapping->insert($content);
         if ($operator === SqlOperations::UPDATE) return $this->mapping->update($content);

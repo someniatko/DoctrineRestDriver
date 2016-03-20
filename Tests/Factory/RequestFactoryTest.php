@@ -33,6 +33,32 @@ use PHPSQLParser\PHPSQLParser;
 class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
 
     /**
+     * @var array
+     */
+    private $requestOptions = [
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+        CURLOPT_MAXREDIRS      => 25,
+        CURLOPT_TIMEOUT        => 25,
+        CURLOPT_CONNECTTIMEOUT => 25,
+        CURLOPT_CRLF           => true,
+        CURLOPT_SSLVERSION     => 3,
+        CURLOPT_FOLLOWLOCATION => true,
+    ];
+
+    /**
+     * @var array
+     */
+    private $factoryOptions = [
+        'CURLOPT_HTTPHEADER'     => 'Content-Type: application/json',
+        'CURLOPT_MAXREDIRS'      => 25,
+        'CURLOPT_TIMEOUT'        => 25,
+        'CURLOPT_CONNECTTIMEOUT' => 25,
+        'CURLOPT_CRLF'           => true,
+        'CURLOPT_SSLVERSION'     => 3,
+        'CURLOPT_FOLLOWLOCATION' => true,
+    ];
+
+    /**
      * @test
      * @group  unit
      * @covers ::createOne
@@ -41,8 +67,8 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
         $query             = 'SELECT name FROM products WHERE id=1';
         $parser            = new PHPSQLParser();
         $factory           = new RequestFactory();
-        $expected          = new Request('get', 'http://circle.ai/products/1');
+        $expected          = new Request('get', 'http://circle.ai/products/1', $this->requestOptions);
 
-        $this->assertEquals($expected, $factory->createOne($parser->parse($query), 'http://circle.ai'));
+        $this->assertEquals($expected, $factory->createOne($parser->parse($query), 'http://circle.ai', $this->factoryOptions));
     }
 }

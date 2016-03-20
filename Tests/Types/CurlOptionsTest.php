@@ -64,13 +64,11 @@ class CurlOptionsTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      * @group  unit
-     * @covers ::__construct
-     * @covers ::<private>
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function create() {
-        $options  = new CurlOptions($this->options);
-        $expected = $this->expected;
-
-        $this->assertEquals($expected, (array) $options);
+        $this->assertEquals($this->expected, CurlOptions::create($this->options));
     }
 }

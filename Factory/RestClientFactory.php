@@ -28,18 +28,16 @@ use Circle\RestClientBundle\Services\RestClient;
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @SuppressWarnings("PHPMD.StaticAccess")
  */
 class RestClientFactory {
 
     /**
      * creates a new RestClient with the given options
      *
-     * @param  RestClientOptions $driverOptions
+     * @param  array      $curlOptions
      * @return RestClient
      */
-    public function createOne(RestClientOptions $driverOptions) {
-        return new RestClient(new Curl(new CurlOptionsHandler((array) $driverOptions)));
+    public function createOne(array $curlOptions) {
+        return new RestClient(new Curl(new CurlOptionsHandler($curlOptions)));
     }
 }

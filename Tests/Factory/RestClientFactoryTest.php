@@ -36,8 +36,7 @@ class RestClientFactoryTest extends \PHPUnit_Framework_TestCase {
      * @covers ::createOne
      */
     public function createOne() {
-        $factory           = new RestClientFactory();
-        $restClientOptions = $this->getMockBuilder('Circle\DoctrineRestDriver\Types\RestClientOptions')->disableOriginalConstructor()->getMock();
-        $this->assertInstanceOf('Circle\RestClientBundle\Services\RestClient', $factory->createOne($restClientOptions));
+        $factory = new RestClientFactory();
+        $this->assertInstanceOf('Circle\RestClientBundle\Services\RestClient', $factory->createOne([]));
     }
 }

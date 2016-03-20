@@ -42,17 +42,30 @@ class Request {
     private $payload;
 
     /**
+     * @var array
+     */
+    private $curlOptions;
+
+    /**
+     * @var string
+     */
+    private $query;
+
+    /**
      * Request constructor
      *
      * @param string      $method
      * @param string      $url
+     * @param array       $curlOptions
      * @param string|null $query
      * @param string|null $payload
      */
-    public function __construct($method, $url, $query = null, $payload = null) {
-        $this->method  = $method;
-        $this->url     = empty($query) ? $url : $url . '?' . $query;
-        $this->payload = $payload;
+    public function __construct($method, $url, array $curlOptions, $query = null, $payload = null) {
+        $this->method      = $method;
+        $this->url         = $url;
+        $this->payload     = $payload;
+        $this->curlOptions = $curlOptions;
+        $this->query       = $query;
     }
 
     /**
@@ -83,9 +96,36 @@ class Request {
     }
 
     /**
+     * returns all curl options
+     *
+     * @return array
+     */
+    public function getCurlOptions() {
+        return $this->curlOptions;
+    }
+
+    /**
+     * returns the query
+     *
+     * @return string
+     */
+    public function getQuery() {
+        return $this->query;
+    }
+
+    /**
+     * returns the url with query
+     *
+     * @return string
+     */
+    public function getUrlAndQuery() {
+        return $this->url . '?' . $this->query;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __toString() {
-        return $this->method . ' ' . $this->url . ' HTTP/1.1' . (!empty($this->payload) ? ' ' . $this->payload : '');
+        return $this->method . ' ' . $this->getUrlAndQuery() . ' HTTP/1.1' . (!empty($this->payload) ? ' ' . $this->payload : '');
     }
 }
