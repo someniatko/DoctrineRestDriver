@@ -74,7 +74,7 @@ use Doctrine\ORM\Mapping as ORM;
  * This annotation is used to define the target resource of the API. You can whether 
  * use the resource name (then the target url will consist of the configured host 
  * parameter and the resource name) or the target url itself
- * @ORM\Table("product|http://www.yourSite.com/api")
+ * @ORM\Table("namespaces|http://www.yourSite.com/api/namespaces")
  */
 class Namespace {
 
@@ -135,6 +135,7 @@ $em->flush();
 ```
 
 #Examples
+Actually we believe you will get your job done without any more examples. But maybe we are wrong. So if you need any help feel free to contact us by writing an email to hi@circle.ai. You can also create a question on Stackoverflow and send the link by mail. Anyways, you can always leave a mail just to say hi ;-)
 
 #Testing
 
