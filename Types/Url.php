@@ -40,9 +40,9 @@ class Url {
     public static function create(array $tokens, $apiUrl) {
         Assertions::assertHashMap('tokens', $tokens);
 
-        $table     = Table::create($tokens);
-        $id        = Id::create($tokens);
-        $idPath    = empty($id) ? '' : '/' . $id;
+        $table  = Table::create($tokens);
+        $id     = Id::create($tokens);
+        $idPath = empty($id) ? '' : '/' . $id;
 
         return Assertions::isUrl($table) ? $table . $idPath : $apiUrl . '/' . $table . $idPath;
     }
