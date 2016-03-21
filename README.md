@@ -105,7 +105,7 @@ class Namespace {
 }
 ```
 
-Afterwards you are able to use the created entities as if you were using a local database:
+Afterwards you are able to use the created entity as if you were using a relational database:
 
 ```php
 /* @var $em Doctrine\ORM\EntityManager */
@@ -145,3 +145,10 @@ make test
 ```
 
 #Contributing
+If you want to contribute to this repository, please ensure ...
+  - to follow the existing coding style.
+  - to use the linting tools that are listed in the ```composer.json``` (which you get for free when using ```make```).
+  - to add and/or customize unit tests for any changed code.
+  - to reference the corresponding issue in your pull request with a small description of your changes.
+
+All contributors are listed in the ```AUTHORS``` file, sorted by the time of their first contribution.
