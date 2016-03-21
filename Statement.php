@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver;
 
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Circle\DoctrineRestDriver\Factory\RestClientFactory;
 use Circle\DoctrineRestDriver\Factory\ResultSetFactory;
 use Circle\DoctrineRestDriver\Security\AuthStrategy;
@@ -105,15 +106,15 @@ class Statement implements \IteratorAggregate, StatementInterface {
      */
     public function __construct($query, array $options) {
         $this->query             = $query;
+        $this->options           = $options;
         $this->mysqlToRequest    = new MysqlToRequest($options);
         $this->restClientFactory = new RestClientFactory();
-        $this->options           = $options;
 
         $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : null;
         Assertions::assertClassExists($authenticatorClass);
         $this->authStrategy = new $authenticatorClass();
 
-        if (!$this->authStrategy instanceof AuthStrategy) throw new \Exception('authenticator class must implement interface AuthStrategy');
+        if (!$this->authStrategy instanceof AuthStrategy) Exceptions::invalidAuthStrategyException(get_class($this->authStrategy));
     }
 
     /**
@@ -126,9 +127,11 @@ class Statement implements \IteratorAggregate, StatementInterface {
 
     /**
      * {@inheritdoc}
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function bindParam($column, &$variable, $type = null, $length = null) {
-        throw new \Exception('not implemented');
+        return Exceptions::methodNotImplementedException(get_class($this), 'bindParam');
     }
 
     /**
@@ -216,9 +219,11 @@ class Statement implements \IteratorAggregate, StatementInterface {
 
     /**
      * {@inheritdoc}
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function fetchColumn($columnIndex = 0) {
-        throw new \Exception('not implemented');
+        return Exceptions::methodNotImplementedException(get_class($this), 'fetchColumn');
     }
 
     /**
@@ -259,11 +264,13 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @param  Request  $request
      * @param  Response $response
      * @throws \Exception
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     private function onError(Request $request, Response $response) {
         $this->errorCode    = $response->getStatusCode();
         $this->errorMessage = $response->getContent();
 
-        throw new \Exception('Execution failed for request: ' . $request . ': HTTPCode ' . $this->errorCode() . ', body ' . $this->errorMessage);
+        return Exceptions::requestFailedException($request, $response->getStatusCode(), $response->getContent());
     }
 }

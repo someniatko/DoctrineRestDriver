@@ -16,34 +16,24 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
-
-use Circle\DoctrineRestDriver\Validation\Assertions;
-use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
+namespace Circle\DoctrineRestDriver\Exceptions;
 
 /**
- * Value type
+ * Exception class for invalid auth strategy
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @SuppressWarnings("PHPMD.StaticAccess")
  */
-class Value {
+class InvalidAuthStrategyException extends \Exception {
 
     /**
-     * creates the value
+     * InvalidAuthStrategyException constructor
      *
-     * @param  string $value
-     * @return string
-     * @throws InvalidTypeException
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
+     * @param string $class
      */
-    public static function create($value) {
-        Assertions::assertString('value', $value);
-
-        $return = preg_replace('/\"$/', '', preg_replace('/^\"/', '', $value));
-        if (!is_numeric($return)) return $return;
-
-        return ((string) intval($return) === $return) ? intval($return) : floatval($return);
+    public function __construct($class) {
+        parent::__construct('Class ' . $class . ' must implement Circle\DoctrineRestDriver\Types\Request\AuthStrategy to act as authenticator');
     }
 }

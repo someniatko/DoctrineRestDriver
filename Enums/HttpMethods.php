@@ -17,6 +17,7 @@
  */
 
 namespace Circle\DoctrineRestDriver\Enums;
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 
 /**
  * Contains all available http methods of the driver
@@ -33,16 +34,18 @@ class HttpMethods {
     /**
      * returns the sql operators equal http method
      *
-     * @param  string $operator
+     * @param  string $operation
      * @return string
      * @throws \Exception
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function ofSqlOperation($operator) {
-        if ($operator === SqlOperations::INSERT) return HttpMethods::POST;
-        if ($operator === SqlOperations::SELECT) return HttpMethods::GET;
-        if ($operator === SqlOperations::UPDATE) return HttpMethods::PUT;
-        if ($operator === SqlOperations::DELETE) return HttpMethods::DELETE;
+    public static function ofSqlOperation($operation) {
+        if ($operation === SqlOperations::INSERT) return HttpMethods::POST;
+        if ($operation === SqlOperations::SELECT) return HttpMethods::GET;
+        if ($operation === SqlOperations::UPDATE) return HttpMethods::PUT;
+        if ($operation === SqlOperations::DELETE) return HttpMethods::DELETE;
 
-        throw new \Exception('Invalid operator ' . $operator . ' in sql query');
+        return Exceptions::invalidSqlOperationException($operation);
     }
 }

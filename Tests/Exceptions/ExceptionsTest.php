@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver\Tests\Exceptions;
 
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Types\Request;
 
 /**
  * Tests the exceptions trait
@@ -63,5 +64,57 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function unsupportedFetchModeExceptionTest() {
         Exceptions::unsupportedFetchModeException(\PDO::FETCH_CLASS);
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::methodNotImplementedException
+     * @covers Circle\DoctrineRestDriver\Exceptions\MethodNotImplementedException::__construct
+     * @expectedException \Circle\DoctrineRestDriver\Exceptions\MethodNotImplementedException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function methodNotImplementedExceptionTest() {
+        Exceptions::methodNotImplementedException('class', 'method');
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::requestFailedException
+     * @covers Circle\DoctrineRestDriver\Exceptions\RequestFailedException::__construct
+     * @expectedException \Circle\DoctrineRestDriver\Exceptions\RequestFailedException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function requestFailedExceptionTest() {
+        Exceptions::requestFailedException(new Request('method', 'url', []), 1, 'errorMessage');
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::invalidAuthStrategyException
+     * @covers Circle\DoctrineRestDriver\Exceptions\InvalidAuthStrategyException::__construct
+     * @expectedException \Circle\DoctrineRestDriver\Exceptions\InvalidAuthStrategyException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function invalidAuthStrategyExceptionTest() {
+        Exceptions::invalidAuthStrategyException('class');
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::invalidSqlOperationException
+     * @covers Circle\DoctrineRestDriver\Exceptions\InvalidSqlOperationException::__construct
+     * @expectedException \Circle\DoctrineRestDriver\Exceptions\InvalidSqlOperationException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function invalidSqlOperationExceptionTest() {
+        Exceptions::invalidSqlOperationException('operation');
     }
 }

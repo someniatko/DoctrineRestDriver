@@ -32,10 +32,9 @@ class ResultMapping {
      * @param  array $tokens
      * @param  array $content
      * @return array
-     * @throws \Exception
      */
     public function select(array $tokens, array $content) {
-        if (empty($content)) throw new \Exception('ResponseToArray.select: unhandled');
+        if (empty($content)) return $content;
         return empty($content[0]) ? $this->selectSingle($tokens, $content) : $this->selectAll($tokens, $content);
     }
 

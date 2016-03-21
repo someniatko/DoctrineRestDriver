@@ -57,7 +57,6 @@ class ResultSetFactory {
      * @param  Response $response
      * @param  string   $query
      * @return array
-     * @throws \Exception
      */
     public function createOne(Response $response, $query) {
         $tokens   = $this->parser->parse($query);

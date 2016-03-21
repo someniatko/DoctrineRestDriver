@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Exceptions;
 
+use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
 
@@ -61,5 +62,48 @@ class Exceptions {
      */
     public static function unsupportedFetchModeException($fetchMode) {
         throw new UnsupportedFetchModeException($fetchMode);
+    }
+
+    /**
+     * throws an invalid sql operation exception
+     *
+     * @param  string $operation
+     * @throws InvalidSqlOperationException
+     */
+    public static function invalidSqlOperationException($operation) {
+        throw new InvalidSqlOperationException($operation);
+    }
+
+    /**
+     * throws an invalid auth strategy exception
+     *
+     * @param  string $class
+     * @throws InvalidAuthStrategyException
+     */
+    public static function invalidAuthStrategyException($class) {
+        throw new InvalidAuthStrategyException($class);
+    }
+
+    /**
+     * throws a method not implemented exception
+     *
+     * @param  string $class
+     * @param  string $method
+     * @throws MethodNotImplementedException
+     */
+    public static function methodNotImplementedException($class, $method) {
+        throw new MethodNotImplementedException($class, $method);
+    }
+
+    /**
+     * throws a request failed exception
+     *
+     * @param  Request $request
+     * @param  int     $errorCode
+     * @param  string  $errorMessage
+     * @throws RequestFailedException
+     */
+    public static function requestFailedException(Request $request, $errorCode, $errorMessage) {
+        throw new RequestFailedException($request, $errorCode, $errorMessage);
     }
 }
