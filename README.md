@@ -21,25 +21,46 @@ Circle had made, and they were very pleased. Evening passed and morning came - t
 
 # Installation
 
+First of all download the driver by using composer:
+
 ```php
 composer require circle/doctrine-rest-driver
 ```
 
 Change the following doctrine dbal configuration entries:
+
 ```yml
 doctrine:
   dbal:
-    driver_class:   Circle\DoctrineRestDriver\Driver
+    driver_class:   "Circle\\DoctrineRestDriver\\Driver"
     host:     "%default_api_url%"
     port:     "%default_api_port%"
     user:     "%default_api_username%"
     password: "%default_api_password%"
     options:
-      security_strategy:  "basic_http" | "none"
+      authentication_class:  "Circle\\DoctrineRestDriver\\Security\\HttpBasicAuthentication"
 ```
 
+Additionally you can add CURL-specific options:
+
+```yml
+doctrine:
+  dbal:
+    driver_class:   "Circle\\DoctrineRestDriver\\Driver"
+    host:     "%default_api_url%"
+    port:     "%default_api_port%"
+    user:     "%default_api_username%"
+    password: "%default_api_password%"
+    options:
+      authentication_class:  "Circle\\DoctrineRestDriver\\Security\\HttpBasicAuthentication"
+      CURLOPT_CURLOPT_FOLLOWLOCATION: true
+      CURLOPT_HEADER: true
+```
+
+The full list of all options you can find here: http://php.net/manual/en/function.curl-setopt.php
+
 # Usage
-Once the driver is configured you can use doctrine as described in its documentation. Let's first build an entity.
+Once the driver is configured you can use Doctrine as described in its documentation. Let's first build an entity.
 
 ```php
 namespace Some;
@@ -84,6 +105,8 @@ class Namespace {
 }
 ```
 
+Afterwards you are able to use the created entities as if you were using a local database:
+
 ```php
 /* @var $em Doctrine\ORM\EntityManager */
 
@@ -114,5 +137,11 @@ $em->flush();
 #Examples
 
 #Testing
+
+To test the bundle just type:
+
+```
+make test
+```
 
 #Contributing
