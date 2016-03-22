@@ -3,6 +3,7 @@ Working with SQL queries feels like creating unreadable, unmaintainable strings 
 Working with REST clients feels like mapping around data that should already be in format while working with DoctrineRestDriver does not.
 
 It's time to get rid off complicated business logic and start focussing on smart and readable applications.
+
 It's time to get rid off bullshit.
 
 # Installation
