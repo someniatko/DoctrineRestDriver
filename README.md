@@ -38,7 +38,7 @@ doctrine:
     user:     "%default_api_username%"
     password: "%default_api_password%"
     options:
-      authentication_class:  "Circle\\DoctrineRestDriver\\Security\\HttpBasicAuthentication"
+      authentication_class:  "HttpBasicAuthentication" | "NoAuthentication" | "YourOwnNamespaceName"
 ```
 
 Additionally you can add CURL-specific options:
@@ -52,7 +52,7 @@ doctrine:
     user:     "%default_api_username%"
     password: "%default_api_password%"
     options:
-      authentication_class:  "Circle\\DoctrineRestDriver\\Security\\HttpBasicAuthentication"
+      authentication_class:  "HttpBasicAuthentication"
       CURLOPT_CURLOPT_FOLLOWLOCATION: true
       CURLOPT_HEADER: true
 ```
@@ -60,10 +60,10 @@ doctrine:
 The full list of all options you can find here: http://php.net/manual/en/function.curl-setopt.php
 
 # Usage
-Once the driver is configured you can use Doctrine as described in its documentation. Let's first build an entity.
+Entity:
 
 ```php
-namespace Some;
+namespace MyNamespace;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -71,12 +71,12 @@ use Doctrine\ORM\Mapping as ORM;
  * This annotation marks the class as managed entity:
  * @ORM\Entity
  *
- * This annotation is used to define the target resource of the API. You can whether 
- * use the resource name (then the target url will consist of the configured host 
- * parameter and the resource name) or the target url itself
- * @ORM\Table("namespaces|http://www.yourSite.com/api/namespaces")
+ * This annotation is used to define the target resource of the API. You can either use only a resource name in which 
+ * case the target url will consist of the host, configured in your options and the given name or you can use the whole 
+ * url of the target:
+ * @ORM\Table("products|http://www.yourSite.com/api/products")
  */
-class Namespace {
+class Product {
 
     /**
      * @ORM\Column(type="integer")
@@ -88,19 +88,19 @@ class Namespace {
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $someAttribute;
+    private $name;
     
     public function getId() {
         return $this->id;
     }
     
-    public function setSomeAttribute($someAttribute) {
-        $this->someAttribute = $someAttribute;
+    public function setName($name) {
+        $this->name = $name;
         return $this;
     }
     
-    public function getSomeAttribute() {
-        return $this->someAttribute;
+    public function getName() {
+        return $this->name;
     }
 }
 ```
@@ -108,28 +108,55 @@ class Namespace {
 Afterwards you are able to use the created entity as if you were using a relational database:
 
 ```php
-/* @var $em Doctrine\ORM\EntityManager */
+<?php
+
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+
+require_once "vendor/autoload.php";
+
+// Create a simple "default" Doctrine ORM configuration for Annotations
+$isDevMode = true;
+$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"), $isDevMode);
+// or if you prefer yaml or XML
+//$config = Setup::createXMLMetadataConfiguration(array(__DIR__."/config/xml"), $isDevMode);
+//$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);
+
+// database configuration parameters
+$conn = array(
+    'user'          => 'Circle',
+    'password'      => 'mySecretPassword',
+    'host'          => 'http://www.myApi.com',
+    'port'          => 8080,
+    'driverClass'   => 'Circle\DoctrineRestDriver\Driver',
+    'driverOptions' => [
+        'authentication_class' => 'HttpBasicAuthentication'
+    ],
+);
+
+// obtaining the entity manager
+$em = EntityManager::create($conn, $config);
 
 // These ones are sending GET requests
-$entity   = $em->find('Some\Namespace', $id);
-$entity   = $em->getRepository('Some\Namespace')->findOneBy(['someAttribute' => 'someValue']);
-$entity   = $em->createQuery('SELECT s FROM Some\Namespace WHERE s.id=1')->getSingleResult();
-$entities = $em->getRepository('Some\Namespace')->findAll();
-$entities = $em->getRepository('Some\Namespace')->findBy(['someAttribute' => 'someValue']);
-$entity   = $em->createQuery('SELECT s FROM Some\Namespace')->getResult();
+$entity   = $em->find('MyNamespace\Product', $id);
+$entity   = $em->getRepository('MyNamespace\Product')->findOneBy(['someAttribute' => 'someValue']);
+$entity   = $em->createQuery('SELECT s FROM MyNamespace\Product WHERE s.id=1')->getSingleResult();
+$entities = $em->getRepository('MyNamespace\Product')->findAll();
+$entities = $em->getRepository('MyNamespace\Product')->findBy(['someAttribute' => 'someValue']);
+$entity   = $em->createQuery('SELECT s FROM MyNamespace\Product')->getResult();
 
 // This one sends a POST request
-$entity = new Some\Namespace();
+$entity = new MyNamespace\Product();
 $em->persist($entity);
 $em->flush();
 
 // This one first sends a GET request and afterwards a PUT request
-$entity = $em->find('Some\Namespace', $id);
-$entity->setSomeAttribute('someNewValue');
+$entity = $em->find('MyNamespace\Product', $id);
+$entity->setName('name');
 $em->flush();
 
 // This one first sends a GET request and afterwards a DELETE request
-$entity = $em->find('Some\Namespace', $id);
+$entity = $em->find('MyNamespace\Product', $id);
 $em->remove($entity);
 $em->flush();
 ```
