@@ -162,7 +162,15 @@ $em->flush();
 ```
 
 #Examples
-Actually we believe you will get your job done without any more examples. But maybe we are wrong. So if you need any help feel free to contact us by writing an email to hi@circle.ai. You can also create a question on Stackoverflow and send the link by mail. Anyways, you can always leave a mail just to say hi ;-)
+
+## Using a REST API as persistent storage
+text here
+
+## Using multiple REST APIs
+text here
+
+## Using a REST API and a relational database at the same time
+text here
 
 #Testing
 
