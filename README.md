@@ -82,10 +82,23 @@ doctrine:
 A full list of all possible options can be found here: http://php.net/manual/en/function.curl-setopt.php
 
 # Usage
+
+The following code samples show how to use the driver in a Symfony environment which might be similar to your framework of choice. This is the configuration we are using:
+
+```yml
+doctrine:
+  dbal:
+    driver_class: "Circle\\DoctrineRestDriver\\Driver"
+    host:         "http://www.circle.ai/api/v1"
+    port:         "80"
+    user:         "Circle"
+    password:     "CircleIsGreat"
+```
+
 First of all we need to create one or more entities:
 
 ```php
-namespace MyNamespace;
+namespace CircleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -127,60 +140,121 @@ class Product {
 }
 ```
 
-Afterwards you are able to use the created entity as if you were using a relational database:
+Afterwards you are able to use the created entity as if you were using a relational database. 
 
 ```php
 <?php
 
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
+namespace CircleBundle\Controller;
 
-require_once "vendor/autoload.php";
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\HttpFoundation\Response;
 
-// Create a simple "default" Doctrine ORM configuration for Annotations
-$isDevMode = true;
-$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"), $isDevMode);
-// or if you prefer yaml or XML
-//$config = Setup::createXMLMetadataConfiguration(array(__DIR__."/config/xml"), $isDevMode);
-//$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);
+class UserController extends Controller {
 
-// database configuration parameters
-$conn = [
-    'user'          => 'Circle',
-    'password'      => 'mySecretPassword',
-    'host'          => 'http://www.myApi.com',
-    'port'          => 8080,
-    'driverClass'   => 'Circle\DoctrineRestDriver\Driver',
-    'driverOptions' => [
-        'authentication_class' => 'HttpBasicAuthentication'
-    ],
-];
-
-// obtaining the entity manager
-$em = EntityManager::create($conn, $config);
-
-// These ones are sending GET requests
-$entity   = $em->find('MyNamespace\Product', $id);
-$entity   = $em->getRepository('MyNamespace\Product')->findOneBy(['someAttribute' => 'someValue']);
-$entity   = $em->createQuery('SELECT s FROM MyNamespace\Product WHERE s.id=1')->getSingleResult();
-$entities = $em->getRepository('MyNamespace\Product')->findAll();
-$entities = $em->getRepository('MyNamespace\Product')->findBy(['someAttribute' => 'someValue']);
-$entity   = $em->createQuery('SELECT s FROM MyNamespace\Product')->getResult();
-
-// This one sends a POST request
-$entity = new MyNamespace\Product();
-$em->persist($entity);
-$em->flush();
-
-// This one first sends a GET request and afterwards a PUT request
-$entity = $em->find('MyNamespace\Product', $id);
-$entity->setName('name');
-$em->flush();
-
-// This one first sends a GET request and afterwards a DELETE request
-$entity = $em->find('MyNamespace\Product', $id);
-$em->remove($entity);
-$em->flush();
+    /**
+     * Sends the following request to the API:
+     *
+     * If you used @Table("products"):
+     * POST http://www.circle.ai/api/v1/products HTTP/1.1
+     * {"name": null}
+     *
+     * Or if you used @Table("http://www.yourSite.com/api/products"):
+     * POST http://www.yourSite.com/api/products HTTP/1.1
+     * {"name": null}
+     *
+     * Response body is "1"
+     */
+    public function createAction() {
+        $em     = $this->getDoctrine()->getEntityManager();
+        $entity = new CircleBundle\Product();
+        $em->persist($entity);
+        $em->flush();
+        
+        return new Response($entity->getId());
+    }
+    
+    /**
+     * $id may be 1 in our case
+     * Sends the following request to the API:
+     * 
+     * If you used @Table("products"):
+     * GET http://www.circle.ai/api/v1/products/1 HTTP/1.1
+     *
+     * Or if you used @Table("http://www.yourSite.com/api/products"):
+     * GET http://www.yourSite.com/api/products/1 HTTP/1.1
+     *
+     * Response body is null if the createAction was executed before
+     */
+    public function readAction($id) {
+        $em     = $this->getDoctrine()->getEntityManager();
+        $entity = $em->find('CircleBundle\Product', $id);
+        
+        return new Response($entity->getName());
+    }
+    
+    /**
+     * Sends the following request to the API:
+     * 
+     * If you used @Table("products"):
+     * GET http://www.circle.ai/api/v1/products HTTP/1.1
+     *
+     * Or if you used @Table("http://www.yourSite.com/api/products"):
+     * GET http://www.yourSite.com/api/products HTTP/1.1
+     *
+     * Response body is null if the createAction was executed before
+     */
+    public function readAllAction() {
+        $em       = $this->getDoctrine()->getEntityManager();
+        $entities = $em->getRepository('CircleBundle\Product')->findAll();
+        
+        return new Response($entities->first()->getName());
+    }
+    
+    /**
+     * $id may be 1 in our case
+     * After sending a GET request (readAction) it sends the following 
+     * request to the API:
+     *
+     * If you used @Table("products"):
+     * PUT http://www.circle.ai/api/v1/products/1 HTTP/1.1
+     * {"name": "myName"}
+     *
+     * Or if you used @Table("http://www.yourSite.com/api/products"):
+     * PUT http://www.yourSite.com/api/products/1 HTTP/1.1
+     * {"name": "myName"}
+     *
+     * Response body is "myName"
+     */
+    public function updateAction($id) {
+        $em     = $this->getDoctrine()->getEntityManager();
+        $entity = $em->find('CircleBundle\Product', $id);
+        $entity->setName('myName');
+        $em->flush();
+        
+        return new Response($entity->getName());
+    }
+    
+    /**
+     * $id may be 1 in our case
+     * After sending a GET request (readAction) it sends the following 
+     * request to the API:
+     *
+     * If you used @Table("products"):
+     * DELETE http://www.circle.ai/api/v1/products/1 HTTP/1.1
+     *
+     * Or if you used @Table("http://www.yourSite.com/api/products"):
+     * DELETE http://www.yourSite.com/api/products/1 HTTP/1.1
+     */
+    public function deleteAction($id) {
+        $em     = $this->getDoctrine()->getEntityManager();
+        $entity = $em->find('CircleBundle\Product', $id);
+        $em->remove($entity);
+        $em->flush();
+        
+        return new Response();
+    }
+}
 ```
 
 #Examples
