@@ -1,16 +1,43 @@
 # Motivation
-Working with SQL queries feels like creating unreadable, unmaintainable strings while working with Doctrine ORM does not.
-Working with REST clients feels like mapping around data that should already be in format while working with DoctrineRestDriver does not.
 
-It's time to get rid off complicated business logic and start focussing on smart and readable applications.
+One year ago we built a REST client, because using the PHP internal curl library felt like we were in the stone age and someone just made fire - without any knowledge how to repeat it. But after playing a bit with this client we felt like we were in stone age, too, but have a look at what we created. Big progress so far :clap:
 
-It's time to get rid off bullshit.
+![alt tag](http://img.memecdn.com/stone-penises_o_2506359.webp)
+
+So what is the problem with all these REST clients out there?
+
+The short version: All of them are like our stone buildings, but have different sizes :joy:
+
+We believe that translating SQL to REST is possible, so we decided to create a REST driver for Doctrine that uses the full power of ORM, but with the scalability of RESTful applications. You don't need to write HTTP requests by yourself - Doctrine is handling the requests in the background, maps the responses automatically and returns well-formed entities. 
+
+Now REST requests are handled like SQL: You only have to manually create them if you have special use cases - which we believe is great.
+
 
 # Installation
 
-## Prerequirements
+## Requirements
 - You need composer to download the library
-- Your REST API has to strictly follow REST principles
+- Your REST API has to strictly follow REST principles and return JSON
+    - Use POST to create new data
+        - Urls have the following format: http://www.host.de/path/to/api/entityName
+        - Use the request body to receive data
+        - Has to respond with HTTP code 200 if successful
+        - Fill the response body with the given payload plus an id
+    - Use PUT to change data
+        - Urls have the following format: http://www.host.de/path/to/api/entityName/\<id\>
+        - Use the request body to receive data
+        - Has to respond with HTTP code 200 if successful
+        - Fill the response body with the given payload
+    - Use DELETE to remove data
+        - Urls have the following format: http://www.host.de/path/to/api/entityName/\<id\>
+        - The request body must be empty
+        - Has to respond with HTTP code 204 if successful
+        - The response body must be empty
+    - Use GET to receive data
+        - Urls have the following format: http://www.host.de/path/to/api/entityName/\<id\> or http://www.host.de/path/to/api/entityName
+        - Use HTTP query strings as filters
+        - Has to respond with HTTP code 200 if successful
+        - Fill the response body with the read data
 
 ## Setup
 
