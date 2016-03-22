@@ -6,7 +6,7 @@ One year ago we built a REST client, because using the PHP internal curl library
 
 So what is the problem with all these REST clients out there?
 
-The short version: All of them are like our stone buildings, but have different sizes :joy:
+The short version: All of them are like our stone buildings, but have different sizes.
 
 We believe that translating SQL to REST is possible, so we decided to create a REST driver for Doctrine that uses the full power of ORM, but with the scalability of RESTful applications. You don't need to write HTTP requests by yourself - Doctrine is handling the requests in the background, maps the responses automatically and returns well-formed entities. 
 
@@ -14,6 +14,8 @@ Now REST requests are handled like SQL: You only have to manually create them if
 
 
 # Installation
+
+You should first have a look at the requirements before continuing with the setup section.
 
 ## Requirements
 - You need composer to download the library
@@ -41,7 +43,7 @@ Now REST requests are handled like SQL: You only have to manually create them if
 
 ## Setup
 
-First of all download the driver by using composer:
+Add the driver to your project by using composer:
 
 ```php
 composer require circle/doctrine-rest-driver
@@ -77,10 +79,10 @@ doctrine:
       CURLOPT_HEADER: true
 ```
 
-The full list of all options you can find here: http://php.net/manual/en/function.curl-setopt.php
+A full list of all possible options can be found here: http://php.net/manual/en/function.curl-setopt.php
 
 # Usage
-Entity:
+First of all we need to create one or more entities:
 
 ```php
 namespace MyNamespace;
