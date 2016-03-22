@@ -386,11 +386,8 @@ The REST API offers the following additional routes:
 
 | Route | Method | Description | Payload | Response |
 | ------------- |:-------------:| -----:|-----:|-----:|
-| /users | GET | returns all users | NULL | [ RegisteredUser ] |
-| /users/\<id\> | GET | returns one user | NULL | RegisteredUser |
 | /users | POST | persists a new user | UnregisteredUser | RegisteredUser |
-| /users/\<id\> | DELETE | deletes a user | NULL | NULL |
-| /users/\<id\> | PUT | edits a user | RegisteredUser | RegisteredUser |
+| /addresses/\<id\> | GET | returns one address | NULL | RegisteredAddress |
 
 ```
 typedef UnregisteredUser {
@@ -507,8 +504,7 @@ Let $name be "username", $password = "secretPassword" and $addressId = 1
 The following requests are sent by using the createAction of the UserController:
 ```
 GET  http://www.circle.ai/api/v1/addresses/1 HTTP/1.1
-POST http://www.circle.ai/api/v1/users HTTP/1.1
-{"name": "username", "password":"secretPassword", "address":1}
+POST http://www.circle.ai/api/v1/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
 ```
 
 Great, isn't it?
