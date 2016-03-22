@@ -503,6 +503,7 @@ class UserController extends Controller {
 ```
 
 Let $name be "username", $password = "secretPassword" and $addressId = 1
+
 The following requests are sent by using the createAction of the UserController:
 ```
 GET  http://www.circle.ai/api/v1/addresses/1 HTTP/1.1
@@ -545,7 +546,7 @@ doctrine:
 ```
 
 Now it's getting crazy. We will read data from one API and send it to another.
-Imagine the twitter API has the following route:
+Imagine the twitter API has the following routes:
 
 | Route | Method | Description | Payload | Response |
 | ------------- |:-------------:| -----:|-----:|-----:|
