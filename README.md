@@ -1,23 +1,9 @@
 # Motivation
-In the beginning, when human kind created the REST API, the REST API was useless and isolated. Then human kind commanded,
-"Let there be curl libraries" - and curl libraries appeared. Human kind was pleased with what they saw. Then they seperated the
-curl libraries from the rest of the source code and they named the curl libraries "REST clients" and the rest of the source code
-"business logic". Evening passed and morning came - that was the first day.
+Working with SQL queries feels like creating unreadable, unmaintainable strings while working with Doctrine ORM does not.
+Working with REST clients feels like mapping around data that should already be in format while working with DoctrineRestDriver does not.
 
-Then human kind commanded: "Let there be object relational mapping frameworks so object oriented programming and relational
-databases come together, so that classes will appear" - and it was done. They named the classes "entities" and the relational mapping
-framework "Doctrine". And human kind was pleased with what it saw. Then they commanded: "Let Doctrine produce all kinds of entities
-those that have relations and those that have none" - and it was done. So Doctrine produced all kinds of entities and human kind
-was pleased with what it saw. Evening passed and morning came - that was the second day.
-
-Then human kind said: "Let's use REST clients and Doctrine side by side without any more improvement." - and it was done. There was
-nothing new to give it a name and human kind was disappointed. They looked at everything they had made and it was a big piece of shit.
-Evening passed and morning came - that was the third day.
-
-Then Circle said: "And now we will make a Doctrine REST driver. It will be like us and resemble us. It will have the power of Doctrine,
-but with the scalability of a RESTful application". So Circle created the Doctrine REST driver, blessed it, and said: "Have many children,
-so that your descendants will live all over the earth and bring it under their control." - and it was done. Human kind looked at everything
-Circle had made, and they were very pleased. Evening passed and morning came - that was the last day of the REST client's creation.
+It's time to get rid off complicated business logic and start focussing on smart and readable applications.
+It's time to get rid off bullshit.
 
 # Installation
 
