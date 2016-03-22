@@ -54,13 +54,13 @@ Change the following doctrine dbal configuration entries:
 ```yml
 doctrine:
   dbal:
-    driver_class:   "Circle\\DoctrineRestDriver\\Driver"
-    host:     "%default_api_url%"
-    port:     "%default_api_port%"
-    user:     "%default_api_username%"
-    password: "%default_api_password%"
+    driver_class: "Circle\\DoctrineRestDriver\\Driver"
+    host:         "%default_api_url%"
+    port:         "%default_api_port%"
+    user:         "%default_api_username%"
+    password:     "%default_api_password%"
     options:
-      authentication_class:  "HttpBasicAuthentication" | "NoAuthentication" | "YourOwnNamespaceName"
+      authentication_class:  "HttpAuthentication" | "YourOwnNamespaceName" | if not specified no authentication will be used
 ```
 
 Additionally you can add CURL-specific options:
@@ -68,13 +68,13 @@ Additionally you can add CURL-specific options:
 ```yml
 doctrine:
   dbal:
-    driver_class:   "Circle\\DoctrineRestDriver\\Driver"
-    host:     "%default_api_url%"
-    port:     "%default_api_port%"
-    user:     "%default_api_username%"
-    password: "%default_api_password%"
+    driver_class: "Circle\\DoctrineRestDriver\\Driver"
+    host:         "%default_api_url%"
+    port:         "%default_api_port%"
+    user:         "%default_api_username%"
+    password:     "%default_api_password%"
     options:
-      authentication_class:  "HttpBasicAuthentication"
+      authentication_class:  "HttpAuthentication"
       CURLOPT_CURLOPT_FOLLOWLOCATION: true
       CURLOPT_HEADER: true
 ```
@@ -259,10 +259,12 @@ class UserController extends Controller {
 
 #Examples
 
-## Using a REST API as persistent storage
+Need some more examples? Here they are.
+
+## Using a REST API as doctrine database backend
 Imagine you want to build an application that just acts like a REST API's client.
 - The REST API has the URL http://www.circle.ai/api/v1
-- It is secured by Basic HTTP Authentication
+- It is secured by HTTP Authentication
 - The username is Circle, the password is mySecretPassword
 - Let's say the REST API itself persists users
 - One user is actually stored in the database
