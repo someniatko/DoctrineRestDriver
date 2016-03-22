@@ -83,7 +83,7 @@ A full list of all possible options can be found here: http://php.net/manual/en/
 
 # Usage
 
-The following code samples show how to use the driver in a Symfony environment which might be similar to your framework of choice. This is the configuration we are using:
+The following code samples show how to use the driver in a Symfony environment which might be similar to your framework of choice. This configuration will be used:
 
 ```yml
 doctrine:
@@ -95,7 +95,7 @@ doctrine:
     password:     "CircleIsGreat"
 ```
 
-First of all we need to create one or more entities:
+First of all you need to create one or more entities:
 
 ```php
 namespace CircleBundle\Entity;
@@ -261,29 +261,128 @@ class UserController extends Controller {
 
 Need some more examples? Here they are.
 
-## Using a REST API as doctrine database backend
-Imagine you want to build an application that just acts like a REST API's client.
-- The REST API has the URL http://www.circle.ai/api/v1
-- It is secured by HTTP Authentication
-- The username is Circle, the password is mySecretPassword
-- Let's say the REST API itself persists users
-- One user is actually stored in the database
-    - {id: 1, name: root, password: rootPassword }
+## Using a REST API to verify addresses
+Imagine you have a REST API at http://www.circle.ai/api/v1:
+
+| Route | Method | Description | Payload | Response | Success HTTP Code | Error HTTP Code |
+| ------------- |:-------------:| -----:|-----:|-----:|-----:|-----:|
+| /addresses | POST | verifies and formats addresses | UnregisteredAddress | RegisteredAddress | 200 | 400 |
+
 
 ```
-typedef UnregisteredUser {
-    name: String,
-    Password: String
+typedef UnregisteredAddress {
+    street: String,
+    city: String
 }
 
-typedef RegisteredUser {
+typedef RegisteredAddress {
     id: Int,
-    name: String,
-    Password: String
+    street: String,
+    city: String
 }
 ```
 
-The REST API offers the following routes:
+Let's first configure Doctrine:
+
+```yml
+doctrine:
+  dbal:
+    driver_class: "Circle\\DoctrineRestDriver\\Driver"
+    host:         "http://www.circle.ai/api/v1"
+    port:         "80"
+    user:         ""
+    password:     ""
+```
+
+Afterwards let's build the address entity:
+
+```php
+<?php
+namespace CircleBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity()
+ * @ORM\Table("addresses")
+ */
+class Address {
+
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $street;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $city;
+    
+    public function setStreet($street) {
+        $this->street = $stree;
+        return $this;
+    }
+    
+    public function getStreet() {
+        return $this->street;
+    }
+    
+    public function setCity($city) {
+        $this->city = $city;
+        return $this;
+    }
+    
+    public function getCity() {
+        return $this->city;
+    }
+    
+    public function getId() {
+        return $this->id;
+    }
+}
+```
+
+Then the controller and its action:
+
+```php
+<?php
+
+namespace CircleBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\HttpFoundation\Response;
+
+class AddressController extends Controller {
+
+    public function createAction($street, $city) {
+        $em      = $this->getDoctrine()->getEntityManager();
+        $address = new CircleBundle\Address();
+        $address->setStreet($street)->setCity($city);
+        $em->persist($address);
+        try {
+            $em->flush();
+            return new Response('successfully registered');
+        } catch(RequestFailedException) {
+            return new Response('invalid address');
+        }
+    }
+}
+```
+
+That's it. Each time the createAction is called it will send a POST request to the API.
+
+## Associating entities
+
+Let's improve the first example. Now we want to add users to the addresses.
+
+The REST API offers the following additional routes:
 
 | Route | Method | Description | Payload | Response |
 | ------------- |:-------------:| -----:|-----:|-----:|
@@ -293,9 +392,22 @@ The REST API offers the following routes:
 | /users/\<id\> | DELETE | deletes a user | NULL | NULL |
 | /users/\<id\> | PUT | edits a user | RegisteredUser | RegisteredUser |
 
-Let's connect to the REST API via DoctrineRestDriver.
+```
+typedef UnregisteredUser {
+    name: String,
+    password: String,
+    address: Index
+}
 
-Entity:
+typedef RegisteredUser {
+    id: Int,
+    name: String,
+    password: String,
+    address: Index
+}
+```
+
+We need to build an additional entity "User":
 
 ```
 namespace Circle\Entity;
@@ -319,6 +431,11 @@ class User {
      * @ORM\Column(type="string")
      */
     private $name;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="CircleBundle\Address")
+     */
+    private $address;
     
     /**
      * @ORM\Column(type="string")
@@ -346,66 +463,54 @@ class User {
     public function getId() {
         return $this->id;
     }
+    
+    public function setAddress(Address $address) {
+        $this->address = $address;
+        return $this;
+    }
+    
+    public function getAddress() {
+        return $this->address;
+    }
 }
 ```
 
-Create, Read, Update, Delete Script for users:
+The user has a relation to address. So let's have a look at what happens if we associate them:
 
-```
+
+```php
 <?php
 
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
+namespace CircleBundle\Controller;
 
-require_once "vendor/autoload.php";
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\HttpFoundation\Response;
 
-$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"), true);
+class UserController extends Controller {
 
-$conn = [
-    'user'          => 'Circle',
-    'password'      => 'mySecretPassword',
-    'host'          => 'http://www.circle.ai/api/v1',
-    'port'          => 80,
-    'driverClass'   => 'Circle\DoctrineRestDriver\Driver',
-    'driverOptions' => [
-        'authentication_class' => 'HttpBasicAuthentication'
-    ],
-];
-
-// obtaining the entity manager
-$em = EntityManager::create($conn, $config);
-
-// Sends a GET request to the url http://www.circle.ai/api/v1/users/1
-$user = $em->find('Circle\Entity\User', 1);
-
-// prints 'root'
-print_r($user->getName());
-
-$user->setName('circle');
-
-// Sends a PUT request to the url http://www.circle.ai/api/v1/users/1 with the payload "{"id": 1, "name": "circle", "password": "rootPassword"}"
-$em->flush();
-
-$newUser = new User();
-$user->setName('newUser');
-$user->setPassword('newPassword');
-$em->persist($user);
-
-// Sends a POST request to the url http://www.circle.ai/api/v1/users with the payload "{"name": "newUser", "password": "newPassword"}"
-$em->flush();
-
-// If the REST API responded correctly with "{"id": 2, "name": "newUser", "password": "newPassword"}" it prints: 2
-print_r($newUser->getId());
-
-$em->remove($user);
-
-// Sends a DELETE request to the url http://www.circle.ai/api/v1/users/1 with no payload
-$em->flush();
-
-$sameUser = $em->find('Circle\Entity\User', 1);
-// prints null, because the user has been deleted
-print_r($sameUser);
+    public function createAction($name, $password, $addressId) {
+        $em      = $this->getDoctrine()->getEntityManager();
+        $address = $em->find("CircleBundle\Entity\Address", $addressId);
+        $user    = new User();
+        $user->setName($name)->Password($password)->setAddress($address);
+        
+        $em->persist($user);
+        $em->flush();
+        
+        return new Response('successfully registered');
+    }
+}
 ```
+
+Let $name be "username", $password = "secretPassword" and $addressId = 1
+The following requests are sent by using the createAction of the UserController:
+```
+GET  http://www.circle.ai/api/v1/addresses/1 HTTP/1.1
+POST http://www.circle.ai/api/v1/users HTTP/1.1
+{"name": "username", "password":"secretPassword", "address":1}
+```
+
+Great, isn't it?
 
 ## Using multiple REST APIs
 Of course you can add multiple entity managers as explained in the Doctrine documentation:
@@ -413,54 +518,88 @@ Of course you can add multiple entity managers as explained in the Doctrine docu
 ```yml
 doctrine:
   dbal:
-    default_connection: twitter_api
+    default_connection: default
     connections:
+      default:
+        driver_class: "Circle\\DoctrineRestDriver\\Driver"
+        host:         "http://www.circle.ai/api/v1"
+        port:         "80"
+        user:         ""
+        password:     ""
       twitter_api:
         driver_class:   "Circle\\DoctrineRestDriver\\Driver"
-        host:     "%twitter_api_url%"
-        port:     "%twitter_api_port%"
-        user:     "%twitter_api_username%"
-        password: "%twitter_api_password%"
+        host:           "http://twitter.com/api"
+        port:           80
+        user:           "Circle"
+        password:       "CircleTwitter"
         options:
-          authentication_class:  "HttpBasicAuthentication"
-          CURLOPT_CURLOPT_FOLLOWLOCATION: true
-          CURLOPT_HEADER: true
+          authentication_class:  "HttpAuthentication"
       facebook_api:
         driver_class:   "Circle\\DoctrineRestDriver\\Driver"
-        host:     "%facebook_api_url%"
-        port:     "%facebook_api_port%"
-        user:     "%facebook_api_username%"
-        password: "%facebook_api_password%"
+        host:           "http://facebook.com/api"
+        port:           80
+        user:           "Circle"
+        password:       "CircleFacebook"
         options:
-          authentication_class:  "HttpBasicAuthentication"
-          CURLOPT_CURLOPT_FOLLOWLOCATION: true
-          CURLOPT_HEADER: true
+          authentication_class:  "HttpAuthentication"
 ```
 
-## Using a REST API and a relational database at the same time
-It is also possible to use a REST connection and a relational database connection like mysql.
+Now it's getting crazy. We will read data from one API and send it to another.
+Imagine the twitter API has the following route:
 
-```yml
-doctrine:
-  dbal:
-    default_connection: my_database
-    connections:
-      my_database:
-        driver:   "pdo_mysql"
-        host:     "%twitter_api_url%"
-        port:     "%twitter_api_port%"
-        user:     "%twitter_api_username%"
-        password: "%twitter_api_password%"
-      facebook_api:
-        driver_class:   "Circle\\DoctrineRestDriver\\Driver"
-        host:     "%facebook_api_url%"
-        port:     "%facebook_api_port%"
-        user:     "%facebook_api_username%"
-        password: "%facebook_api_password%"
-        options:
-          authentication_class:  "HttpBasicAuthentication"
-          CURLOPT_CURLOPT_FOLLOWLOCATION: true
-          CURLOPT_HEADER: true
+| Route | Method | Description | Payload | Response |
+| ------------- |:-------------:| -----:|-----:|-----:|
+| /users/\<id\> | GET | returns one user | NULL | RegisteredUser |
+| /addresses/\<id\> | GET | returns one address | NULL | RegisteredAddress |
+
+and the facebook API has the following route:
+
+| Route | Method | Description | Payload | Response | Success HTTP Code | Error HTTP Code |
+| ------------- |:-------------:| -----:|-----:|-----:|-----:|-----:|
+| /addresses | POST | verifies and formats addresses | UnregisteredAddress | RegisteredAddress | 200 | 400 |
+
+We want to use the twitter API to read the users and its addresses and the facebook API to verify the address.
+Then we want to persist the data by sending it to our default API.
+
+```php
+<?php
+
+namespace CircleBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\HttpFoundation\Response;
+
+class UserController extends Controller {
+
+    public function createAction($userTwitterId, $name, $password, $addressId) {
+        $emTwitter  = $this->getDoctrine()->getEntityManager('twitter_api');
+        $emFacebook = $this->getDoctrine()->getEntityManager('facebook_api');
+        $em         = $this->getDoctrine()->getEntityManager();
+        
+        $user       = $emTwitter->find("CircleBundle\Entity\User", $userTwitterId);
+        $address    = $user->getAddress();
+        
+        $address    = $emFacebook->persist($address);
+        $emFacebook->flush();
+        
+        $em->persist($user);
+        $em->persist($address);
+        $em->flush();
+        
+        return new Response('successfully registered');
+    }
+}
+```
+
+What's going on here? Have a look at the request log:
+
+```
+GET  http://twitter.com/api/v1/users/1 HTTP/1.1
+GET  http://twitter.com/api/v1/addresses/1 HTTP/1.1
+POST http://facebook.com/api/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
+POST http://facebook.com/api/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
+POST http://www.circle.ai/api/v1/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
+POST http://www.circle.ai/api/v1/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
 ```
 
 #Testing
