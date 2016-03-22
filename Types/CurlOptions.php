@@ -21,7 +21,9 @@ namespace Circle\DoctrineRestDriver\Types;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * CurlOptions type
+ * Converts a given options set into a valid array
+ * containing CURLOPT options that can be added to
+ * the PHP internal curl library by using curl_setopt_array
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -42,7 +44,8 @@ class CurlOptions extends \ArrayObject {
     ];
 
     /**
-     * returns valid curl options from the given options array
+     * Returns an array containing CURLOPT options that can be added to
+     * the PHP internal curl library by using curl_setopt_array
      *
      * @param  array $options
      * @return array

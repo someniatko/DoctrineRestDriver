@@ -29,7 +29,8 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class InsertPayload {
 
     /**
-     * creates the payload
+     * Converts the string with format (key) VALUES (value)
+     * into json
      *
      * @param  array $tokens
      * @return string

@@ -27,10 +27,9 @@ use Symfony\Component\Config\Loader\LoaderInterface;
  * @copyright 2015 TeeAge-Beatz UG
  */
 class AppKernel extends Kernel {
+
     /**
-     * registers bundles of the app
-     *
-     * @return array
+     * {@inheritdoc}
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
@@ -64,9 +63,7 @@ class AppKernel extends Kernel {
     }
 
     /**
-     * registers configuration files
-     *
-     * @param LoaderInterface $loader
+     * {@inheritdoc}
      */
     public function registerContainerConfiguration(LoaderInterface $loader) {
         $loader->load($this->getRootDir().'/config/config.yml');

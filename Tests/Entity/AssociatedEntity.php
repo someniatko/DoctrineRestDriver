@@ -34,11 +34,13 @@ class AssociatedEntity {
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var int
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @var string
      */
     protected $name;
 
@@ -48,14 +50,18 @@ class AssociatedEntity {
     protected $product;
 
     /**
-     * @return mixed
+     * returns the id
+     *
+     * @return int
      */
     public function getId() {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * sets the id
+     *
+     * @param  int        $id
      * @return TestEntity
      */
     public function setId($id) {
@@ -64,14 +70,18 @@ class AssociatedEntity {
     }
 
     /**
-     * @return mixed
+     * returns the name
+     *
+     * @return string
      */
     public function getName() {
         return $this->name;
     }
 
     /**
-     * @param  mixed $name
+     * sets the name
+     *
+     * @param  string     $name
      * @return TestEntity
      */
     public function setName($name) {

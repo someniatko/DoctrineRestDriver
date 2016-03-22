@@ -21,7 +21,8 @@ namespace Circle\DoctrineRestDriver\Security;
 use Circle\DoctrineRestDriver\Types\Request;
 
 /**
- * Basic Authentication
+ * This file can be used in the driver's config to use
+ * the target API with basic http authentication
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG

@@ -17,10 +17,12 @@
  */
 
 namespace Circle\DoctrineRestDriver\Exceptions;
+
 use Circle\DoctrineRestDriver\Types\Request;
 
 /**
  * Exception class for failed requests
+ * Thrown if a request's response does not return http status 200
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG

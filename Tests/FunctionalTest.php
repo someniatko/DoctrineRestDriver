@@ -204,7 +204,8 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Statement::<private>
      */
     public function dql() {
-        $entity = $this->em->createQuery('SELECT p FROM Circle\DoctrineRestDriver\Tests\Entity\TestEntity p WHERE p.id = 1')
+        $entity = $this->em
+            ->createQuery('SELECT p FROM Circle\DoctrineRestDriver\Tests\Entity\TestEntity p WHERE p.id = 1')
             ->getSingleResult();
 
         $this->assertSame(1,         $entity->getId());
@@ -245,7 +246,8 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Statement::<private>
      */
     public function dqlWithOrderBy() {
-        $entity = $this->em->createQuery('SELECT p FROM Circle\DoctrineRestDriver\Tests\Entity\TestEntity p ORDER BY p.name DESC')
+        $entity = $this->em
+            ->createQuery('SELECT p FROM Circle\DoctrineRestDriver\Tests\Entity\TestEntity p ORDER BY p.name DESC')
             ->getResult();
 
         $this->assertSame(2,           $entity[0]->getId());
@@ -266,7 +268,8 @@ class FunctionalTest extends WebTestCase {
      * @covers Circle\DoctrineRestDriver\Statement::<private>
      */
     public function dqlWithObjectParameter() {
-        $entity = $this->em->createQuery('SELECT p FROM Circle\DoctrineRestDriver\Tests\Entity\TestEntity p WHERE p.name = ?1')
+        $entity = $this->em
+            ->createQuery('SELECT p FROM Circle\DoctrineRestDriver\Tests\Entity\TestEntity p WHERE p.name = ?1')
             ->setParameter(1, new \DateTime())
             ->getResult();
 

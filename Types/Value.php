@@ -30,7 +30,7 @@ use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 class Value {
 
     /**
-     * creates the value
+     * Infers the type of a given string
      *
      * @param  string $value
      * @return string

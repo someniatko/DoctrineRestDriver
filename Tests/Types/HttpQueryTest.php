@@ -16,29 +16,33 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Types\HttpQuery;
+use PHPSQLParser\PHPSQLParser;
 
 /**
- * SqlOperation type
+ * Tests the http query type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\Query
  */
-class SqlOperation {
+class HttpQueryTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * Returns the sql operation (SELECT, UPDATE, DELETE, INSERT)
-     *
-     * @param  array  $tokens
-     * @return string
+     * @test
+     * @group  unit
+     * @covers ::create
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+    public function create() {
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('SELECT name FROM products WHERE id=1 AND value="testvalue" AND name="testname"');
+        $expected = 'value=testvalue&name=testname';
 
-        return strtolower(array_keys($tokens)[0]);
+        $this->assertSame($expected, HttpQuery::create($tokens));
     }
 }

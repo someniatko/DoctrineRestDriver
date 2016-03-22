@@ -16,33 +16,23 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Types;
+namespace Circle\DoctrineRestDriver\Security;
 
-use Circle\DoctrineRestDriver\Types\Query;
-use PHPSQLParser\PHPSQLParser;
+use Circle\DoctrineRestDriver\Types\Request;
 
 /**
- * Tests the query type
+ * This file can be used in the driver's config to use
+ * the target API without any authentication at all
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\Query
  */
-class QueryTest extends \PHPUnit_Framework_TestCase {
+class NoAuthentication implements AuthStrategy {
 
     /**
-     * @test
-     * @group  unit
-     * @covers ::create
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
+     * {@inheritdoc}
      */
-    public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('SELECT name FROM products WHERE id=1 AND value="testvalue" AND name="testname"');
-        $expected = 'value=testvalue&name=testname';
-
-        $this->assertSame($expected, Query::create($tokens));
+    public function transformRequest(Request $request, array $config) {
+        return $request;
     }
 }

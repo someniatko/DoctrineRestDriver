@@ -23,7 +23,7 @@ use Circle\DoctrineRestDriver\Types\Request;
 use PHPSQLParser\PHPSQLParser;
 
 /**
- * Mysql to Request transformer
+ * Transforms a given sql query to a corresponding request
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -63,7 +63,7 @@ class MysqlToRequest {
     }
 
     /**
-     * translates the given query into a request object
+     * Transforms the given query into a request object
      *
      * @param  string $query
      * @param  array  $params

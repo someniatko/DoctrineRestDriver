@@ -22,7 +22,7 @@ use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Payload type
+ * Payload type: Union type for UpdatePayload and InsertPayload
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -30,10 +30,11 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class Payload {
 
     /**
-     * creates the payload
+     * Returns an InsertPayload::create or UpdatePayload::create
+     * result or null depending on the given tokens array
      *
-     * @param  array  $tokens
-     * @return string
+     * @param  array       $tokens
+     * @return null|string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */

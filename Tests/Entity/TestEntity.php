@@ -36,21 +36,25 @@ class TestEntity {
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var int
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @var string
      */
     protected $name;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @var string
      */
     protected $value;
 
     /**
      * @ORM\OneToMany(targetEntity="Circle\DoctrineRestDriver\Tests\Entity\AssociatedEntity", mappedBy="product")
+     * @var ArrayCollection
      */
     protected $categories;
 
@@ -62,14 +66,14 @@ class TestEntity {
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getId() {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param  int        $id
      * @return TestEntity
      */
     public function setId($id) {
@@ -78,14 +82,14 @@ class TestEntity {
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName() {
         return $this->name;
     }
 
     /**
-     * @param  mixed $name
+     * @param  string     $name
      * @return TestEntity
      */
     public function setName($name) {
@@ -94,14 +98,14 @@ class TestEntity {
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getValue() {
         return $this->value;
     }
 
     /**
-     * @param  mixed $value
+     * @param  string     $value
      * @return TestEntity
      */
     public function setValue($value) {

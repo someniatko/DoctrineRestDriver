@@ -24,7 +24,7 @@ use PHPSQLParser\PHPSQLParser;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Result set factory
+ * Factory for result sets
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -50,9 +50,9 @@ class ResultSetFactory {
     }
 
     /**
-     * translates a given response and source query to
+     * translates a given response and sql query to
      * a key value store in the following format:
-     * attributeName => Value
+     * attributeName => value
      *
      * @param  Response $response
      * @param  string   $query

@@ -39,8 +39,8 @@ class PayloadTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function createInsert() {
-        $parser = new PHPSQLParser();
-        $tokens = $parser->parse('INSERT INTO products (name, value) VALUES (testname, testvalue)');
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES (testname, testvalue)');
         $expected = json_encode([
             'name'  => 'testname',
             'value' => 'testvalue',
@@ -57,8 +57,8 @@ class PayloadTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function createUpdate() {
-        $parser = new PHPSQLParser();
-        $tokens = $parser->parse('UPDATE products set name="testname", value="testvalue" WHERE id=1');
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('UPDATE products set name="testname", value="testvalue" WHERE id=1');
         $expected = json_encode([
             'name'  => 'testname',
             'value' => 'testvalue',

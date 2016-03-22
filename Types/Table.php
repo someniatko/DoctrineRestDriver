@@ -30,7 +30,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class Table {
 
     /**
-     * creates the table
+     * Returns the table name
      *
      * @param  array  $tokens
      * @return string
@@ -47,7 +47,7 @@ class Table {
     }
 
     /**
-     * returns the table's alias
+     * Returns the table's alias
      *
      * @param  array  $tokens
      * @return string

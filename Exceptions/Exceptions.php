@@ -40,7 +40,7 @@ class Exceptions {
      * @param  mixed  $value
      * @throws InvalidTypeException
      */
-    public static function invalidTypeException($expectedType, $key, $value) {
+    public static function InvalidTypeException($expectedType, $key, $value) {
         throw new InvalidTypeException($expectedType, $key, $value);
     }
 
@@ -50,7 +50,7 @@ class Exceptions {
      * @param  string $varName
      * @throws NotNilException
      */
-    public static function notNilException($varName) {
+    public static function NotNilException($varName) {
         throw new NotNilException($varName);
     }
 
@@ -60,7 +60,7 @@ class Exceptions {
      * @param  int $fetchMode
      * @throws UnsupportedFetchModeException
      */
-    public static function unsupportedFetchModeException($fetchMode) {
+    public static function UnsupportedFetchModeException($fetchMode) {
         throw new UnsupportedFetchModeException($fetchMode);
     }
 
@@ -70,7 +70,7 @@ class Exceptions {
      * @param  string $operation
      * @throws InvalidSqlOperationException
      */
-    public static function invalidSqlOperationException($operation) {
+    public static function InvalidSqlOperationException($operation) {
         throw new InvalidSqlOperationException($operation);
     }
 
@@ -80,7 +80,7 @@ class Exceptions {
      * @param  string $class
      * @throws InvalidAuthStrategyException
      */
-    public static function invalidAuthStrategyException($class) {
+    public static function InvalidAuthStrategyException($class) {
         throw new InvalidAuthStrategyException($class);
     }
 
@@ -91,7 +91,7 @@ class Exceptions {
      * @param  string $method
      * @throws MethodNotImplementedException
      */
-    public static function methodNotImplementedException($class, $method) {
+    public static function MethodNotImplementedException($class, $method) {
         throw new MethodNotImplementedException($class, $method);
     }
 
@@ -103,7 +103,7 @@ class Exceptions {
      * @param  string  $errorMessage
      * @throws RequestFailedException
      */
-    public static function requestFailedException(Request $request, $errorCode, $errorMessage) {
+    public static function RequestFailedException(Request $request, $errorCode, $errorMessage) {
         throw new RequestFailedException($request, $errorCode, $errorMessage);
     }
 }

@@ -64,10 +64,10 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
      * @covers ::createOne
      */
     public function createOne() {
-        $query             = 'SELECT name FROM products WHERE id=1';
-        $parser            = new PHPSQLParser();
-        $factory           = new RequestFactory();
-        $expected          = new Request('get', 'http://circle.ai/products/1', $this->requestOptions);
+        $query    = 'SELECT name FROM products WHERE id=1';
+        $parser   = new PHPSQLParser();
+        $factory  = new RequestFactory();
+        $expected = new Request('get', 'http://circle.ai/products/1', $this->requestOptions);
 
         $this->assertEquals($expected, $factory->createOne($parser->parse($query), 'http://circle.ai', $this->factoryOptions));
     }

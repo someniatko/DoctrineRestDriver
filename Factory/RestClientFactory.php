@@ -32,7 +32,7 @@ use Circle\RestClientBundle\Services\RestClient;
 class RestClientFactory {
 
     /**
-     * creates a new RestClient with the given options
+     * Creates a new RestClient with the given options
      *
      * @param  array      $curlOptions
      * @return RestClient

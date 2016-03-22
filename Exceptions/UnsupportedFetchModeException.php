@@ -20,6 +20,7 @@ namespace Circle\DoctrineRestDriver\Exceptions;
 
 /**
  * Exception class for unsupported fetch modes
+ * Thrown if a fetch mode in Statement is not supported yet.
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG

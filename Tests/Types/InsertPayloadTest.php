@@ -40,8 +40,8 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function createWithRawValues() {
-        $parser = new PHPSQLParser();
-        $tokens = $parser->parse('INSERT INTO products (name, value) VALUES (testname, testvalue)');
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES (testname, testvalue)');
         $expected = json_encode([
             'name'  => 'testname',
             'value' => 'testvalue',
@@ -58,8 +58,8 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function createWithQuotedValues() {
-        $parser = new PHPSQLParser();
-        $tokens = $parser->parse('INSERT INTO products (name, value) VALUES ("testname", "testvalue")');
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES ("testname", "testvalue")');
         $expected = json_encode([
             'name'  => 'testname',
             'value' => 'testvalue',
@@ -76,8 +76,8 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function createWithIntValue() {
-        $parser = new PHPSQLParser();
-        $tokens = $parser->parse('INSERT INTO products (name, value) VALUES (testname, 1)');
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES (testname, 1)');
         $expected = json_encode([
             'name'  => 'testname',
             'value' => 1,

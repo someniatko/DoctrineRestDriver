@@ -29,7 +29,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class Url {
 
     /**
-     * creates an url
+     * Returns an url depending on the given sql tokens
      *
      * @param  array  $tokens
      * @param  string $apiUrl

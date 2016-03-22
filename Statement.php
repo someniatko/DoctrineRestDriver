@@ -234,7 +234,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
     }
 
     /**
-     * returns the last auto incremented id
+     * Returns the last auto incremented id
      *
      * @return int
      */
@@ -243,7 +243,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
     }
 
     /**
-     * handles the statement if the execution succeeded
+     * Handles the statement if the execution succeeded
      *
      * @param  Response $response
      * @param  string   $method
@@ -259,7 +259,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
     }
 
     /**
-     * handles the statement if the execution failed
+     * Handles the statement if the execution failed
      *
      * @param  Request  $request
      * @param  Response $response

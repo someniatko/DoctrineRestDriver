@@ -35,55 +35,55 @@ use Prophecy\Exception\Doubler\ClassNotFoundException;
 class Assertions {
 
     /**
-     * asserts if the given value is not nil
+     * Asserts if the given value is not nil
      *
-     * @param  string     $varName
-     * @param  mixed      $value
+     * @param  string $varName
+     * @param  mixed  $value
      * @return null
      * @throws NotNilException
      */
     public static function assertNotNil($varName, $value) {
-        return $value === null ? Exceptions::notNilException($varName) : null;
+        return $value === null ? Exceptions::NotNilException($varName) : null;
     }
 
     /**
-     * asserts if the given value is a string
+     * Asserts if the given value is a string
      *
-     * @param  string     $varName
-     * @param  mixed      $value
+     * @param  string $varName
+     * @param  mixed  $value
      * @return null
      * @throws InvalidTypeException
      * @throws NotNilException
      */
     public static function assertString($varName, $value) {
         self::assertNotNil($varName, $value);
-        return !is_string($value) ? Exceptions::invalidTypeException('string', $varName, $value) : null;
+        return !is_string($value) ? Exceptions::InvalidTypeException('string', $varName, $value) : null;
     }
 
     /**
-     * asserts if the given value is a hash map
+     * Asserts if the given value is a hash map
      *
-     * @param  string     $varName
-     * @param  mixed      $value
+     * @param  string $varName
+     * @param  mixed  $value
      * @return void
      * @throws InvalidTypeException
      */
     public static function assertHashMap($varName, $value) {
-        if(!is_array($value)) return Exceptions::invalidTypeException('HashMap', $varName, $value);
+        if(!is_array($value)) return Exceptions::InvalidTypeException('HashMap', $varName, $value);
         foreach($value as $key => $v) self::assertHashMapEntry($varName, [$key => $v]);
     }
 
     /**
-     * asserts if the given value is a hash map entry
+     * Asserts if the given value is a hash map entry
      *
-     * @param  string      $varName
-     * @param  mixed       $value
+     * @param  string $varName
+     * @param  mixed  $value
      * @return void
      * @throws InvalidTypeException
      */
     public static function assertHashMapEntry($varName, $value) {
-        if(!is_array($value)) return Exceptions::invalidTypeException('HashMapEntry', $varName, $value);
-        if(count($value) > 1) return Exceptions::invalidTypeException('HashMapEntry', $varName, $value);
+        if(!is_array($value)) return Exceptions::InvalidTypeException('HashMapEntry', $varName, $value);
+        if(count($value) > 1) return Exceptions::InvalidTypeException('HashMapEntry', $varName, $value);
 
         $keys = array_keys($value);
         $key  = end($keys);
@@ -91,21 +91,21 @@ class Assertions {
     }
 
     /**
-     * asserts if the given value is a hash map entry
+     * Asserts if the given hash map entry exists
      *
-     * @param  string      $varName
-     * @param  array       $hashMap
-     * @param  string      $entryName
+     * @param  string $varName
+     * @param  array  $hashMap
+     * @param  string $entryName
      * @return null
      * @throws InvalidTypeException
      */
     public static function assertHashMapEntryExists($varName, $hashMap, $entryName) {
         self::assertHashMap($varName, $hashMap);
-        return array_key_exists($entryName, $hashMap) ? null : Exceptions::invalidTypeException('HashMapEntry', $varName . '[\'' . $entryName . '\']', 'undefined');
+        return array_key_exists($entryName, $hashMap) ? null : Exceptions::InvalidTypeException('HashMapEntry', $varName . '[\'' . $entryName . '\']', 'undefined');
     }
 
     /**
-     * checks if the given value is a url
+     * Checks if the given value is a url
      *
      * @param  mixed $value
      * @return bool
@@ -115,20 +115,20 @@ class Assertions {
     }
 
     /**
-     * checks if the given fetch mode is supported
+     * Checks if the given fetch mode is supported
      *
-     * @param  int $fetchMode
+     * @param  int  $fetchMode
      * @return null
      * @throws UnsupportedFetchModeException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function assertSupportedFetchMode($fetchMode) {
-        return $fetchMode !== \PDO::FETCH_ASSOC ? Exceptions::unsupportedFetchModeException($fetchMode) : null;
+        return $fetchMode !== \PDO::FETCH_ASSOC ? Exceptions::UnsupportedFetchModeException($fetchMode) : null;
     }
 
     /**
-     * checks if the given class exists
+     * Checks if the given class exists
      *
      * @param  string     $className
      * @return Assertions

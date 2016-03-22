@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Enums;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Exceptions\InvalidSqlOperationException;
 
 /**
  * Contains all available http methods of the driver
@@ -36,7 +37,7 @@ class HttpMethods {
      *
      * @param  string $operation
      * @return string
-     * @throws \Exception
+     * @throws InvalidSqlOperationException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
@@ -46,6 +47,6 @@ class HttpMethods {
         if ($operation === SqlOperations::UPDATE) return HttpMethods::PUT;
         if ($operation === SqlOperations::DELETE) return HttpMethods::DELETE;
 
-        return Exceptions::invalidSqlOperationException($operation);
+        return Exceptions::InvalidSqlOperationException($operation);
     }
 }

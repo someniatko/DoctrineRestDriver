@@ -21,13 +21,13 @@ namespace Circle\DoctrineRestDriver\Factory;
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Types\CurlOptions;
 use Circle\DoctrineRestDriver\Types\Payload;
-use Circle\DoctrineRestDriver\Types\Query;
+use Circle\DoctrineRestDriver\Types\HttpQuery;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\SqlOperation;
 use Circle\DoctrineRestDriver\Types\Url;
 
 /**
- * Factory for request
+ * Factory for requests
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -37,7 +37,7 @@ use Circle\DoctrineRestDriver\Types\Url;
 class RequestFactory {
 
     /**
-     * creates a new Request with the given options
+     * Creates a new Request with the given options
      *
      * @param  array   $tokens
      * @param  string  $apiUrl
@@ -45,10 +45,10 @@ class RequestFactory {
      * @return Request
      */
     public function createOne(array $tokens, $apiUrl, array $options) {
-        $method    = HttpMethods::ofSqlOperation(SqlOperation::create($tokens));
-        $url       = Url::create($tokens, $apiUrl);
-        $query     = Query::create($tokens);
-        $payload   = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? null : Payload::create($tokens);
+        $method  = HttpMethods::ofSqlOperation(SqlOperation::create($tokens));
+        $url     = Url::create($tokens, $apiUrl);
+        $query   = HttpQuery::create($tokens);
+        $payload = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? null : Payload::create($tokens);
 
         return new Request($method, $url, CurlOptions::create($options), $query, $payload);
     }

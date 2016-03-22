@@ -22,15 +22,16 @@ use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Query type
+ * HttpQuery type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class Query {
+class HttpQuery {
 
     /**
-     * Creates a http query string
+     * Creates a http query string by using the WHERE
+     * clause of the parsed sql tokens
      *
      * @param  array $tokens
      * @return string

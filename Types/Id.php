@@ -21,7 +21,7 @@ namespace Circle\DoctrineRestDriver\Types;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Id type
+ * Extracts id information from a sql token array
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -29,7 +29,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class Id {
 
     /**
-     * Request constructor
+     * Returns the id in the WHERE clause if exists
      *
      * @param  array  $tokens
      * @return string
@@ -51,7 +51,7 @@ class Id {
     }
 
     /**
-     * returns the id alias
+     * Returns the id alias
      *
      * @param  array $tokens
      * @return string

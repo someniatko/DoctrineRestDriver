@@ -19,7 +19,9 @@
 namespace Circle\DoctrineRestDriver\Exceptions;
 
 /**
- * Exception class for methods that are not implemented
+ * Exception class for methods that are not implemented.
+ * Used if a method must exist because of interface contract,
+ * but has no functionality implemented yet.
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG

@@ -69,7 +69,7 @@ class Request {
     }
 
     /**
-     * returns the method
+     * Returns the method
      *
      * @return string
      */
@@ -78,7 +78,7 @@ class Request {
     }
 
     /**
-     * returns the url
+     * Returns the url
      *
      * @return string
      */
@@ -96,7 +96,7 @@ class Request {
     }
 
     /**
-     * returns all curl options
+     * Returns all curl options
      *
      * @return array
      */
@@ -105,7 +105,7 @@ class Request {
     }
 
     /**
-     * returns the query
+     * Returns the query
      *
      * @return string
      */
@@ -114,7 +114,7 @@ class Request {
     }
 
     /**
-     * returns the url with query
+     * Returns the url with query
      *
      * @return string
      */

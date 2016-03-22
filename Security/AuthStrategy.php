@@ -29,6 +29,9 @@ use Circle\DoctrineRestDriver\Types\Request;
 interface AuthStrategy {
 
     /**
+     * Creates a new request that has additional security specific
+     * options
+     *
      * @param  Request $request
      * @param  array   $config
      * @return Request

@@ -17,9 +17,11 @@
  */
 
 namespace Circle\DoctrineRestDriver\Mapping;
+use Circle\DoctrineRestDriver\Types\Table;
 
 /**
- * Mapper class for execution results (responses)
+ * Mapping class to combine the parsed tokens of a sql query
+ * and the parsed content of a response to a valid result set
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -27,7 +29,7 @@ namespace Circle\DoctrineRestDriver\Mapping;
 class ResultMapping {
 
     /**
-     * returns the select result set
+     * Returns the select result set
      *
      * @param  array $tokens
      * @param  array $content
@@ -39,15 +41,17 @@ class ResultMapping {
     }
 
     /**
-     * returns the select single result set
+     * Returns the select single result set
      *
      * @param  array $tokens
      * @param  array $content
      * @return array
      * @throws \Exception
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function selectSingle(array $tokens, array $content) {
-        $tableAlias = $this->getTableAlias($tokens);
+        $tableAlias = Table::alias($tokens);
 
         $attributeValueMap = array_map(function($token) use ($content, $tableAlias) {
             $key   = empty($token['alias']['name']) ? $token['base_expr'] : $token['alias']['name'];
@@ -59,7 +63,7 @@ class ResultMapping {
     }
 
     /**
-     * returns the select all result set
+     * Returns the select all result set
      *
      * @param  array $tokens
      * @param  array $content
@@ -75,7 +79,7 @@ class ResultMapping {
     }
 
     /**
-     * returns the insert result mapping
+     * Returns the insert result mapping
      *
      * @param  array $content
      * @return array
@@ -85,7 +89,7 @@ class ResultMapping {
     }
 
     /**
-     * returns the update result mapping
+     * Returns the update result mapping
      *
      * @param  array $content
      * @return array
@@ -95,7 +99,7 @@ class ResultMapping {
     }
 
     /**
-     * returns the delete result mapping - which is always
+     * Returns the delete result mapping - which is always
      * an empty array
      *
      * @return array
@@ -105,7 +109,7 @@ class ResultMapping {
     }
 
     /**
-     * orders the content with the given order by criteria
+     * Orders the content with the given order by criteria
      *
      * @param  array $tokens
      * @param  array $content
@@ -135,16 +139,5 @@ class ResultMapping {
         call_user_func_array('array_multisort', $sortArgs);
 
         return end($sortArgs);
-    }
-
-    /**
-     * returns the table alias
-     *
-     * @param  array $tokens
-     * @return mixed
-     * @throws \Exception
-     */
-    private function getTableAlias(array $tokens) {
-        return $tokens['FROM'][0]['alias']['name'];
     }
 }

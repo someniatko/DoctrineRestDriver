@@ -51,9 +51,9 @@ class HttpBasicAuthenticationTest extends \PHPUnit_Framework_TestCase {
      */
     public function transformRequest() {
         $options = [
-            'host' => 'http://circle.ai',
-            'user' => 'Aladdin',
-            'password' => 'OpenSesame',
+            'host'          => 'http://circle.ai',
+            'user'          => 'Aladdin',
+            'password'      => 'OpenSesame',
             'driverOptions' => []
         ];
 
