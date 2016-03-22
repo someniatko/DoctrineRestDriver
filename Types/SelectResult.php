@@ -16,24 +16,28 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Security;
-
-use Circle\DoctrineRestDriver\Types\Request;
+namespace Circle\DoctrineRestDriver\Types;
 
 /**
- * Interface for authentication strategies
+ * Maps the response content of a GET query to a valid
+ * Doctrine result for SELECT ...
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-interface AuthStrategy {
+class SelectResult {
 
     /**
-     * Creates a new request that has additional security specific
-     * options
+     * Returns a valid Doctrine result for SELECT ...
      *
-     * @param  Request $request
-     * @return Request
+     * @param  array  $tokens
+     * @param  array  $content
+     * @return string
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function transformRequest(Request $request);
+    public static function create(array $tokens, $content) {
+        if (empty($content)) return $content;
+        return empty($content[0]) ? SelectSingleResult::create($tokens, $content) : SelectAllResult::create($tokens, $content);
+    }
 }

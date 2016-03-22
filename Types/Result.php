@@ -16,24 +16,34 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Security;
-
-use Circle\DoctrineRestDriver\Types\Request;
+namespace Circle\DoctrineRestDriver\Types;
+use Circle\DoctrineRestDriver\Enums\SqlOperations;
+use PHPSQLParser\PHPSQLParser;
 
 /**
- * Interface for authentication strategies
+ * Maps the response content of any query to a valid
+ * Doctrine result
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-interface AuthStrategy {
+class Result {
 
     /**
-     * Creates a new request that has additional security specific
-     * options
+     * Returns a valid Doctrine result
      *
-     * @param  Request $request
-     * @return Request
+     * @param  string $query
+     * @param  array  $content
+     * @return string
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function transformRequest(Request $request);
+    public static function create($query, $content) {
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse($query);
+        $operator = strtolower(array_keys($tokens)[0]);
+
+        if ($operator === SqlOperations::DELETE) return [];
+        return $operator === SqlOperations::SELECT ? SelectResult::create($tokens, $content) : $content;
+    }
 }

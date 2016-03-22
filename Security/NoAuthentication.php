@@ -32,7 +32,7 @@ class NoAuthentication implements AuthStrategy {
     /**
      * {@inheritdoc}
      */
-    public function transformRequest(Request $request, array $config) {
+    public function transformRequest(Request $request) {
         return $request;
     }
 }

@@ -29,6 +29,7 @@ use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @SuppressWarnings("PHPMD.StaticAccess")
+ * @SuppressWarnings("PHPMD.CamelCaseMethodName")
  */
 class Exceptions {
 

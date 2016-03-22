@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Validation;
 
+use Circle\DoctrineRestDriver\Security\HttpBasicAuthentication;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
@@ -110,5 +111,16 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function isUrlTest() {
         $this->assertTrue(Assertions::isUrl('http://www.circle.ai'));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertAuthStrategy
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function assertAuthStrategy() {
+        $this->assertSame(null, Assertions::assertAuthStrategy(new HttpBasicAuthentication([])));
     }
 }

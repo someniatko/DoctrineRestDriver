@@ -18,18 +18,18 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\HttpQuery;
+use Circle\DoctrineRestDriver\Types\SelectSingleResult;
 use PHPSQLParser\PHPSQLParser;
 
 /**
- * Tests the http query type
+ * Tests the select single result type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\HttpQuery
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\SelectSingleResult
  */
-class HttpQueryTest extends \PHPUnit_Framework_TestCase {
+class SelectSingleResultTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
@@ -39,10 +39,20 @@ class HttpQueryTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('SELECT name FROM products WHERE id=1 AND value="testvalue" AND name="testname"');
-        $expected = 'value=testvalue&name=testname';
+        $query  = 'SELECT name FROM products WHERE id=1';
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse($query);
 
-        $this->assertSame($expected, HttpQuery::create($tokens));
+        $content = [
+            'name' => 'username'
+        ];
+
+        $expected = [
+            [
+                'name' => 'username'
+            ]
+        ];
+
+        $this->assertEquals($expected, SelectSingleResult::create($tokens, $content));
     }
 }

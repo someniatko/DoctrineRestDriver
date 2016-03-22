@@ -25,6 +25,7 @@ use Circle\DoctrineRestDriver\Factory\ResultSetFactory;
 use Circle\DoctrineRestDriver\Security\AuthStrategy;
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
 use Circle\DoctrineRestDriver\Types\Request;
+use Circle\DoctrineRestDriver\Types\Result;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -63,7 +64,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
     /**
      * @var array
      */
-    private $resultSet;
+    private $result;
 
     /**
      * @var int
@@ -91,11 +92,6 @@ class Statement implements \IteratorAggregate, StatementInterface {
     private $authStrategy;
 
     /**
-     * @var array
-     */
-    private $options;
-
-    /**
      * Statement constructor
      *
      * @param  string $query
@@ -106,15 +102,14 @@ class Statement implements \IteratorAggregate, StatementInterface {
      */
     public function __construct($query, array $options) {
         $this->query             = $query;
-        $this->options           = $options;
         $this->mysqlToRequest    = new MysqlToRequest($options);
         $this->restClientFactory = new RestClientFactory();
 
         $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : null;
-        Assertions::assertClassExists($authenticatorClass);
-        $this->authStrategy = new $authenticatorClass();
-
-        if (!$this->authStrategy instanceof AuthStrategy) Exceptions::invalidAuthStrategyException(get_class($this->authStrategy));
+        $className          = preg_match('/\\\\/', $authenticatorClass) ? $authenticatorClass : 'Circle\DoctrineRestDriver\Security\\' . $authenticatorClass;
+        Assertions::assertClassExists($className);
+        $this->authStrategy = new $className($options);
+        Assertions::assertAuthStrategy($this->authStrategy);
     }
 
     /**
@@ -153,21 +148,21 @@ class Statement implements \IteratorAggregate, StatementInterface {
      */
     public function execute($params = null) {
         $rawRequest = $this->mysqlToRequest->transform($this->query, $this->params);
-        $request    = $this->authStrategy->transformRequest($rawRequest, $this->options);
+        $request    = $this->authStrategy->transformRequest($rawRequest);
         $restClient = $this->restClientFactory->createOne($request->getCurlOptions());
 
         $method     = strtolower($request->getMethod());
         $response   = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? $restClient->$method($request->getUrlAndQuery()) : $restClient->$method($request->getUrlAndQuery(), $request->getPayload());
         $statusCode = $response->getStatusCode();
 
-        return $statusCode === 200 || $method === HttpMethods::DELETE && $statusCode === 204 ? $this->onSuccess($response, $method) : $this->onError($request, $response);
+        return $statusCode === 200 || ($method === HttpMethods::DELETE && $statusCode === 204) ? $this->onSuccess($response, $method) : $this->onError($request, $response);
     }
 
     /**
      * {@inheritdoc}
      */
     public function rowCount() {
-        return count($this->resultSet);
+        return count($this->result);
     }
 
     /**
@@ -181,7 +176,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * {@inheritdoc}
      */
     public function columnCount() {
-        return empty($this->resultSet) ? 0 : count($this->resultSet[0]);
+        return empty($this->result) ? 0 : count($this->result[0]);
     }
 
     /**
@@ -202,7 +197,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
         $fetchMode = empty($fetchMode) ? $this->fetchMode : $fetchMode;
         Assertions::assertSupportedFetchMode($fetchMode);
 
-        return count($this->resultSet) === 0 ? false : array_pop($this->resultSet);
+        return count($this->result) === 0 ? false : array_pop($this->result);
     }
 
     /**
@@ -248,12 +243,13 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @param  Response $response
      * @param  string   $method
      * @return bool
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     private function onSuccess(Response $response, $method) {
-        $resultSetFactory = new ResultSetFactory();
-        $this->resultSet  = $resultSetFactory->createOne($response, $this->query);
-        $this->id         = $method === HttpMethods::POST ? $this->resultSet['id'] : null;
-        krsort($this->resultSet);
+        $this->result = Result::create($this->query, json_decode($response->getContent(), true));
+        $this->id     = $method === HttpMethods::POST ? $this->result['id'] : null;
+        krsort($this->result);
 
         return true;
     }

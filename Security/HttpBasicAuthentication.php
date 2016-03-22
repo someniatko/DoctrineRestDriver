@@ -30,12 +30,26 @@ use Circle\DoctrineRestDriver\Types\Request;
 class HttpBasicAuthentication implements AuthStrategy {
 
     /**
+     * @var array
+     */
+    private $config;
+
+    /**
+     * HttpBasicAuthentication constructor
+     *
+     * @param array $config
+     */
+    public function __construct(array $config) {
+        $this->config = $config;
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function transformRequest(Request $request, array $config) {
+    public function transformRequest(Request $request) {
         $options  = $request->getCurlOptions();
         $headers  = empty($options[CURLOPT_HTTPHEADER]) ? [] : $options[CURLOPT_HTTPHEADER];
-        array_push($headers, 'Authorization: Basic ' . base64_encode($config['user'] . ':' . $config['password']));
+        array_push($headers, 'Authorization: Basic ' . base64_encode($this->config['user'] . ':' . $this->config['password']));
         $options[CURLOPT_HTTPHEADER] = $headers;
 
         return new Request($request->getMethod(), $request->getUrl(), $options, $request->getQuery(), $request->getPayload());

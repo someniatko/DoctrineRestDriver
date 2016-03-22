@@ -16,33 +16,35 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Types;
-
-use Circle\DoctrineRestDriver\Types\HttpQuery;
-use PHPSQLParser\PHPSQLParser;
+namespace Circle\DoctrineRestDriver\Types;
 
 /**
- * Tests the http query type
+ * Maps the response content of a GET query to a valid
+ * Doctrine result for SELECT ... WHERE id = <id>
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\HttpQuery
  */
-class HttpQueryTest extends \PHPUnit_Framework_TestCase {
+class SelectSingleResult {
 
     /**
-     * @test
-     * @group  unit
-     * @covers ::create
+     * Returns a valid Doctrine result for SELECT ... WHERE id = <id>
+     *
+     * @param  array  $tokens
+     * @param  array  $content
+     * @return string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('SELECT name FROM products WHERE id=1 AND value="testvalue" AND name="testname"');
-        $expected = 'value=testvalue&name=testname';
+    public static function create(array $tokens, $content) {
+        $tableAlias = Table::alias($tokens);
 
-        $this->assertSame($expected, HttpQuery::create($tokens));
+        $attributeValueMap = array_map(function($token) use ($content, $tableAlias) {
+            $key   = empty($token['alias']['name']) ? $token['base_expr'] : $token['alias']['name'];
+            $value = $content[str_replace($tableAlias . '.', '', $token['base_expr'])];
+            return [$key => $value];
+        }, $tokens['SELECT']);
+
+        return [ array_reduce($attributeValueMap, 'array_merge', []) ];
     }
 }

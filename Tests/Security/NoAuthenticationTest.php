@@ -19,7 +19,7 @@
 namespace Circle\DoctrineRestDriver\Tests\Security;
 
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\Security\HttpBasicAuthentication;
+use Circle\DoctrineRestDriver\Security\NoAuthentication;
 use Circle\DoctrineRestDriver\Types\Request;
 
 /**
@@ -28,12 +28,12 @@ use Circle\DoctrineRestDriver\Types\Request;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Security\HttpBasicAuthentication
+ * @coversDefaultClass Circle\DoctrineRestDriver\Security\NoAuthentication
  */
-class HttpBasicAuthenticationTest extends \PHPUnit_Framework_TestCase {
+class NoAuthenticationTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * @var HttpBasicAuthentication
+     * @var NoAuthentication
      */
     private $authentication;
 
@@ -41,7 +41,7 @@ class HttpBasicAuthenticationTest extends \PHPUnit_Framework_TestCase {
      * {@inheritdoc}
      */
     public function setUp() {
-        $this->authentication = new HttpBasicAuthentication([
+        $this->authentication = new NoAuthentication([
             'host'          => 'http://circle.ai',
             'user'          => 'Aladdin',
             'password'      => 'OpenSesame',
@@ -52,15 +52,10 @@ class HttpBasicAuthenticationTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      * @group  unit
-     * @covers ::__construct
      * @covers ::transformRequest
      */
     public function transformRequest() {
-        $expectedOptions = [
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Basic QWxhZGRpbjpPcGVuU2VzYW1l'
-            ]
-        ];
+        $expectedOptions = [];
 
         $request  = new Request(HttpMethods::GET, 'http://circle.ai', []);
         $expected = new Request(HttpMethods::GET, 'http://circle.ai', $expectedOptions);

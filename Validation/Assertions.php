@@ -18,7 +18,9 @@
 
 namespace Circle\DoctrineRestDriver\Validation;
 
+use Circle\DoctrineRestDriver\Exceptions\InvalidAuthStrategyException;
 use Circle\DoctrineRestDriver\Exceptions\UnsupportedFetchModeException;
+use Circle\DoctrineRestDriver\Security\AuthStrategy;
 use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
@@ -131,10 +133,21 @@ class Assertions {
      * Checks if the given class exists
      *
      * @param  string     $className
-     * @return Assertions
+     * @return void
      * @throws ClassNotFoundException
      */
     public static function assertClassExists($className) {
         if (!empty($className) && !class_exists($className)) throw new ClassNotFoundException('Class not found', $className);
+    }
+
+    /**
+     * Checks if the given instance is instanceof AuthStrategy
+     *
+     * @param  object $instance
+     * @return null
+     * @throws InvalidAuthStrategyException
+     */
+    public static function assertAuthStrategy($instance) {
+        return !$instance instanceof AuthStrategy ? Exceptions::invalidAuthStrategyException(get_class($instance)) : null;
     }
 }
