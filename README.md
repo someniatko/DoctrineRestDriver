@@ -21,6 +21,12 @@ Circle had made, and they were very pleased. Evening passed and morning came - t
 
 # Installation
 
+## Prerequirements
+- You need composer to download the library
+- Your REST API has to strictly follow REST principles
+
+## Setup
+
 First of all download the driver by using composer:
 
 ```php
@@ -165,14 +171,12 @@ $em->flush();
 
 ## Using a REST API as persistent storage
 Imagine you want to build an application that just acts like a REST API's client.
-- The REST API has the URL http://www.circle.ai/api/v1.
-- It is secured by Basic HTTP Authentication.
-- The username is Circle, the password is mySecretPassword.
-- Let's say the REST API itself persists users.
+- The REST API has the URL http://www.circle.ai/api/v1
+- It is secured by Basic HTTP Authentication
+- The username is Circle, the password is mySecretPassword
+- Let's say the REST API itself persists users
 - One user is actually stored in the database
-    - id: 1
-    - name: root
-    - password: rootPassword
+    - {id: 1, name: root, password: rootPassword }
 
 ```
 typedef UnregisteredUser {
@@ -197,7 +201,7 @@ The REST API offers the following routes:
 | /users/\<id\> | DELETE | deletes a user | NULL | NULL |
 | /users/\<id\> | PUT | edits a user | RegisteredUser | RegisteredUser |
 
-Let's implement all routes with the DoctrineRestDriver.
+Let's connect to the REST API via DoctrineRestDriver.
 
 Entity:
 
@@ -298,7 +302,7 @@ $em->persist($user);
 // Sends a POST request to the url http://www.circle.ai/api/v1/users with the payload "{"name": "newUser", "password": "newPassword"}"
 $em->flush();
 
-// If the REST API responded correctly with "{"id": 2, "name": "newUser", "password": "newPassword"}", then it prints: 2
+// If the REST API responded correctly with "{"id": 2, "name": "newUser", "password": "newPassword"}" it prints: 2
 print_r($newUser->getId());
 
 $em->remove($user);
@@ -312,10 +316,60 @@ print_r($sameUser);
 ```
 
 ## Using multiple REST APIs
-text here
+Of course you can add multiple entity managers as explained in the Doctrine documentation:
+
+```yml
+doctrine:
+  dbal:
+    default_connection: twitter_api
+    connections:
+      twitter_api:
+        driver_class:   "Circle\\DoctrineRestDriver\\Driver"
+        host:     "%twitter_api_url%"
+        port:     "%twitter_api_port%"
+        user:     "%twitter_api_username%"
+        password: "%twitter_api_password%"
+        options:
+          authentication_class:  "HttpBasicAuthentication"
+          CURLOPT_CURLOPT_FOLLOWLOCATION: true
+          CURLOPT_HEADER: true
+      facebook_api:
+        driver_class:   "Circle\\DoctrineRestDriver\\Driver"
+        host:     "%facebook_api_url%"
+        port:     "%facebook_api_port%"
+        user:     "%facebook_api_username%"
+        password: "%facebook_api_password%"
+        options:
+          authentication_class:  "HttpBasicAuthentication"
+          CURLOPT_CURLOPT_FOLLOWLOCATION: true
+          CURLOPT_HEADER: true
+```
 
 ## Using a REST API and a relational database at the same time
-text here
+It is also possible to use a REST connection and a relational database connection like mysql.
+
+```yml
+doctrine:
+  dbal:
+    default_connection: my_database
+    connections:
+      my_database:
+        driver:   "pdo_mysql"
+        host:     "%twitter_api_url%"
+        port:     "%twitter_api_port%"
+        user:     "%twitter_api_username%"
+        password: "%twitter_api_password%"
+      facebook_api:
+        driver_class:   "Circle\\DoctrineRestDriver\\Driver"
+        host:     "%facebook_api_url%"
+        port:     "%facebook_api_port%"
+        user:     "%facebook_api_username%"
+        password: "%facebook_api_password%"
+        options:
+          authentication_class:  "HttpBasicAuthentication"
+          CURLOPT_CURLOPT_FOLLOWLOCATION: true
+          CURLOPT_HEADER: true
+```
 
 #Testing
 
