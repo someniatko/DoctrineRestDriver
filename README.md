@@ -123,7 +123,7 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"), $i
 //$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);
 
 // database configuration parameters
-$conn = array(
+$conn = [
     'user'          => 'Circle',
     'password'      => 'mySecretPassword',
     'host'          => 'http://www.myApi.com',
@@ -132,7 +132,7 @@ $conn = array(
     'driverOptions' => [
         'authentication_class' => 'HttpBasicAuthentication'
     ],
-);
+];
 
 // obtaining the entity manager
 $em = EntityManager::create($conn, $config);
@@ -164,7 +164,152 @@ $em->flush();
 #Examples
 
 ## Using a REST API as persistent storage
-text here
+Imagine you want to build an application that just acts like a REST API's client.
+- The REST API has the URL http://www.circle.ai/api/v1.
+- It is secured by Basic HTTP Authentication.
+- The username is Circle, the password is mySecretPassword.
+- Let's say the REST API itself persists users.
+- One user is actually stored in the database
+    - id: 1
+    - name: root
+    - password: rootPassword
+
+```
+typedef UnregisteredUser {
+    name: String,
+    Password: String
+}
+
+typedef RegisteredUser {
+    id: Int,
+    name: String,
+    Password: String
+}
+```
+
+The REST API offers the following routes:
+
+| Route | Method | Description | Payload | Response |
+| ------------- |:-------------:| -----:|-----:|-----:|
+| /users | GET | returns all users | NULL | [ RegisteredUser ] |
+| /users/\<id\> | GET | returns one user | NULL | RegisteredUser |
+| /users | POST | persists a new user | UnregisteredUser | RegisteredUser |
+| /users/\<id\> | DELETE | deletes a user | NULL | NULL |
+| /users/\<id\> | PUT | edits a user | RegisteredUser | RegisteredUser |
+
+Let's implement all routes with the DoctrineRestDriver.
+
+Entity:
+
+```
+namespace Circle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity()
+ * @ORM\Table("users")
+ */
+class User {
+
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $name;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $password;
+    
+    public function setName($name) {
+        $this->name = $name;
+        return $this;
+    }
+    
+    public function getName() {
+        return $this->name;
+    }
+    
+    public function setPassword($password) {
+        $this->password = $password;
+        return $this;
+    }
+    
+    public function getPassword() {
+        return $this->password;
+    }
+    
+    public function getId() {
+        return $this->id;
+    }
+}
+```
+
+Create, Read, Update, Delete Script for users:
+
+```
+<?php
+
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+
+require_once "vendor/autoload.php";
+
+$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"), true);
+
+$conn = [
+    'user'          => 'Circle',
+    'password'      => 'mySecretPassword',
+    'host'          => 'http://www.circle.ai/api/v1',
+    'port'          => 80,
+    'driverClass'   => 'Circle\DoctrineRestDriver\Driver',
+    'driverOptions' => [
+        'authentication_class' => 'HttpBasicAuthentication'
+    ],
+];
+
+// obtaining the entity manager
+$em = EntityManager::create($conn, $config);
+
+// Sends a GET request to the url http://www.circle.ai/api/v1/users/1
+$user = $em->find('Circle\Entity\User', 1);
+
+// prints 'root'
+print_r($user->getName());
+
+$user->setName('circle');
+
+// Sends a PUT request to the url http://www.circle.ai/api/v1/users/1 with the payload "{"id": 1, "name": "circle", "password": "rootPassword"}"
+$em->flush();
+
+$newUser = new User();
+$user->setName('newUser');
+$user->setPassword('newPassword');
+$em->persist($user);
+
+// Sends a POST request to the url http://www.circle.ai/api/v1/users with the payload "{"name": "newUser", "password": "newPassword"}"
+$em->flush();
+
+// If the REST API responded correctly with "{"id": 2, "name": "newUser", "password": "newPassword"}", then it prints: 2
+print_r($newUser->getId());
+
+$em->remove($user);
+
+// Sends a DELETE request to the url http://www.circle.ai/api/v1/users/1 with no payload
+$em->flush();
+
+$sameUser = $em->find('Circle\Entity\User', 1);
+// prints null, because the user has been deleted
+print_r($sameUser);
+```
 
 ## Using multiple REST APIs
 text here
