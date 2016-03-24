@@ -21,22 +21,22 @@ You should first have a look at the requirements before continuing with the setu
 - You need composer to download the library
 - Your REST API has to strictly follow REST principles and return JSON
     - Use POST to create new data
-        - Urls have the following format: http://www.host.de/path/to/api/entityName
+        - Urls have the following format: ```http://www.host.de/path/to/api/entityName```
         - Use the request body to receive data
         - Has to respond with HTTP code 200 if successful
         - Fill the response body with the given payload plus an id
     - Use PUT to change data
-        - Urls have the following format: http://www.host.de/path/to/api/entityName/&lt;id&gt;
+        - Urls have the following format: ```http://www.host.de/path/to/api/entityName/<id>```
         - Use the request body to receive data
         - Has to respond with HTTP code 200 if successful
         - Fill the response body with the given payload
     - Use DELETE to remove data
-        - Urls have the following format: http://www.host.de/path/to/api/entityName/\<id\>
+        - Urls have the following format: ```http://www.host.de/path/to/api/entityName/<id>```
         - The request body must be empty
         - Has to respond with HTTP code 204 if successful
         - The response body must be empty
     - Use GET to receive data
-        - Urls have the following format: http://www.host.de/path/to/api/entityName/\<id\> or http://www.host.de/path/to/api/entityName
+        - Urls have the following format: ```http://www.host.de/path/to/api/entityName/<id>``` or ```http://www.host.de/path/to/api/entityName```
         - Use HTTP query strings as filters
         - Has to respond with HTTP code 200 if successful
         - Fill the response body with the read data
