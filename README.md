@@ -1,16 +1,22 @@
 # Motivation
 
-One year ago we built a REST client, because using the PHP internal curl library felt like we were in the stone age and someone just made fire - without any knowledge how to repeat it. But after playing a bit with this client we felt like we were in stone age, too, but have a look at what we created. Big progress so far :clap:
+In the 1940s, the first recognizably modern electrically powered computers were created. The limited speed and memory capacity forced programmers to write hand tuned assembly language programs. It was eventually realized that programming in assembly language required a great deal of intellectual effort and was error-prone.
 
-![alt tag](http://img.memecdn.com/stone-penises_o_2506359.webp)
+At the University of Manchester, Alick Glennie developed Autocode in the early 1950s. A programming language, it used a compiler to automatically convert the language into machine code. The first code and compiler was developed in 1952 for the Mark 1 computer at the University of Manchester and is considered to be the first compiled high-level programming language.
 
-So what is the problem with all these REST clients out there?
+Another milestone in the late 1950s was the publication, by a committee of American and European computer scientists, of "a new language for algorithms"; the ALGOL 60 Report (the "ALGOrithmic Language").
 
-The short version: All of them are like our stone buildings, but have different sizes.
+The development of C started in 1972 and first appeared in Version 2 Unix.
 
-We believe that translating SQL to REST is possible, so we decided to create a REST driver for Doctrine that uses the full power of ORM, but with the scalability of RESTful applications. You don't need to write HTTP requests by yourself - Doctrine is handling the requests in the background, maps the responses automatically and returns well-formed entities. 
+PHP development began in 1994 when Rasmus Lerdorf wrote several Common Gateway Interface (CGI) programs in C. He extended them to work with web forms and to communicate with databases, and called this implementation "Personal Home Page/Forms Interpreter" or PHP/FI.
 
-Now REST requests are handled like SQL: You only have to manually create them if you have special use cases - which we believe is great.
+Doctrine was started by Konsta Vesterinen. The project's initial commit was made on April 13, 2006. Like all of the named advantages in programming history it abstracted a language that required some kind of intellectual effort with an additional layer, the database abstraction layer, to make it easier to use.
+
+Early PHP was not intended to be a new programming language, and grew organically, with Lerdorf noting in retrospect: "I don’t know how to stop it, there was never any intent to write a programming language […] I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way."
+
+Let's add the next logical step.
+
+At Circle we believe that requests are assembler instructions in the web. That's why we believe they can be used as foundation for high-level programming languages using the web as if it was a big computer. And that's why this driver exists: We use the Doctrine ORM layer to internally send REST requests to URLs. So the REST requests themselves act like assembler instructions while the Doctrine syntax is used as the high-level programming language. The goal is to get rid off writing REST request calls and instead using a readable, maintainable syntax to get your job done.
 
 
 # Installation
