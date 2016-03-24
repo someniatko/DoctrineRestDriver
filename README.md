@@ -140,7 +140,8 @@ class Product {
 }
 ```
 
-Afterwards you are able to use the created entity as if you were using a relational database. 
+Afterwards you are able to use the created entity as if you were using a relational database.
+Let's assume that we have used the value "http://www.yourSite.com/api/products" for the product entity's @Table annotation.
 
 ```php
 <?php
@@ -154,20 +155,18 @@ class UserController extends Controller {
 
     /**
      * Sends the following request to the API:
-     *
-     * If you used @Table("products"):
-     * POST http://www.circle.ai/api/v1/products HTTP/1.1
-     * {"name": null}
-     *
-     * Or if you used @Table("http://www.yourSite.com/api/products"):
      * POST http://www.yourSite.com/api/products HTTP/1.1
      * {"name": null}
+     *
+     * Let's assume the API responded with:
+     * HTTP/1.1 200 OK
+     * {"id": 1, "name": null}
      *
      * Response body is "1"
      */
     public function createAction() {
         $em     = $this->getDoctrine()->getEntityManager();
-        $entity = new CircleBundle\Product();
+        $entity = new CircleBundle\Entity\Product();
         $em->persist($entity);
         $em->flush();
         
@@ -175,60 +174,58 @@ class UserController extends Controller {
     }
     
     /**
-     * $id may be 1 in our case
-     * Sends the following request to the API:
-     * 
-     * If you used @Table("products"):
-     * GET http://www.circle.ai/api/v1/products/1 HTTP/1.1
-     *
-     * Or if you used @Table("http://www.yourSite.com/api/products"):
+     * Sends the following request to the API by default:
      * GET http://www.yourSite.com/api/products/1 HTTP/1.1
+     *
+     * Let's assume the API responded with:
+     * HTTP/1.1 200 OK
+     * {"id": 1, "name": null}
      *
      * Response body is null if the createAction was executed before
      */
-    public function readAction($id) {
+    public function readAction($id = 1) {
         $em     = $this->getDoctrine()->getEntityManager();
-        $entity = $em->find('CircleBundle\Product', $id);
+        $entity = $em->find('CircleBundle\Entity\Product', $id);
         
         return new Response($entity->getName());
     }
     
     /**
      * Sends the following request to the API:
-     * 
-     * If you used @Table("products"):
-     * GET http://www.circle.ai/api/v1/products HTTP/1.1
-     *
-     * Or if you used @Table("http://www.yourSite.com/api/products"):
      * GET http://www.yourSite.com/api/products HTTP/1.1
+     *
+     * Let's assume the API responded with:
+     * HTTP/1.1 200 OK
+     * [{"id": 1, "name": null}]
      *
      * Response body is null if the createAction was executed before
      */
     public function readAllAction() {
         $em       = $this->getDoctrine()->getEntityManager();
-        $entities = $em->getRepository('CircleBundle\Product')->findAll();
+        $entities = $em->getRepository('CircleBundle\Entity\Product')->findAll();
         
         return new Response($entities->first()->getName());
     }
     
     /**
-     * $id may be 1 in our case
      * After sending a GET request (readAction) it sends the following 
-     * request to the API:
-     *
-     * If you used @Table("products"):
-     * PUT http://www.circle.ai/api/v1/products/1 HTTP/1.1
-     * {"name": "myName"}
-     *
-     * Or if you used @Table("http://www.yourSite.com/api/products"):
+     * request to the API by default:
      * PUT http://www.yourSite.com/api/products/1 HTTP/1.1
      * {"name": "myName"}
      *
+     * Let's assume the API responded the GET request with:
+     * HTTP/1.1 200 OK
+     * {"id": 1, "name": null}
+     *
+     * and the PUT request with:
+     * HTTP/1.1 200 OK
+     * {"id": 1, "name": "myName"}
+     *
      * Response body is "myName"
      */
-    public function updateAction($id) {
+    public function updateAction($id = 1) {
         $em     = $this->getDoctrine()->getEntityManager();
-        $entity = $em->find('CircleBundle\Product', $id);
+        $entity = $em->find('CircleBundle\Entity\Product', $id);
         $entity->setName('myName');
         $em->flush();
         
@@ -236,19 +233,16 @@ class UserController extends Controller {
     }
     
     /**
-     * $id may be 1 in our case
      * After sending a GET request (readAction) it sends the following 
-     * request to the API:
-     *
-     * If you used @Table("products"):
-     * DELETE http://www.circle.ai/api/v1/products/1 HTTP/1.1
-     *
-     * Or if you used @Table("http://www.yourSite.com/api/products"):
+     * request to the API by default:
      * DELETE http://www.yourSite.com/api/products/1 HTTP/1.1
+     *
+     * Let's assume the API responded with:
+     * HTTP/1.1 204 No Content
      */
-    public function deleteAction($id) {
+    public function deleteAction($id = 1) {
         $em     = $this->getDoctrine()->getEntityManager();
-        $entity = $em->find('CircleBundle\Product', $id);
+        $entity = $em->find('CircleBundle\Entity\Product', $id);
         $em->remove($entity);
         $em->flush();
         
@@ -365,7 +359,9 @@ class AddressController extends Controller {
         $em      = $this->getDoctrine()->getEntityManager();
         $address = new CircleBundle\Address();
         $address->setStreet($street)->setCity($city);
+        
         $em->persist($address);
+        
         try {
             $em->flush();
             return new Response('successfully registered');
@@ -380,7 +376,7 @@ That's it. Each time the createAction is called it will send a POST request to t
 
 ## Associating entities
 
-Let's improve the first example. Now we want to add users to the addresses.
+Let's extend the first example. Now we want to add users to the addresses.
 
 The REST API offers the following additional routes:
 
@@ -406,7 +402,7 @@ typedef RegisteredUser {
 
 We need to build an additional entity "User":
 
-```
+```php
 namespace Circle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -489,7 +485,10 @@ class UserController extends Controller {
         $em      = $this->getDoctrine()->getEntityManager();
         $address = $em->find("CircleBundle\Entity\Address", $addressId);
         $user    = new User();
-        $user->setName($name)->Password($password)->setAddress($address);
+        
+        $user->setName($name)
+            ->Password($password)
+            ->setAddress($address);
         
         $em->persist($user);
         $em->flush();
