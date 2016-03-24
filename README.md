@@ -19,13 +19,10 @@ Let's add the next logical step.
 At Circle we believe that requests are assembler instructions in the web. That's why we believe they can be used as foundation for high-level programming languages using the web as if it was a big computer. And that's why this driver exists: We use the Doctrine ORM layer to internally send REST requests to URLs. So the REST requests themselves act like assembler instructions while the Doctrine syntax is used as the high-level programming language. The goal is to get rid off writing REST request calls and instead using a readable, maintainable syntax to get your job done.
 
 
-# Installation
+# Prerequisites
 
-You should first have a look at the requirements before continuing with the setup section.
-
-## Requirements
 - You need composer to download the library
-- Your REST API has to strictly follow REST principles and return JSON
+- Your REST API has to return JSON and strictly follow the following rules:
     - Use POST to create new data
         - Urls have the following format: ```http://www.host.de/path/to/api/entityName```
         - Use the request body to receive data
@@ -47,9 +44,9 @@ You should first have a look at the requirements before continuing with the setu
         - Respond with HTTP code 200 if successful
         - Fill the response body with the read data
 
-## Setup
+# Installation
 
-Add the driver to your project by using composer:
+Add the driver to your project using composer:
 
 ```php
 composer require circle/doctrine-rest-driver
@@ -89,19 +86,19 @@ A full list of all possible options can be found here: http://php.net/manual/en/
 
 # Usage
 
-The following code samples show how to use the driver in a Symfony environment which might be similar to your framework of choice. This configuration will be used:
+The following code samples show how to use the driver in a Symfony environment. This configuration will be used:
 
 ```yml
 doctrine:
   dbal:
     driver_class: "Circle\\DoctrineRestDriver\\Driver"
-    host:         "http://www.circle.ai/api/v1"
+    host:         "http://www.your-url.com/api"
     port:         "80"
     user:         "Circle"
     password:     "CircleIsGreat"
 ```
 
-First of all you need to create one or more entities:
+First of all create your entities:
 
 ```php
 namespace CircleBundle\Entity;
@@ -112,9 +109,10 @@ use Doctrine\ORM\Mapping as ORM;
  * This annotation marks the class as managed entity:
  * @ORM\Entity
  *
- * This annotation is used to define the target resource of the API. You can either use only a resource name in which 
- * case the target url will consist of the host, configured in your options and the given name or you can use the whole 
- * url of the target:
+ * You can either only use a resource name or the whole url of
+ * the resource to define your target. In the first case the target 
+ * url will consist of the host, configured in your options and the 
+ * given name. In the second one your argument is used as it is.
  * @ORM\Table("products|http://www.yourSite.com/api/products")
  */
 class Product {
@@ -146,8 +144,8 @@ class Product {
 }
 ```
 
-Afterwards you are able to use the created entity as if you were using a relational database.
-Let's assume that we have used the value "http://www.yourSite.com/api/products" for the product entity's @Table annotation.
+Afterwards you are able to use the created entity as if you were using a database.
+Let's assume we have used the value "http://www.yourSite.com/api/products" for the product entity's @Table annotation.
 
 ```php
 <?php
@@ -162,17 +160,18 @@ class UserController extends Controller {
     /**
      * Sends the following request to the API:
      * POST http://www.yourSite.com/api/products HTTP/1.1
-     * {"name": null}
+     * {"name": "Circle"}
      *
      * Let's assume the API responded with:
      * HTTP/1.1 200 OK
-     * {"id": 1, "name": null}
+     * {"id": 1, "name": "Circle"}
      *
      * Response body is "1"
      */
     public function createAction() {
         $em     = $this->getDoctrine()->getEntityManager();
         $entity = new CircleBundle\Entity\Product();
+        $entity->setName('Circle');
         $em->persist($entity);
         $em->flush();
         
@@ -185,9 +184,9 @@ class UserController extends Controller {
      *
      * Let's assume the API responded with:
      * HTTP/1.1 200 OK
-     * {"id": 1, "name": null}
+     * {"id": 1, "name": "Circle"}
      *
-     * Response body is ""
+     * Response body is "Circle"
      */
     public function readAction($id = 1) {
         $em     = $this->getDoctrine()->getEntityManager();
@@ -202,9 +201,9 @@ class UserController extends Controller {
      *
      * Let's assume the API responded with:
      * HTTP/1.1 200 OK
-     * [{"id": 1, "name": null}]
+     * [{"id": 1, "name": "Circle"}]
      *
-     * Response body is ""
+     * Response body is "Circle"
      */
     public function readAllAction() {
         $em       = $this->getDoctrine()->getEntityManager();
@@ -221,7 +220,7 @@ class UserController extends Controller {
      *
      * Let's assume the API responded the GET request with:
      * HTTP/1.1 200 OK
-     * {"id": 1, "name": null}
+     * {"id": 1, "name": "Circle"}
      *
      * and the PUT request with:
      * HTTP/1.1 200 OK
@@ -261,17 +260,17 @@ class UserController extends Controller {
 
 #Examples
 
-Need some more examples? Here they are.
+Need some more examples? Here they are:
 
 ## Using a REST API to verify addresses
-Imagine you have a REST API at http://www.circle.ai/api/v1:
+Imagine you have a REST API at http://www.your-url.com/api:
 
 | Route | Method | Description | Payload | Response | Success HTTP Code | Error HTTP Code |
 | ------------- |:-------------:| -----:|-----:|-----:|-----:|-----:|
 | /addresses | POST | verifies and formats addresses | UnregisteredAddress | RegisteredAddress | 200 | 400 |
 
 
-```
+```c2hs
 typedef UnregisteredAddress {
     street: String,
     city: String
@@ -290,7 +289,7 @@ Let's first configure Doctrine:
 doctrine:
   dbal:
     driver_class: "Circle\\DoctrineRestDriver\\Driver"
-    host:         "http://www.circle.ai/api/v1"
+    host:         "http://www.your-url.com/api"
     port:         "80"
     user:         ""
     password:     ""
@@ -393,7 +392,7 @@ The REST API offers the following additional routes:
 | /users | POST | persists a new user | UnregisteredUser | RegisteredUser |
 | /addresses/\<id\> | GET | returns one address | NULL | RegisteredAddress |
 
-```
+```c2hs
 typedef UnregisteredUser {
     name: String,
     password: String,
@@ -434,7 +433,7 @@ class User {
     private $name;
     
     /**
-     * @ORM\OneToOne(targetEntity="CircleBundle\Address")
+     * @ORM\OneToOne(targetEntity="CircleBundle\Address", cascade={"persist"})
      */
     private $address;
     
@@ -510,13 +509,53 @@ Let $name be "username", $password = "secretPassword" and $addressId = 1
 
 The following requests are sent by using the createAction of the UserController:
 ```
-GET  http://www.circle.ai/api/v1/addresses/1 HTTP/1.1
-POST http://www.circle.ai/api/v1/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
+GET  http://www.your-url.com/api/addresses/1 HTTP/1.1
+POST http://www.your-url.com/api/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
 ```
+
+Because we have used the option "cascade={"persist"}" on the relation between users and addresses POST requests for new addresses are automatically sent if the owning user is persisted:
+
+```php
+<?php
+
+namespace CircleBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\HttpFoundation\Response;
+
+class UserController extends Controller {
+    
+    public function createWithCascadeAction($name = 'username', $password = 'secretPassword', $street = 'myStreet', $city = 'myCity') {
+        $em      = $this->getDoctrine()->getEntityManager();
+        $address = new Address();
+        $user    = new User();
+        
+        $address->setStreet($street)
+            ->setCity($city);
+        
+        $user->setName($name)
+            ->Password($password)
+            ->setAddress($address);
+        
+        $em->persist($user);
+        $em->flush();
+        
+        return new Response('successfully registered');
+    }
+}
+```
+
+The following requests are sent:
+
+```
+POST http://www.your-url.com/api/addresses HTTP/1.1 {"street": "myStreet", "city":"myCity"}
+POST http://www.your-url.com/api/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
+```
+
 
 Great, isn't it?
 
-## Using multiple REST APIs
+## Using multiple Backends
 Of course you can add multiple entity managers as explained in the Doctrine documentation:
 
 ```yml
@@ -525,22 +564,22 @@ doctrine:
     default_connection: default
     connections:
       default:
-        driver_class: "Circle\\DoctrineRestDriver\\Driver"
-        host:         "http://www.circle.ai/api/v1"
-        port:         "80"
-        user:         ""
-        password:     ""
+        driver:   "pdo_mysql"
+        host:     "localhost"
+        port:     "8060"
+        user:     "root"
+        password: "root"
       user_api:
         driver_class: "Circle\\DoctrineRestDriver\\Driver"
-        host:         "http://api.users.circle.ai/api/v1"
+        host:         "http://api.users.your-url.com/api"
         port:         80
-        user:         "Circle"
-        password:     "CircleUsers"
+        user:         ""
+        password:     ""
         options:
           authentication_class:  "HttpAuthentication"
       validation_api:
         driver_class: "Circle\\DoctrineRestDriver\\Driver"
-        host:         "http://api.validation.circle.ai/api/v1"
+        host:         "http://api.validation.your-url.com/api"
         port:         80
         user:         "Circle"
         password:     "CircleAddresses"
@@ -587,7 +626,6 @@ class UserController extends Controller {
         $emValidation->flush();
         
         $emPersistence->persist($user);
-        $emPersistence->persist($address);
         $emPersistence->flush();
         
         return new Response('successfully persisted');
@@ -598,12 +636,12 @@ class UserController extends Controller {
 What's going on here? Have a look at the request log:
 
 ```
-GET  http://api.users.circle.ai/api/v1/users/1 HTTP/1.1
-GET  http://api.users.circle.ai/api/v1/addresses/1 HTTP/1.1
-POST http://api.validation.circle.ai/api/v1/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
-POST http://www.circle.ai/api/v1/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
-POST http://www.circle.ai/api/v1/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
+GET  http://api.users.your-url.com/api/v1/users/1 HTTP/1.1
+GET  http://api.users.your-url.com/api/v1/addresses/1 HTTP/1.1
+POST http://api.validation.your-url.com/api/v1/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
 ```
+
+Afterwards both entities are persisted in the default mysql database.
 
 #Testing
 
