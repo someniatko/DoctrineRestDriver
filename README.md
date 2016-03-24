@@ -522,39 +522,39 @@ doctrine:
         port:         "80"
         user:         ""
         password:     ""
-      twitter_api:
-        driver_class:   "Circle\\DoctrineRestDriver\\Driver"
-        host:           "http://twitter.com/api"
-        port:           80
-        user:           "Circle"
-        password:       "CircleTwitter"
+      user_api:
+        driver_class: "Circle\\DoctrineRestDriver\\Driver"
+        host:         "http://api.users.circle.ai/api/v1"
+        port:         80
+        user:         "Circle"
+        password:     "CircleUsers"
         options:
           authentication_class:  "HttpAuthentication"
-      facebook_api:
-        driver_class:   "Circle\\DoctrineRestDriver\\Driver"
-        host:           "http://facebook.com/api"
-        port:           80
-        user:           "Circle"
-        password:       "CircleFacebook"
+      validation_api:
+        driver_class: "Circle\\DoctrineRestDriver\\Driver"
+        host:         "http://api.validation.circle.ai/api/v1"
+        port:         80
+        user:         "Circle"
+        password:     "CircleAddresses"
         options:
           authentication_class:  "HttpAuthentication"
 ```
 
 Now it's getting crazy. We will read data from one API and send it to another.
-Imagine the twitter API has the following routes:
+Imagine the user API has the following routes:
 
 | Route | Method | Description | Payload | Response |
 | ------------- |:-------------:| -----:|-----:|-----:|
 | /users/\<id\> | GET | returns one user | NULL | RegisteredUser |
 | /addresses/\<id\> | GET | returns one address | NULL | RegisteredAddress |
 
-and the facebook API has the following route:
+and the validation API has the following route:
 
 | Route | Method | Description | Payload | Response | Success HTTP Code | Error HTTP Code |
 | ------------- |:-------------:| -----:|-----:|-----:|-----:|-----:|
 | /addresses | POST | verifies and formats addresses | UnregisteredAddress | RegisteredAddress | 200 | 400 |
 
-We want to use the twitter API to read the users and its addresses and the facebook API to verify the address.
+We want to use the user API to read the users and its addresses and the validation API to verify the address.
 Then we want to persist the data by sending it to our default API.
 
 ```php
@@ -567,22 +567,22 @@ use Symfony\HttpFoundation\Response;
 
 class UserController extends Controller {
 
-    public function createAction($userTwitterId, $name, $password, $addressId) {
-        $emTwitter  = $this->getDoctrine()->getEntityManager('twitter_api');
-        $emFacebook = $this->getDoctrine()->getEntityManager('facebook_api');
-        $em         = $this->getDoctrine()->getEntityManager();
+    public function createAction($userId, $name, $password, $addressId) {
+        $emUsers       = $this->getDoctrine()->getEntityManager('user_api');
+        $emValidation  = $this->getDoctrine()->getEntityManager('validation_api');
+        $emPersistence = $this->getDoctrine()->getEntityManager();
         
-        $user       = $emTwitter->find("CircleBundle\Entity\User", $userTwitterId);
-        $address    = $user->getAddress();
+        $user    = $emUsers->find("CircleBundle\Entity\User", $userId);
+        $address = $user->getAddress();
         
-        $address    = $emFacebook->persist($address);
-        $emFacebook->flush();
+        $address = $emValidation->persist($address);
+        $emValidation->flush();
         
-        $em->persist($user);
-        $em->persist($address);
-        $em->flush();
+        $emPersistence->persist($user);
+        $emPersistence->persist($address);
+        $emPersistence->flush();
         
-        return new Response('successfully registered');
+        return new Response('successfully persisted');
     }
 }
 ```
@@ -590,10 +590,9 @@ class UserController extends Controller {
 What's going on here? Have a look at the request log:
 
 ```
-GET  http://twitter.com/api/v1/users/1 HTTP/1.1
-GET  http://twitter.com/api/v1/addresses/1 HTTP/1.1
-POST http://facebook.com/api/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
-POST http://facebook.com/api/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
+GET  http://api.users.circle.ai/api/v1/users/1 HTTP/1.1
+GET  http://api.users.circle.ai/api/v1/addresses/1 HTTP/1.1
+POST http://api.validation.circle.ai/api/v1/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
 POST http://www.circle.ai/api/v1/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
 POST http://www.circle.ai/api/v1/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
 ```
