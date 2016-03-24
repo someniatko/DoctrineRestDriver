@@ -390,6 +390,7 @@ The REST API offers the following additional routes:
 | Route | Method | Description | Payload | Response |
 | ------------- |:-------------:| -----:|-----:|-----:|
 | /users | POST | persists a new user | UnregisteredUser | RegisteredUser |
+| /addresses | POST | persists a new address | UnregisteredAddress | RegisteredAddress |
 | /addresses/\<id\> | GET | returns one address | NULL | RegisteredAddress |
 
 ```c2hs
