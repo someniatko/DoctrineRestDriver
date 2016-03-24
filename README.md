@@ -407,7 +407,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ORM\Table("users")
+ * @ORM\Table("users") // or "http://www.your-url.com/api/users"
  */
 class User {
 
