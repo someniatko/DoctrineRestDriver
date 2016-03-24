@@ -295,7 +295,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ORM\Table("addresses")
+ * @ORM\Table("addresses") // or "http://www.your-url.com/api/addresses"
  */
 class Address {
 
