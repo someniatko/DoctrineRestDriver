@@ -365,8 +365,8 @@ class AddressController extends Controller {
     public function createAction($street, $city) {
         $em      = $this->getDoctrine()->getEntityManager();
         $address = new CircleBundle\Address();
-        $address->setStreet($street)->setCity($city);
         
+        $address->setStreet($street)->setCity($city);
         $em->persist($address);
         
         try {
