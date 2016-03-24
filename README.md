@@ -83,7 +83,7 @@ doctrine:
   dbal:
     driver_class: "Circle\\DoctrineRestDriver\\Driver"
     host:         "http://www.your-url.com/api"
-    port:         "80"
+    port:         80
     user:         "Circle"
     password:     "CantRenember"
 ```
