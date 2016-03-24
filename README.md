@@ -1,16 +1,33 @@
 # Motivation
-What does a black sheep and a white sheep have in common? They are sheeps.
+What does a black sheep and a white sheep have in common?
 
-What does a big tiger and a small tiger have in common? They are tigers.
+What does a big tiger and a small tiger have in common?
 
 What does a database and a REST API have in common?
 
-So why do we handle two equal things so differently? Why do we need so much boilerplate code to communicate with REST APIs while working with other databases is so easy?
-Maybe this is because we haven't realized that changing a sheeps colour doesn't turn the sheep into a tiger.
+We have the feeling that some of you truely believe that a black sheep is the opposite of a white sheep so they don't have anything in common:
+
+```php
+// This is what your are doing with all databases using Doctrine ...
+$entity = new Entity();
+$entity->setSomeAttribute('attribute');
+$em->persist($entity);
+$em->flush();
+
+// ... except of REST APIs:
+$entity = new Entity();
+$entity->setSomeAttribute('attribute');
+$response = $restClient->post('http://my-url.com/api', $serializer->serialize($entity));
+$entity   = $serializer->deserialize($response->getContent());
+```
+
+We've been waiting for someone to bring the two pieces together, but the dark force is still strong with the REST APIs.
+
+![IMAGE ALT TEXT HERE](http://s8.postimg.org/i7y40b7lx/Bildschirmfoto_2016_03_24_um_15_18_11.png)
 
 "I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way." said Lerdorf, the creator of PHP.
 
-Just overread the first part of his quote so you won't get in trouble with your belief in PHP.
+Just overread the first part of his quote so you won't loose your faith in the dark side.
 Let's focus on the second part of his statement and add the next logical step.
 
 Let's use Doctrine as an abstraction layer to internally send REST requests to URLs. 
