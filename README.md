@@ -13,7 +13,7 @@ What does a database and a REST API have in common?
 Sometimes it's so difficult to realize that two things are equal to each other no matter how many different features they have. Maybe we have to question our view on the world more often.
 
 So after realizing REST APIs are databases have a look at how differently they are handled.
-This is a sketch how to use Doctrine and databases:
+This is a sketch how to use databases with Doctrine:
 
 ```php
 $entity = new Entity();
@@ -22,7 +22,7 @@ $em->persist($entity);
 $em->flush();
 ```
 
-And this sketch shows how to communicate with REST APIs using a REST client:
+This sketch shows how to communicate with REST APIs using a REST client:
 
 ```php
 $entity = new Entity();
