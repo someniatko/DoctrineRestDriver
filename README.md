@@ -12,7 +12,7 @@ What does a database and a REST API have in common?
 
 Sometimes it's so difficult to realize that two things are equal to each other no matter how many different features they have. Maybe we have to question our view on the world more often.
 
-So after realizing REST APIs are databases have a look at how differently they are handled.
+So after realizing REST APIs are databases have a look at how different you use REST APIs besides all other databases.
 This is a sketch how to use databases with Doctrine:
 
 ```php
