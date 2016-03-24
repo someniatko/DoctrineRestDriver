@@ -1,23 +1,23 @@
 # Motivation
+What does a black sheep and a white sheep have in common? They are sheeps.
 
-In the 1940s, the first recognizably modern electrically powered computers were created. The limited speed and memory capacity forced programmers to write hand tuned assembly language programs. It was eventually realized that programming in assembly language required a great deal of intellectual effort and was error-prone.
+What does a big tiger and a small tiger have in common? They are tigers.
 
-At the University of Manchester, Alick Glennie developed Autocode in the early 1950s. A programming language, it used a compiler to automatically convert the language into machine code. The first code and compiler was developed in 1952 for the Mark 1 computer at the University of Manchester and is considered to be the first compiled high-level programming language.
+What does a database and a REST API have in common?
 
-Another milestone in the late 1950s was the publication, by a committee of American and European computer scientists, of "a new language for algorithms"; the ALGOL 60 Report (the "ALGOrithmic Language").
+So why do we handle two equal things so differently? Why do we need so much boilerplate code to communicate with REST APIs while working with other databases is so easy?
+Maybe this is because we haven't realized that changing a sheeps colour doesn't turn the sheep into a tiger.
 
-The development of C started in 1972 and first appeared in Version 2 Unix.
+"I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way." said Lerdorf, the creator of PHP.
 
-PHP development began in 1994 when Rasmus Lerdorf wrote several Common Gateway Interface (CGI) programs in C. He extended them to work with web forms and to communicate with databases, and called this implementation "Personal Home Page/Forms Interpreter" or PHP/FI.
+Just overread the first part of his quote so you won't get in trouble with your belief in PHP.
+Let's focus on the second part of his statement and add the next logical step.
 
-Doctrine was started by Konsta Vesterinen. The project's initial commit was made on April 13, 2006. Like all of the named advantages in programming history it abstracted a language that required some kind of intellectual effort with an additional layer, the database abstraction layer, to make it easier to use.
+Let's use Doctrine as an abstraction layer to internally send REST requests to URLs. 
 
-Early PHP was not intended to be a new programming language, and grew organically, with Lerdorf noting in retrospect: "I don’t know how to stop it, there was never any intent to write a programming language […] I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way."
+Let's get rid off writing REST requests manually.
 
-Let's add the next logical step.
-
-At Circle we believe that requests are assembler instructions in the web. That's why we believe they can be used as foundation for high-level programming languages using the web as if it was a big computer. And that's why this driver exists: We use the Doctrine ORM layer to internally send REST requests to URLs. So the REST requests themselves act like assembler instructions while the Doctrine syntax is used as the high-level programming language. The goal is to get rid off writing REST request calls and instead using a readable, maintainable syntax to get your job done.
-
+Let's use REST APIs as what they are - databases.
 
 # Prerequisites
 
