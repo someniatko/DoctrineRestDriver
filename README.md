@@ -26,7 +26,7 @@ You should first have a look at the requirements before continuing with the setu
         - Has to respond with HTTP code 200 if successful
         - Fill the response body with the given payload plus an id
     - Use PUT to change data
-        - Urls have the following format: http://www.host.de/path/to/api/entityName/\<id\>
+        - Urls have the following format: http://www.host.de/path/to/api/entityName/&lt;id&gt;
         - Use the request body to receive data
         - Has to respond with HTTP code 200 if successful
         - Fill the response body with the given payload
