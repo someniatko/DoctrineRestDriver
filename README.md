@@ -187,7 +187,7 @@ class UserController extends Controller {
      * HTTP/1.1 200 OK
      * {"id": 1, "name": null}
      *
-     * Response body is null if the createAction was executed before
+     * Response body is ""
      */
     public function readAction($id = 1) {
         $em     = $this->getDoctrine()->getEntityManager();
@@ -204,7 +204,7 @@ class UserController extends Controller {
      * HTTP/1.1 200 OK
      * [{"id": 1, "name": null}]
      *
-     * Response body is null if the createAction was executed before
+     * Response body is ""
      */
     public function readAllAction() {
         $em       = $this->getDoctrine()->getEntityManager();
@@ -245,6 +245,8 @@ class UserController extends Controller {
      *
      * Let's assume the API responded with:
      * HTTP/1.1 204 No Content
+     *
+     * Response body is ""
      */
     public function deleteAction($id = 1) {
         $em     = $this->getDoctrine()->getEntityManager();
