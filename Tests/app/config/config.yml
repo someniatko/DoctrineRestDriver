@@ -40,7 +40,7 @@ doctrine:
         password: "%database_password%"
         charset:  UTF8
         options:
-            authenticator_class:  "HttpBasicAuthentication"
+            authenticator_class:  "HttpAuthentication"
             CURLOPT_MAXREDIRS:  25
             CURLOPT_HTTPHEADER: "Content-Type: application/json"
         # if using pdo_sqlite as your database driver:

@@ -18,7 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Validation;
 
-use Circle\DoctrineRestDriver\Security\HttpBasicAuthentication;
+use Circle\DoctrineRestDriver\Security\HttpAuthentication;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
@@ -121,6 +121,6 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function assertAuthStrategy() {
-        $this->assertSame(null, Assertions::assertAuthStrategy(new HttpBasicAuthentication([])));
+        $this->assertSame(null, Assertions::assertAuthStrategy(new HttpAuthentication([])));
     }
 }

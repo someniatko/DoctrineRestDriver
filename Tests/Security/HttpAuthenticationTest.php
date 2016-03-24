@@ -19,7 +19,7 @@
 namespace Circle\DoctrineRestDriver\Tests\Security;
 
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\Security\HttpBasicAuthentication;
+use Circle\DoctrineRestDriver\Security\HttpAuthentication;
 use Circle\DoctrineRestDriver\Types\Request;
 
 /**
@@ -28,12 +28,12 @@ use Circle\DoctrineRestDriver\Types\Request;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Security\HttpBasicAuthentication
+ * @coversDefaultClass Circle\DoctrineRestDriver\Security\HttpAuthentication
  */
-class HttpBasicAuthenticationTest extends \PHPUnit_Framework_TestCase {
+class HttpAuthenticationTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * @var HttpBasicAuthentication
+     * @var HttpAuthentication
      */
     private $authentication;
 
@@ -41,7 +41,7 @@ class HttpBasicAuthenticationTest extends \PHPUnit_Framework_TestCase {
      * {@inheritdoc}
      */
     public function setUp() {
-        $this->authentication = new HttpBasicAuthentication([
+        $this->authentication = new HttpAuthentication([
             'host'          => 'http://circle.ai',
             'user'          => 'Aladdin',
             'password'      => 'OpenSesame',

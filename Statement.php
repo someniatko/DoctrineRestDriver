@@ -105,7 +105,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
         $this->mysqlToRequest    = new MysqlToRequest($options);
         $this->restClientFactory = new RestClientFactory();
 
-        $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : null;
+        $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : 'NoAuthentication';
         $className          = preg_match('/\\\\/', $authenticatorClass) ? $authenticatorClass : 'Circle\DoctrineRestDriver\Security\\' . $authenticatorClass;
         Assertions::assertClassExists($className);
         $this->authStrategy = new $className($options);
@@ -126,7 +126,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function bindParam($column, &$variable, $type = null, $length = null) {
-        return Exceptions::methodNotImplementedException(get_class($this), 'bindParam');
+        return Exceptions::MethodNotImplementedException(get_class($this), 'bindParam');
     }
 
     /**
@@ -218,7 +218,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function fetchColumn($columnIndex = 0) {
-        return Exceptions::methodNotImplementedException(get_class($this), 'fetchColumn');
+        return Exceptions::MethodNotImplementedException(get_class($this), 'fetchColumn');
     }
 
     /**
@@ -267,6 +267,6 @@ class Statement implements \IteratorAggregate, StatementInterface {
         $this->errorCode    = $response->getStatusCode();
         $this->errorMessage = $response->getContent();
 
-        return Exceptions::requestFailedException($request, $response->getStatusCode(), $response->getContent());
+        return Exceptions::RequestFailedException($request, $response->getStatusCode(), $response->getContent());
     }
 }

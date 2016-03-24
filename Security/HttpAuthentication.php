@@ -27,7 +27,7 @@ use Circle\DoctrineRestDriver\Types\Request;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class HttpBasicAuthentication implements AuthStrategy {
+class HttpAuthentication implements AuthStrategy {
 
     /**
      * @var array
