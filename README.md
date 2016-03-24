@@ -3,38 +3,44 @@ What does a black sheep and a white sheep have in common?
 
 What does a big tiger and a small tiger have in common?
 
+What does a frog with two wings, super power, self-healing and beaming ablities and a tree frog have in common?
+
+You think I'm kidding? 
+
+Ok, let me ask you just one more question:
 What does a database and a REST API have in common?
 
-We have the feeling that some of you truely believe that a black sheep is the opposite of a white sheep so they don't have anything in common:
+Sometimes it's so difficult to realize that two things are equal to each other no matter how many different features they have. Maybe we have to question our view on everything more often.
+
+So after realizing REST APIs are databases have a look at how differently they are handled.
+This is a sketch how to use Doctrine and databases:
 
 ```php
-// This is what your are doing with all databases using Doctrine ...
 $entity = new Entity();
 $entity->setSomeAttribute('attribute');
 $em->persist($entity);
 $em->flush();
+```
 
-// ... except of REST APIs:
+And this sketch shows how to communicate with REST APIs using a REST client:
+
+```php
 $entity = new Entity();
 $entity->setSomeAttribute('attribute');
 $response = $restClient->post('http://my-url.com/api', $serializer->serialize($entity));
 $entity   = $serializer->deserialize($response->getContent());
 ```
 
-We've been waiting for someone to bring the two pieces together, but the dark force is still strong with the REST APIs.
-
-![IMAGE ALT TEXT HERE](http://s8.postimg.org/i7y40b7lx/Bildschirmfoto_2016_03_24_um_15_18_11.png)
-
 "I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way." said Lerdorf, the creator of PHP.
 
-Just overread the first part of his quote so you won't loose your faith in the dark side.
-Let's focus on the second part of his statement and add the next logical step.
+Just overread the first part of his quote so you won't loose your faith in PHP.
+Let's focus on the second part of his statement and add the next logical step:
 
-Let's use Doctrine as an abstraction layer to internally send REST requests to URLs. 
+We realized REST APIs are databases.
 
-Let's get rid off writing REST requests manually.
+We realized Doctrine offers a simple API to work with databases.
 
-Let's use REST APIs as what they are - databases.
+So let's use Doctrine as a REST client and get rid off boilerplate code.
 
 # Prerequisites
 
