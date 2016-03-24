@@ -1,15 +1,13 @@
 # Motivation
-- What does a black sheep and a white sheep have in common?
-- What does a big tiger and a small tiger have in common?
-- And what does a database and a REST API have in common?
+What does a black sheep and a white sheep have in common?<br />
+What does a big tiger and a small tiger have in common?<br />
+And what does a database and a REST API have in common?<br />
 
 No matter which color a sheep has, it is a sheep and no matter if a tiger is big or small, it is a tiger. A database is a collection of information that is organized so that it can easily be accessed, managed, and updated and that's exactly what a REST API is.
 
-"I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way." said Lerdorf, the creator of PHP.
-Just skip the first part of his quote so you won't loose your faith in PHP ;)
-Let's focus on the second part and add the next logical step:
+"I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way." said Lerdorf, the creator of PHP. Just skip the first part of his quote so you won't loose your faith in PHP ;) Let's focus on the second part and add the next logical step:
 
-Let's make the whole Doctrine ecosystem act as a REST client to get rid off boilerplate code.
+Let's make the whole Doctrine ecosystem act as a REST client to get rid of boilerplate code.
 
 # Prerequisites
 
@@ -254,12 +252,12 @@ class UserController extends Controller {
 
 Need some more examples? Here they are:
 
-## Using a REST API to verify addresses
+## Persisting entities
 Imagine you have a REST API at http://www.your-url.com/api:
 
 | Route | Method | Description | Payload | Response | Success HTTP Code | Error HTTP Code |
 | ------------- |:-------------:| -----:|-----:|-----:|-----:|-----:|
-| /addresses | POST | verifies and formats addresses | UnregisteredAddress | RegisteredAddress | 200 | 400 |
+| /addresses | POST | persists addresses | UnregisteredAddress | RegisteredAddress | 200 | 400 |
 
 
 ```c2hs
@@ -426,7 +424,7 @@ class User {
     private $name;
     
     /**
-     * @ORM\OneToOne(targetEntity="CircleBundle\Address", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="CircleBundle\Address", cascade={"persist, remove"})
      */
     private $address;
     
@@ -539,7 +537,8 @@ DELETE http://www.your-url.com/api/users/1 HTTP/1.1
 Great, isn't it?
 
 ## Using multiple Backends
-Of course you can add multiple entity managers as explained in the Doctrine documentation:
+In this last example we split the user and the address routes into two different REST APIs.
+This means we need multiple entity managers which is explained in the Doctrine documentation:
 
 ```yml
 doctrine:
@@ -549,20 +548,20 @@ doctrine:
       default:
         driver:   "pdo_mysql"
         host:     "localhost"
-        port:     "8060"
+        port:     3306
         user:     "root"
         password: "root"
       user_api:
         driver_class: "Circle\\DoctrineRestDriver\\Driver"
-        host:         "http://www.your-url.com/api"
+        host:         "http://api.user.your-url.com"
         port:         80
-        user:         ""
-        password:     ""
+        user:         "Circle"
+        password:     "CircleUsers"
         options:
           authentication_class:  "HttpAuthentication"
-      validation_api:
+      address_api:
         driver_class: "Circle\\DoctrineRestDriver\\Driver"
-        host:         "http://api.validation.your-url.com/api"
+        host:         "http://api.address.your-url.com"
         port:         80
         user:         "Circle"
         password:     "CircleAddresses"
@@ -570,22 +569,21 @@ doctrine:
           authentication_class:  "HttpAuthentication"
 ```
 
-Now it's getting crazy. We will try to read data from one API and send it to another.
-Imagine a user API with the following routes:
+Now it's getting crazy. We will try to read data from two different APIs and persist them into a mysql database.
+Imagine the user API with the following route:
 
 | Route | Method | Description | Payload | Response |
 | ------------- |:-------------:| -----:|-----:|-----:|
 | /users/\<id\> | GET | returns one user | NULL | RegisteredUser |
+
+and the address API with this entry point:
+
+| Route | Method | Description | Payload | Response |
+| ------------- |:-------------:| -----:|-----:|-----:|
 | /addresses/\<id\> | GET | returns one address | NULL | RegisteredAddress |
 
-and a validation API with this entry points:
-
-| Route | Method | Description | Payload | Response | Success HTTP Code | Error HTTP Code |
-| ------------- |:-------------:| -----:|-----:|-----:|-----:|-----:|
-| /addresses | POST | verifies and formats addresses | UnregisteredAddress | RegisteredAddress | 200 | 400 |
-
-We want to use the user API to read the users and its addresses and the validation API to verify the address.
-Then we want to persist the data into our mysql database.
+We want to read a user from the user API and an address from the address API.
+Then we will associate and persist them in our mysql database.
 
 ```php
 <?php
@@ -597,17 +595,16 @@ use Symfony\HttpFoundation\Response;
 
 class UserController extends Controller {
 
-    public function createAction($userId, $name, $password, $addressId) {
+    public function createAction($userId, $addressId) {
         $emUsers       = $this->getDoctrine()->getEntityManager('user_api');
-        $emValidation  = $this->getDoctrine()->getEntityManager('validation_api');
+        $emAddresses   = $this->getDoctrine()->getEntityManager('address_api');
         $emPersistence = $this->getDoctrine()->getEntityManager();
         
         $user    = $emUsers->find("CircleBundle\Entity\User", $userId);
-        $address = $user->getAddress();
+        $address = $emAddresses->find("CircleBundle\Entity\Address", $addressId);
+        $user->setAddress($address);
         
-        $address = $emValidation->persist($address);
-        $emValidation->flush();
-        
+        $emPersistence->persist($address);
         $emPersistence->persist($user);
         $emPersistence->flush();
         
@@ -616,12 +613,11 @@ class UserController extends Controller {
 }
 ```
 
-What's going on here? Have a look at the request log:
+As you can see in the request log both APIs are requested:
 
 ```
-GET  http://www.your-url.com/api/v1/users/1 HTTP/1.1
-GET  http://www.your-url.com/api/v1/addresses/1 HTTP/1.1
-POST http://api.validation.your-url.com/api/v1/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
+GET  http://api.users.your-url.com/users/1 HTTP/1.1
+GET  http://api.addresses.your-url.com/addresses/1 HTTP/1.1
 ```
 
 Afterwards both entities are persisted in the default mysql database.
