@@ -3,49 +3,21 @@ What does a black sheep and a white sheep have in common?
 
 What does a big tiger and a small tiger have in common?
 
-What does a frog with two wings, super power, self-healing and beaming ablities and a tree frog have in common?
+And what does a database and a REST API have in common?
 
-You think I'm kidding? 
-
-Ok, let me ask you just one more question:
-What does a database and a REST API have in common?
-
-Sometimes it's so difficult to realize that two things are equal to each other no matter how many different features they have. Maybe we have to question our view on the world more often.
-
-So after realizing REST APIs are databases have a look at how different you use REST APIs besides all other databases.
-This is a sketch how to use databases with Doctrine:
-
-```php
-$entity = new Entity();
-$entity->setSomeAttribute('attribute');
-$em->persist($entity);
-$em->flush();
-```
-
-This sketch shows how to communicate with REST APIs using a REST client:
-
-```php
-$entity = new Entity();
-$entity->setSomeAttribute('attribute');
-$response = $restClient->post('http://my-url.com/api', $serializer->serialize($entity));
-$entity   = $serializer->deserialize($response->getContent());
-```
+No matter which color a sheep has, it is a sheep and no matter if a tiger is big or small, it is a tiger. A database is a collection of information that is organized so that it can easily be accessed, managed, and updated and that's exactly what a REST API is.
 
 "I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way." said Lerdorf, the creator of PHP.
 
-Just overread the first part of his quote so you won't loose your faith in PHP.
-Let's focus on the second part of his statement and add the next logical step:
+Just skip the first part of his quote so you won't loose your faith in PHP ;)
+Let's focus on the second part and add the next logical step:
 
-We realized REST APIs are databases.
-
-We realized Doctrine offers a simple API to work with databases.
-
-So let's use Doctrine as a REST client and get rid off boilerplate code.
+Let's make the whole Doctrine ecosystem act as a REST client to get rid off boilerplate code.
 
 # Prerequisites
 
 - You need composer to download the library
-- Your REST API has to return JSON and strictly follow the following rules:
+- Your REST API has to return JSON and to adhere to the following rules:
     - Use POST to create new data
         - Urls have the following format: ```http://www.host.de/path/to/api/entityName```
         - Use the request body to receive data
@@ -118,7 +90,7 @@ doctrine:
     host:         "http://www.your-url.com/api"
     port:         "80"
     user:         "Circle"
-    password:     "CircleIsGreat"
+    password:     "CantRenember"
 ```
 
 First of all create your entities:
@@ -168,7 +140,7 @@ class Product {
 ```
 
 Afterwards you are able to use the created entity as if you were using a database.
-Let's assume we have used the value "http://www.yourSite.com/api/products" for the product entity's @Table annotation.
+Let's assume we have used the value ```http://www.yourSite.com/api/products``` for the product entity's ```@Table``` annotation.
 
 ```php
 <?php
@@ -373,7 +345,7 @@ class Address {
 }
 ```
 
-Then the controller and its action:
+And finally the controller and its action:
 
 ```php
 <?php
@@ -457,7 +429,7 @@ class User {
     private $name;
     
     /**
-     * @ORM\OneToOne(targetEntity="CircleBundle\Address", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="CircleBundle\Address", cascade={"remove"})
      */
     private $address;
     
@@ -529,15 +501,14 @@ class UserController extends Controller {
 }
 ```
 
-Let $name be "username", $password = "secretPassword" and $addressId = 1
+if we now set name to ```username```, password to ```secretPassword``` and adressid to ```1``` by triggering the createAction, the following requests would be sent by our driver:
 
-The following requests are sent by using the createAction of the UserController:
 ```
 GET  http://www.your-url.com/api/addresses/1 HTTP/1.1
 POST http://www.your-url.com/api/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
 ```
 
-Because we have used the option "cascade={"persist"}" on the relation between users and addresses POST requests for new addresses are automatically sent if the owning user is persisted:
+Because we have used the option ```cascade={"remove"}``` on the relation between users and addresses DELETE requests for addresses are automatically sent if the owning user is removed:
 
 ```php
 <?php
@@ -549,22 +520,13 @@ use Symfony\HttpFoundation\Response;
 
 class UserController extends Controller {
     
-    public function createWithCascadeAction($name = 'username', $password = 'secretPassword', $street = 'myStreet', $city = 'myCity') {
-        $em      = $this->getDoctrine()->getEntityManager();
-        $address = new Address();
-        $user    = new User();
-        
-        $address->setStreet($street)
-            ->setCity($city);
-        
-        $user->setName($name)
-            ->Password($password)
-            ->setAddress($address);
-        
-        $em->persist($user);
+    public function remove($id = 1) {
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->find('CircleBundle\Entity\User', $id);
+        $em->remove($em);
         $em->flush();
         
-        return new Response('successfully registered');
+        return new Response('successfully removed');
     }
 }
 ```
@@ -572,8 +534,8 @@ class UserController extends Controller {
 The following requests are sent:
 
 ```
-POST http://www.your-url.com/api/addresses HTTP/1.1 {"street": "myStreet", "city":"myCity"}
-POST http://www.your-url.com/api/users HTTP/1.1 {"name": "username", "password":"secretPassword", "address":1}
+DELETE http://www.your-url.com/api/addresses/1 HTTP/1.1
+DELETE http://www.your-url.com/api/users/1 HTTP/1.1
 ```
 
 
@@ -595,7 +557,7 @@ doctrine:
         password: "root"
       user_api:
         driver_class: "Circle\\DoctrineRestDriver\\Driver"
-        host:         "http://api.users.your-url.com/api"
+        host:         "http://www.your-url.com/api"
         port:         80
         user:         ""
         password:     ""
@@ -611,22 +573,22 @@ doctrine:
           authentication_class:  "HttpAuthentication"
 ```
 
-Now it's getting crazy. We will read data from one API and send it to another.
-Imagine the user API has the following routes:
+Now it's getting crazy. We will try to read data from one API and send it to another.
+Imagine a user API with the following routes:
 
 | Route | Method | Description | Payload | Response |
 | ------------- |:-------------:| -----:|-----:|-----:|
 | /users/\<id\> | GET | returns one user | NULL | RegisteredUser |
 | /addresses/\<id\> | GET | returns one address | NULL | RegisteredAddress |
 
-and the validation API has the following route:
+and a validation API with this entry points:
 
 | Route | Method | Description | Payload | Response | Success HTTP Code | Error HTTP Code |
 | ------------- |:-------------:| -----:|-----:|-----:|-----:|-----:|
 | /addresses | POST | verifies and formats addresses | UnregisteredAddress | RegisteredAddress | 200 | 400 |
 
 We want to use the user API to read the users and its addresses and the validation API to verify the address.
-Then we want to persist the data by sending it to our default API.
+Then we want to persist the data into our mysql database.
 
 ```php
 <?php
@@ -660,8 +622,8 @@ class UserController extends Controller {
 What's going on here? Have a look at the request log:
 
 ```
-GET  http://api.users.your-url.com/api/v1/users/1 HTTP/1.1
-GET  http://api.users.your-url.com/api/v1/addresses/1 HTTP/1.1
+GET  http://www.your-url.com/api/v1/users/1 HTTP/1.1
+GET  http://www.your-url.com/api/v1/addresses/1 HTTP/1.1
 POST http://api.validation.your-url.com/api/v1/addresses HTTP/1.1 {"street": "someValue", "city": "someValue"}
 ```
 
