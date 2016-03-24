@@ -1,6 +1,6 @@
 # Motivation
 What does a black sheep and a white sheep have in common?<br />
-What does a big tiger and a small tiger have in common?<br />
+What does a big bus and a small bus have in common?<br />
 And what does a database and a REST API have in common?<br />
 
 No matter which color a sheep has, it is a sheep and no matter if a tiger is big or small, it is a tiger. A database is a collection of information that is organized so that it can easily be accessed, managed, and updated and that's exactly what a REST API is.
