@@ -7,11 +7,11 @@ No matter how a sheep is colored, it is a sheep.<br />
 No matter how a bus is sized, it is a bus.<br />
 And no matter how a database is called, it is a database.
 
-These statements are easy to read, but have an extensive consequence. Because REST APIs are databases we are able to use tools like Doctrine to put an abstraction layer on top of them and use object relational mapping.
+These statements are easy to read, but have an extensive consequence. Because REST APIs are databases we are able to put an abstraction layer on top of them and use object relational mapping.
 
 "I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way." said Lerdorf, the creator of PHP. Just skip the first part of his quote so you won't loose your faith in PHP ;) Let's focus on the second part and add the next logical step:
 
-Let's enable Doctrine and its ecosystem to use REST APIs as databases and get rid of boilerplate code.
+Let's enable Doctrine's database abstraction layer to use REST APIs and get rid of boilerplate code.
 
 # Prerequisites
 
