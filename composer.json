@@ -9,7 +9,7 @@
     }
   ],
   "keywords": [
-    "REST API doctrine ORM"
+    "REST API doctrine ORM DBAL driver"
   ],
   "license": [
     "GPL"
@@ -40,7 +40,6 @@
     "doctrine/orm": "^2.5",
     "doctrine/doctrine-bundle": "^1.6",
     "symfony/validator": "^3.0",
-    "ci/restclientbundle": "^1.0",
-    "symfony/event-dispatcher": "^3.0"
+    "ci/restclientbundle": "^1.0"
   }
 }
