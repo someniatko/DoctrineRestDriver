@@ -3,11 +3,15 @@ What does a black sheep and a white sheep have in common?<br />
 What does a big bus and a small bus have in common?<br />
 And what does a database and a REST API have in common?<br />
 
-No matter which color a sheep has, it is a sheep and no matter if a bus is big or small, it is a bus. A database is a collection of information that is organized so that it can easily be accessed, managed, and updated and that's exactly what a REST API is.
+No matter how a sheep is colored, it is a sheep.<br />
+No matter how a bus is sized, it is a bus.<br />
+No matter how a database is called, it is a database.
+
+These statements are easy to read, but have an extensive consequence. Because REST APIs are databases we are able to use tools like Doctrine to put an abstraction layer on top of them and use object relational mapping.
 
 "I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way." said Lerdorf, the creator of PHP. Just skip the first part of his quote so you won't loose your faith in PHP ;) Let's focus on the second part and add the next logical step:
 
-Let's make the whole Doctrine ecosystem act as a REST client to get rid of boilerplate code.
+Let's enable Doctrine and its ecosystem to use REST APIs as databases and get rid of boilerplate code.
 
 # Prerequisites
 
