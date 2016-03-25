@@ -5,7 +5,7 @@ And what does a database and a REST API have in common?<br />
 
 No matter how a sheep is colored, it is a sheep.<br />
 No matter how a bus is sized, it is a bus.<br />
-No matter how a database is called, it is a database.
+And no matter how a database is called, it is a database.
 
 These statements are easy to read, but have an extensive consequence. Because REST APIs are databases we are able to use tools like Doctrine to put an abstraction layer on top of them and use object relational mapping.
 
