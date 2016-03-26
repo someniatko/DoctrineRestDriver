@@ -1,6 +1,6 @@
 # This file is auto-generated during the composer install
 parameters:
-    database_host: http://localhost:3000/app_dev.php/mockapi
+    database_host: http://127.0.0.1:3000/app_dev.php/mockapi
     database_port: null
     database_name: symfony
     database_user: Aladdin
