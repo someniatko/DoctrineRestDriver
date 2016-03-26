@@ -1,17 +1,11 @@
 # Motivation
-What does a black sheep and a white sheep have in common?<br />
-What does a big bus and a small bus have in common?<br />
-And what does a database and a REST API have in common?<br />
+What does a black sheep and a white sheep have in common? They produce wool.<br />
+What does a big bus and a small bus have in common? They drive people around.<br />
+And what does a SQL database and a REST API have in common? They store data.<br />
 
-No matter how a sheep is colored, it is a sheep.<br />
-No matter how a bus is sized, it is a bus.<br />
-And no matter how a database is called, it is a database.
+As blatantly obvious as this sounds the consequences are tremendous: With REST APIs being nothing more than data storage backends, we are able to reuse object relational mapping tools to access them.
 
-These statements are easy to read, but have an extensive consequence. Because REST APIs are databases we are able to put an abstraction layer on top of them and use object relational mapping.
-
-"I have absolutely no idea how to write a programming language, I just kept adding the next logical step on the way." said Lerdorf, the creator of PHP. Just skip the first part of his quote so you won't loose your faith in PHP ;) Let's focus on the second part and add the next logical step:
-
-Let's enable Doctrine's database abstraction layer to use REST APIs and get rid of boilerplate code.
+And because we have absolutely no idea how to write a programming language, we're tryin to do it like Rasmus and keep adding the next logical step on the way. So DoctrineRestDriver saw the light of day.
 
 # Prerequisites
 
@@ -101,12 +95,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * This annotation marks the class as managed entity:
+ *
  * @ORM\Entity
  *
  * You can either only use a resource name or the whole url of
  * the resource to define your target. In the first case the target 
  * url will consist of the host, configured in your options and the 
  * given name. In the second one your argument is used as it is.
+ *
  * @ORM\Table("products|http://www.yourSite.com/api/products")
  */
 class Product {
@@ -176,7 +172,7 @@ class UserController extends Controller {
      * Sends the following request to the API by default:
      * GET http://www.yourSite.com/api/products/1 HTTP/1.1
      *
-     * Let's assume the API responded with:
+     * which might respond with:
      * HTTP/1.1 200 OK
      * {"id": 1, "name": "Circle"}
      *
@@ -193,7 +189,7 @@ class UserController extends Controller {
      * Sends the following request to the API:
      * GET http://www.yourSite.com/api/products HTTP/1.1
      *
-     * Let's assume the API responded with:
+     * Example response:
      * HTTP/1.1 200 OK
      * [{"id": 1, "name": "Circle"}]
      *
@@ -220,7 +216,7 @@ class UserController extends Controller {
      * HTTP/1.1 200 OK
      * {"id": 1, "name": "myName"}
      *
-     * Response body is "myName"
+     * Then the response body is "myName"
      */
     public function updateAction($id = 1) {
         $em     = $this->getDoctrine()->getEntityManager();
@@ -236,10 +232,10 @@ class UserController extends Controller {
      * request to the API by default:
      * DELETE http://www.yourSite.com/api/products/1 HTTP/1.1
      *
-     * Let's assume the API responded with:
+     * If the response is:
      * HTTP/1.1 204 No Content
      *
-     * Response body is ""
+     * the response body is ""
      */
     public function deleteAction($id = 1) {
         $em     = $this->getDoctrine()->getEntityManager();
@@ -500,7 +496,7 @@ class UserController extends Controller {
 }
 ```
 
-if we now set name to ```username```, password to ```secretPassword``` and adressid to ```1``` by triggering the createAction, the following requests would be sent by our driver:
+if we now set name to ```username```, password to ```secretPassword``` and adressId to ```1``` by triggering the createAction, the following requests would be sent by our driver:
 
 ```
 GET  http://www.your-url.com/api/addresses/1 HTTP/1.1
@@ -624,7 +620,7 @@ GET  http://api.users.your-url.com/users/1 HTTP/1.1
 GET  http://api.addresses.your-url.com/addresses/1 HTTP/1.1
 ```
 
-Afterwards both entities are persisted in the default mysql database.
+Afterwards both entities are persisted in the default MySQL database.
 
 #Testing
 
