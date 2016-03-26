@@ -102,6 +102,7 @@ use Doctrine\ORM\Mapping as ORM;
  * the resource to define your target. In the first case the target 
  * url will consist of the host, configured in your options and the 
  * given name. In the second one your argument is used as it is.
+ * Important: The resource name must begin with its protocol.
  *
  * @ORM\Table("products|http://www.yourSite.com/api/products")
  */
