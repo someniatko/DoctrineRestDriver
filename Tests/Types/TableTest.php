@@ -28,6 +28,8 @@ use PHPSQLParser\PHPSQLParser;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @coversDefaultClass Circle\DoctrineRestDriver\Types\Table
+ *
+ * @SuppressWarnings("PHPMD.TooManyPublicMethods")
  */
 class TableTest extends \PHPUnit_Framework_TestCase {
 
@@ -38,7 +40,7 @@ class TableTest extends \PHPUnit_Framework_TestCase {
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function create() {
+    public function createSelect() {
         $parser = new PHPSQLParser();
         $tokens = $parser->parse('SELECT name FROM products p0');
 
@@ -52,9 +54,149 @@ class TableTest extends \PHPUnit_Framework_TestCase {
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function alias() {
+    public function aliasSelect() {
         $parser = new PHPSQLParser();
         $tokens = $parser->parse('SELECT name FROM products p0');
+
+        $this->assertSame('p0', Table::alias($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createSelectWithUrl() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('SELECT name FROM "http://www.circle.ai/api" p0');
+
+        $this->assertSame('http://www.circle.ai/api', Table::create($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::alias
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function aliasSelectWithUrl() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('SELECT name FROM "http://www.circle.ai/api" p0');
+
+        $this->assertSame('p0', Table::alias($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createInsert() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('INSERT INTO products (name) VALUES (name)');
+
+        $this->assertSame('products', Table::create($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::alias
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function aliasInsert() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('INSERT INTO products (name) VALUES (name)');
+
+        $this->assertSame(null, Table::alias($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createInsertWithUrl() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('INSERT INTO "http://www.circle.ai/api" (name) VALUES (name)');
+
+        $this->assertSame('http://www.circle.ai/api', Table::create($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::alias
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function aliasInsertWithUrl() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('INSERT INTO "http://www.circle.ai/api" (name) VALUES (name)');
+
+        $this->assertSame(null, Table::alias($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createUpdate() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('UPDATE products p0 set name="name"');
+
+        $this->assertSame('products', Table::create($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::alias
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function aliasUpdate() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('UPDATE products p0 set name="name"');
+
+        $this->assertSame('p0', Table::alias($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createUpdateWithUrl() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('UPDATE "http://www.circle.ai/api" p0 set name="name"');
+
+        $this->assertSame('http://www.circle.ai/api', Table::create($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::alias
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function aliasUpdateWithUrl() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('UPDATE "http://www.circle.ai/api" p0 set name="name"');
 
         $this->assertSame('p0', Table::alias($tokens));
     }

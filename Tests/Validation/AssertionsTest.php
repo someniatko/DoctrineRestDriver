@@ -116,6 +116,33 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      * @group  unit
+     * @covers ::isUrl
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function isUrlLocalhostTest() {
+        $this->assertTrue(Assertions::isUrl('http://localhost:3000'));
+        $this->assertTrue(Assertions::isUrl('http://localhost:3000/api?filter=true'));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::isUrl
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function isNoUrlTest() {
+        $this->assertFalse(Assertions::isUrl('http:/localhost:3000'));
+        $this->assertFalse(Assertions::isUrl('localhost:3000'));
+        $this->assertFalse(Assertions::isUrl('www.circle.ai'));
+        $this->assertFalse(Assertions::isUrl('noUrl'));
+        $this->assertFalse(Assertions::isUrl(1));
+    }
+
+    /**
+     * @test
+     * @group  unit
      * @covers ::assertAuthStrategy
      *
      * @SuppressWarnings("PHPMD.StaticAccess")

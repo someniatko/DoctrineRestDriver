@@ -20,6 +20,7 @@ namespace Circle\DoctrineRestDriver\Transformers;
 
 use Circle\DoctrineRestDriver\Factory\RequestFactory;
 use Circle\DoctrineRestDriver\Types\Request;
+use Circle\DoctrineRestDriver\Validation\Assertions;
 use PHPSQLParser\PHPSQLParser;
 
 /**
@@ -68,12 +69,19 @@ class MysqlToRequest {
      * @param  string $query
      * @param  array  $params
      * @return Request
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function transform($query, array $params = []) {
         $query = array_reduce($params, function($query, $param) {
             return strpos($query, '?') ? substr_replace($query, $param, strpos($query, '?'), strlen('?')) : $query;
         }, $query);
 
-        return $this->requestFactory->createOne($this->parser->parse($query), $this->apiUrl, $this->options);
+        $queryParts = explode(' ', $query);
+        $transformedQuery = array_reduce($queryParts, function($carry, $part) {
+            return $carry . (Assertions::isUrl($part) ? ('"' . $part . '" ') : ($part . ' '));
+        });
+
+        return $this->requestFactory->createOne($this->parser->parse($transformedQuery), $this->apiUrl, $this->options);
     }
 }

@@ -41,16 +41,16 @@ class Table {
         Assertions::assertHashMap('tokens', $tokens);
 
         $operation = SqlOperation::create($tokens);
-        if ($operation === SqlOperations::UPDATE) return str_replace('\'', '', $tokens['UPDATE'][0]['table']);
-        if ($operation === SqlOperations::INSERT) return str_replace('\'', '', $tokens['INSERT'][1]['table']);
-        return str_replace('\'', '', $tokens['FROM'][0]['table']);
+        if ($operation === SqlOperations::INSERT) return $tokens['INSERT'][1]['no_quotes']['parts'][0];
+        if ($operation === SqlOperations::UPDATE) return $tokens['UPDATE'][0]['no_quotes']['parts'][0];
+        return $tokens['FROM'][0]['no_quotes']['parts'][0];
     }
 
     /**
      * Returns the table's alias
      *
      * @param  array  $tokens
-     * @return string
+     * @return null|string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
@@ -58,7 +58,7 @@ class Table {
         Assertions::assertHashMap('tokens', $tokens);
 
         $operation = SqlOperation::create($tokens);
-        if ($operation === SqlOperations::INSERT) return $tokens['INSERT'][1]['alias']['name'];
+        if ($operation === SqlOperations::INSERT) return null;
         if ($operation === SqlOperations::UPDATE) return $tokens['UPDATE'][0]['alias']['name'];
         return $tokens['FROM'][0]['alias']['name'];
     }
