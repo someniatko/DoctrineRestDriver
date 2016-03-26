@@ -200,18 +200,4 @@ class TableTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame('p0', Table::alias($tokens));
     }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::expression
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function expression() {
-        $parser = new PHPSQLParser();
-        $tokens = $parser->parse('SELECT name FROM products p0');
-
-        $this->assertSame('products p0', Table::expression($tokens));
-    }
 }

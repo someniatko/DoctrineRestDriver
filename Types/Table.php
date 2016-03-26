@@ -40,9 +40,10 @@ class Table {
     public static function create(array $tokens) {
         Assertions::assertHashMap('tokens', $tokens);
 
-        $expression = self::expression($tokens);
-        $parts      = explode(' ', $expression);
-        return $parts[0];
+        $operation = SqlOperation::create($tokens);
+        if ($operation === SqlOperations::INSERT) return str_replace('"', '', $tokens['INSERT'][1]['no_quotes']['parts'][0]);
+        if ($operation === SqlOperations::UPDATE) return str_replace('"', '', $tokens['UPDATE'][0]['no_quotes']['parts'][0]);
+        return $tokens['FROM'][0]['no_quotes']['parts'][0];
     }
 
     /**
@@ -58,27 +59,7 @@ class Table {
 
         $operation = SqlOperation::create($tokens);
         if ($operation === SqlOperations::INSERT) return null;
-
-        $expression = self::expression($tokens);
-        $parts      = explode(' ', $expression);
-        return count($parts) > 1 ? end($parts) : null;
-    }
-
-    /**
-     * Returns the table expression: table name and alias
-     * if exists
-     *
-     * @param  array $tokens
-     * @return string
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public static function expression(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
-
-        $operation = SqlOperation::create($tokens);
-        if ($operation === SqlOperations::INSERT) return str_replace('"', '', $tokens['INSERT'][1]['base_expr']);
-        if ($operation === SqlOperations::UPDATE) return str_replace('"', '', $tokens['UPDATE'][0]['base_expr']);
-        return str_replace('"', '', $tokens['FROM'][0]['base_expr']);
+        if ($operation === SqlOperations::UPDATE) return str_replace('"', '', $tokens['UPDATE'][0]['alias']['name']);
+        return $tokens['FROM'][0]['alias']['name'];
     }
 }
