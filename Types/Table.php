@@ -41,8 +41,8 @@ class Table {
         Assertions::assertHashMap('tokens', $tokens);
 
         $operation = SqlOperation::create($tokens);
-        if ($operation === SqlOperations::INSERT) return str_replace('"', '', $tokens['INSERT'][1]['no_quotes']['parts'][0]);
-        if ($operation === SqlOperations::UPDATE) return str_replace('"', '', $tokens['UPDATE'][0]['no_quotes']['parts'][0]);
+        if ($operation === SqlOperations::INSERT) return $tokens['INSERT'][1]['no_quotes']['parts'][0];
+        if ($operation === SqlOperations::UPDATE) return $tokens['UPDATE'][0]['no_quotes']['parts'][0];
         return $tokens['FROM'][0]['no_quotes']['parts'][0];
     }
 
@@ -59,7 +59,7 @@ class Table {
 
         $operation = SqlOperation::create($tokens);
         if ($operation === SqlOperations::INSERT) return null;
-        if ($operation === SqlOperations::UPDATE) return str_replace('"', '', $tokens['UPDATE'][0]['alias']['name']);
+        if ($operation === SqlOperations::UPDATE) return $tokens['UPDATE'][0]['alias']['name'];
         return $tokens['FROM'][0]['alias']['name'];
     }
 }
