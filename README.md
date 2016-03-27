@@ -65,9 +65,9 @@ doctrine:
     user:         "%default_api_username%"
     password:     "%default_api_password%"
     options:
-      authentication_class:  "HttpAuthentication"
+      authentication_class:           "HttpAuthentication"
       CURLOPT_CURLOPT_FOLLOWLOCATION: true
-      CURLOPT_HEADER: true
+      CURLOPT_HEADER:                 true
 ```
 
 A full list of all possible options can be found here: http://php.net/manual/en/function.curl-setopt.php
@@ -160,7 +160,7 @@ class UserController extends Controller {
      * Response body is "1"
      */
     public function createAction() {
-        $em     = $this->getDoctrine()->getEntityManager();
+        $em     = $this->getDoctrine()->getManager();
         $entity = new CircleBundle\Entity\Product();
         $entity->setName('Circle');
         $em->persist($entity);
@@ -180,7 +180,7 @@ class UserController extends Controller {
      * Response body is "Circle"
      */
     public function readAction($id = 1) {
-        $em     = $this->getDoctrine()->getEntityManager();
+        $em     = $this->getDoctrine()->getManager();
         $entity = $em->find('CircleBundle\Entity\Product', $id);
         
         return new Response($entity->getName());
@@ -197,7 +197,7 @@ class UserController extends Controller {
      * Response body is "Circle"
      */
     public function readAllAction() {
-        $em       = $this->getDoctrine()->getEntityManager();
+        $em       = $this->getDoctrine()->getManager();
         $entities = $em->getRepository('CircleBundle\Entity\Product')->findAll();
         
         return new Response($entities->first()->getName());
@@ -220,7 +220,7 @@ class UserController extends Controller {
      * Then the response body is "myName"
      */
     public function updateAction($id = 1) {
-        $em     = $this->getDoctrine()->getEntityManager();
+        $em     = $this->getDoctrine()->getManager();
         $entity = $em->find('CircleBundle\Entity\Product', $id);
         $entity->setName('myName');
         $em->flush();
@@ -239,7 +239,7 @@ class UserController extends Controller {
      * the response body is ""
      */
     public function deleteAction($id = 1) {
-        $em     = $this->getDoctrine()->getEntityManager();
+        $em     = $this->getDoctrine()->getManager();
         $entity = $em->find('CircleBundle\Entity\Product', $id);
         $em->remove($entity);
         $em->flush();
@@ -354,7 +354,7 @@ use Symfony\HttpFoundation\Response;
 class AddressController extends Controller {
 
     public function createAction($street, $city) {
-        $em      = $this->getDoctrine()->getEntityManager();
+        $em      = $this->getDoctrine()->getManager();
         $address = new CircleBundle\Address();
         
         $address->setStreet($street)->setCity($city);
@@ -374,7 +374,7 @@ That's it. Each time the createAction is called it will send a POST request to t
 
 ## Associating entities
 
-Let's extend the first example. Now we want to add users to the addresses.
+Let's extend the first example. Now we want to add a new entity type ```User``` which references the addresses defined in the previous example.
 
 The REST API offers the following additional routes:
 
@@ -399,7 +399,7 @@ typedef RegisteredUser {
 }
 ```
 
-We need to build an additional entity "User":
+First, we need to build an additional entity "User":
 
 ```php
 namespace Circle\Entity;
@@ -481,7 +481,7 @@ use Symfony\HttpFoundation\Response;
 class UserController extends Controller {
 
     public function createAction($name, $password, $addressId) {
-        $em      = $this->getDoctrine()->getEntityManager();
+        $em      = $this->getDoctrine()->getManager();
         $address = $em->find("CircleBundle\Entity\Address", $addressId);
         $user    = new User();
         
@@ -497,7 +497,7 @@ class UserController extends Controller {
 }
 ```
 
-if we now set name to ```username```, password to ```secretPassword``` and adressId to ```1``` by triggering the createAction, the following requests would be sent by our driver:
+If we'd set name to ```username```, password to ```secretPassword``` and adressId to ```1``` by triggering the createAction, the following requests would be sent by our driver:
 
 ```
 GET  http://www.your-url.com/api/addresses/1 HTTP/1.1
@@ -517,7 +517,7 @@ use Symfony\HttpFoundation\Response;
 class UserController extends Controller {
     
     public function remove($id = 1) {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->find('CircleBundle\Entity\User', $id);
         $em->remove($em);
         $em->flush();
@@ -527,8 +527,8 @@ class UserController extends Controller {
 }
 ```
 
-The following requests are sent:
 
+For example, a DELETE request with the id ```1``` would trigger these requests:
 ```
 DELETE http://www.your-url.com/api/addresses/1 HTTP/1.1
 DELETE http://www.your-url.com/api/users/1 HTTP/1.1
@@ -539,7 +539,7 @@ Great, isn't it?
 
 ## Using multiple Backends
 In this last example we split the user and the address routes into two different REST APIs.
-This means we need multiple entity managers which is explained in the Doctrine documentation:
+This means we need multiple managers which is explained in the Doctrine documentation:
 
 ```yml
 doctrine:
@@ -570,7 +570,7 @@ doctrine:
           authentication_class:  "HttpAuthentication"
 ```
 
-Now it's getting crazy. We will try to read data from two different APIs and persist them into a mysql database.
+Now it's getting crazy. We will try to read data from two different APIs and persist them into a MySQL database.
 Imagine the user API with the following route:
 
 | Route | Method | Description | Payload | Response |
@@ -584,7 +584,7 @@ and the address API with this entry point:
 | /addresses/\<id\> | GET | returns one address | NULL | RegisteredAddress |
 
 We want to read a user from the user API and an address from the address API.
-Then we will associate and persist them in our mysql database.
+After that we will associate and persist them in our MySQL database.
 
 ```php
 <?php
@@ -597,9 +597,9 @@ use Symfony\HttpFoundation\Response;
 class UserController extends Controller {
 
     public function createAction($userId, $addressId) {
-        $emUsers       = $this->getDoctrine()->getEntityManager('user_api');
-        $emAddresses   = $this->getDoctrine()->getEntityManager('address_api');
-        $emPersistence = $this->getDoctrine()->getEntityManager();
+        $emUsers       = $this->getDoctrine()->getManager('user_api');
+        $emAddresses   = $this->getDoctrine()->getManager('address_api');
+        $emPersistence = $this->getDoctrine()->getManager();
         
         $user    = $emUsers->find("CircleBundle\Entity\User", $userId);
         $address = $emAddresses->find("CircleBundle\Entity\Address", $addressId);
