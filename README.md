@@ -83,7 +83,7 @@ doctrine:
     host:         "http://www.your-url.com/api"
     port:         80
     user:         "Circle"
-    password:     "CantRenember"
+    password:     "CantRemember"
 ```
 
 First of all create your entities:
@@ -318,7 +318,7 @@ class Address {
     private $city;
     
     public function setStreet($street) {
-        $this->street = $stree;
+        $this->street = $street;
         return $this;
     }
     
@@ -486,7 +486,7 @@ class UserController extends Controller {
         $user    = new User();
         
         $user->setName($name)
-            ->Password($password)
+            ->setPassword($password)
             ->setAddress($address);
         
         $em->persist($user);
@@ -497,7 +497,7 @@ class UserController extends Controller {
 }
 ```
 
-If we'd set name to ```username```, password to ```secretPassword``` and adressId to ```1``` by triggering the createAction, the following requests would be sent by our driver:
+If we'd set name to ```username```, password to ```secretPassword``` and addressId to ```1``` by triggering the createAction, the following requests would be sent by our driver:
 
 ```
 GET  http://www.your-url.com/api/addresses/1 HTTP/1.1
