@@ -264,13 +264,13 @@ Imagine you have a REST API at http://www.your-url.com/api:
 ```c2hs
 typedef UnregisteredAddress {
     street: String,
-    city: String
+    city:   String
 }
 
 typedef RegisteredAddress {
-    id: Int,
+    id:     Int,
     street: String,
-    city: String
+    city:   String
 }
 ```
 
@@ -386,16 +386,16 @@ The REST API offers the following additional routes:
 
 ```c2hs
 typedef UnregisteredUser {
-    name: String,
+    name:     String,
     password: String,
-    address: Index
+    address:  Index
 }
 
 typedef RegisteredUser {
-    id: Int,
-    name: String,
+    id:       Int,
+    name:     String,
     password: String,
-    address: Index
+    address:  Index
 }
 ```
 
@@ -570,7 +570,7 @@ doctrine:
           authentication_class:  "HttpAuthentication"
 ```
 
-Now it's getting crazy. We will try to read data from two different APIs and persist them into a MySQL database.
+Now it's getting crazy: We will try to read data from two different APIs and persist them into a MySQL database.
 Imagine the user API with the following route:
 
 | Route | Method | Description | Payload | Response |
