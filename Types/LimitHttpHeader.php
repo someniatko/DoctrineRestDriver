@@ -42,12 +42,11 @@ class LimitHttpHeader {
         Assertions::assertHashMap('tokens', $tokens);
         $arr = [];
         if(isset($tokens['LIMIT']['rowcount'])){
-            $arr[] = ['Query-Limit: '.$tokens['LIMIT']['rowcount']];
+            $arr[] = 'Query-Limit: '.$tokens['LIMIT']['rowcount'];
         }
         if(isset($tokens['LIMIT']['offset'])){
-            $arr[] = ['Query-Offset: '.$tokens['LIMIT']['offset']];
+            $arr[] = 'Query-Offset: '.$tokens['LIMIT']['offset'];
         }
-
         return $arr;
     }
 }
