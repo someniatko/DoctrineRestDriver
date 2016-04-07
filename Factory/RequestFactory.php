@@ -22,6 +22,7 @@ use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Types\CurlOptions;
 use Circle\DoctrineRestDriver\Types\Payload;
 use Circle\DoctrineRestDriver\Types\HttpQuery;
+use Circle\DoctrineRestDriver\Types\LimitHttpHeader;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\SqlOperation;
 use Circle\DoctrineRestDriver\Types\Url;
