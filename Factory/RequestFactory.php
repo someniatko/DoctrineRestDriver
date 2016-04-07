@@ -50,6 +50,11 @@ class RequestFactory {
         $query   = HttpQuery::create($tokens);
         $payload = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? null : Payload::create($tokens);
 
+        $options['CURLOPT_HTTPHEADER'] = merge_array(
+            $options['CURLOPT_HTTPHEADER'],
+            LimitHttpHeader::create($tokens)
+        );
+
         return new Request($method, $url, CurlOptions::create($options), $query, $payload);
     }
 }
