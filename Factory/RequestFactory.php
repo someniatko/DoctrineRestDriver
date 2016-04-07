@@ -23,6 +23,7 @@ use Circle\DoctrineRestDriver\Types\CurlOptions;
 use Circle\DoctrineRestDriver\Types\Payload;
 use Circle\DoctrineRestDriver\Types\HttpQuery;
 use Circle\DoctrineRestDriver\Types\LimitHttpHeader;
+use Circle\DoctrineRestDriver\Types\OrderHttpHeader;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\SqlOperation;
 use Circle\DoctrineRestDriver\Types\Url;
@@ -53,7 +54,8 @@ class RequestFactory {
 
         $options['CURLOPT_HTTPHEADER'] = array_merge(
             $options['CURLOPT_HTTPHEADER'],
-            LimitHttpHeader::create($tokens)
+            LimitHttpHeader::create($tokens),
+            OrderHttpHeader::create($tokens)
         );
 
         return new Request($method, $url, CurlOptions::create($options), $query, $payload);

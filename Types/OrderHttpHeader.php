@@ -22,15 +22,15 @@ use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * LimitHttpHeader type
+ * OrderHttpHeader type
  *
  * @author    Djane Rey Mabelin <thedjaney@gmail.com>
  * @copyright 2016
  */
-class LimitHttpHeader {
+class OrderHttpHeader {
 
     /**
-     * Creates a http header using LIMIT
+     * Creates a http header using ORDER
      * clause of the parsed sql tokens
      *
      * @param  array $tokens
@@ -41,11 +41,19 @@ class LimitHttpHeader {
     public static function create(array $tokens) {
         Assertions::assertHashMap('tokens', $tokens);
         $arr = [];
-        if(isset($tokens['LIMIT']['rowcount'])){
-            $arr[] = 'Query-Limit: '.$tokens['LIMIT']['rowcount'];
-        }
-        if(isset($tokens['LIMIT']['offset'])){
-            $arr[] = 'Query-Offset: '.$tokens['LIMIT']['offset'];
+        if(isset($tokens['ORDER'])){
+            $orderQueryArr = [];
+            foreach($tokens['ORDER'] as $order){
+                $query = null;
+                if( isset($order['no_quotes']['parts'][1]) ){
+                    $query = $order['no_quotes']['parts'][1];
+                }
+                if($query && isset($order['direction'])){
+                    $query.=' '.$order['direction'];
+                }
+                $orderQueryArr[] = $query;
+            }
+            $arr[] = 'Query-Order: '.implode(',',$orderQueryArr);
         }
         return $arr;
     }
