@@ -55,9 +55,10 @@ class CurlOptions extends \ArrayObject {
     public static function create(array $options) {
         Assertions::assertHashMap('options', $options);
 
-        $filteredOptions = array_filter($options, function($key) {
-            return preg_match('/^CURLOPT_/', $key);
-        }, ARRAY_FILTER_USE_KEY);
+        $filteredKeys = array_filter(array_keys($options), function ($key) {
+            return strpos($key, 'CURLOPT_') === 0;
+        });
+        $filteredOptions = array_intersect_key($options, array_flip($filteredKeys));
 
         $keys = array_map(function($key) {
             return constant($key);
