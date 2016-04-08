@@ -44,6 +44,8 @@ class HttpHeader{
 
         $options['CURLOPT_HTTPHEADER'] = empty($options['CURLOPT_HTTPHEADER']) ? [] : $options['CURLOPT_HTTPHEADER'];
         $options['CURLOPT_HTTPHEADER'] = is_string($options['CURLOPT_HTTPHEADER']) ? explode(',', $options['CURLOPT_HTTPHEADER']) : $options['CURLOPT_HTTPHEADER'];
-        return $options;
+        return [
+            'CURLOPT_HTTPHEADER'=>$options['CURLOPT_HTTPHEADER']
+        ];
     }
 }
