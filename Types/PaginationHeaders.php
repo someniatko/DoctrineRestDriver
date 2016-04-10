@@ -44,12 +44,11 @@ class PaginationHeaders {
         if (empty($tokens['LIMIT'])) return [];
 
         $headers = [];
-        if(isset($tokens['LIMIT']['rowcount'])){
-            array_push($headers, 'Limit: ' . $tokens['LIMIT']['rowcount']);
-        }
-        if(isset($tokens['LIMIT']['offset'])){
+        array_push($headers, 'Limit: ' . $tokens['LIMIT']['rowcount']);
+        if(!empty($tokens['LIMIT']['offset'])){
             array_push($headers, 'Offset: ' . $tokens['LIMIT']['offset']);
         }
+
 
         return $headers;
     }
