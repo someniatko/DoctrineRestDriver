@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver\Factory;
 
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
+use Circle\DoctrineRestDriver\Types\HttpHeader;
 use Circle\DoctrineRestDriver\Types\CurlOptions;
 use Circle\DoctrineRestDriver\Types\Payload;
 use Circle\DoctrineRestDriver\Types\HttpQuery;
