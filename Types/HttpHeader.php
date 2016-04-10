@@ -43,7 +43,7 @@ class HttpHeader{
 
         $headers = array_merge(
             $headers,
-            PaginationHeader::create($tokens),
+            PaginationHeaders::create($tokens),
             OrderHttpHeader::create($tokens)
         );
         return [
