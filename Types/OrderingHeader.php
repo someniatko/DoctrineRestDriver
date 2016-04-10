@@ -40,7 +40,10 @@ class OrderingHeader {
      */
     public static function create(array $tokens) {
         Assertions::assertHashMap('tokens', $tokens);
-        $arr = [];
+
+        if (empty($tokens['ORDER'])) return [];
+
+        $headers = [];
         if(isset($tokens['ORDER'])){
             $orderQueryArr = [];
             foreach($tokens['ORDER'] as $order){
@@ -51,10 +54,10 @@ class OrderingHeader {
                 if($query && isset($order['direction'])){
                     $query.=' '.$order['direction'];
                 }
-                $orderQueryArr[] = $query;
+                array_push($orderQueryArr, $query);
             }
-            $arr[] = 'Query-Order: '.implode(',',$orderQueryArr);
+            array_push($headers, 'Order: '.implode(',',$orderQueryArr));
         }
-        return $arr;
+        return $headers;
     }
 }
