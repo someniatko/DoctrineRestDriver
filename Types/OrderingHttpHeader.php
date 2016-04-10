@@ -27,7 +27,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @author    Djane Rey Mabelin <thedjaney@gmail.com>
  * @copyright 2016
  */
-class OrderHttpHeader {
+class OrderingHttpHeader {
 
     /**
      * Creates a http header using ORDER
