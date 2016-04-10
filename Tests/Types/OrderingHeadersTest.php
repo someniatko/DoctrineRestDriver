@@ -18,7 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\PaginationHeaders;
+use Circle\DoctrineRestDriver\Types\OrderingHeaders;
 use PHPSQLParser\PHPSQLParser;
 /**
  * Tests the curl options
@@ -28,12 +28,8 @@ use PHPSQLParser\PHPSQLParser;
  *
  * @coversDefaultClass Circle\DoctrineRestDriver\Types\CurlOptions
  */
-class PaginationHeadersTest extends \PHPUnit_Framework_TestCase {
+class OrderingHeadersTest extends \PHPUnit_Framework_TestCase {
 
-    /**
-     * @var array
-     */
-    private $options;
 
     /**
      * @var array
@@ -44,15 +40,8 @@ class PaginationHeadersTest extends \PHPUnit_Framework_TestCase {
      * {@inheritdoc}
      */
     public function setUp() {
-        $this->options = [
-            'security_strategy'  => 'none',
-            'CURLOPT_MAXREDIRS'  => 22,
-            'CURLOPT_HTTPHEADER' => ['Content-Type: text/plain']
-        ];
-
         $this->expected = [
-            'Limit: 10',
-            'Offset: 10',
+            'Order: name ASC',
         ];
     }
 
@@ -64,10 +53,10 @@ class PaginationHeadersTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function create() {
-        $query    = 'SELECT name FROM products LIMIT 10, 10';
+        $query    = 'SELECT name FROM products a ORDER BY name ASC';
         $parser   = new PHPSQLParser();
         $token = $parser->parse($query);
-        $header = PaginationHeaders::create($token);
+        $header = OrderingHeaders::create($token);
         $this->assertEquals($this->expected, $header);
     }
 }

@@ -27,7 +27,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @author    Djane Rey Mabelin <thedjaney@gmail.com>
  * @copyright 2016
  */
-class OrderingHeader {
+class OrderingHeaders {
 
     /**
      * Creates a http header using ORDER
@@ -48,8 +48,9 @@ class OrderingHeader {
             $orderQueryArr = [];
             foreach($tokens['ORDER'] as $order){
                 $query = null;
-                if( isset($order['no_quotes']['parts'][1]) ){
-                    $query = $order['no_quotes']['parts'][1];
+                $field = end($order['no_quotes']['parts']);
+                if( $field ){
+                    $query = $field;
                 }
                 if($query && isset($order['direction'])){
                     $query.=' '.$order['direction'];

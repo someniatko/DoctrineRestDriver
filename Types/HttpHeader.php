@@ -44,7 +44,7 @@ class HttpHeader{
         $headers = array_merge(
             $headers,
             PaginationHeaders::create($tokens),
-            OrderingHeader::create($tokens)
+            OrderingHeaders::create($tokens)
         );
         return [
             'CURLOPT_HTTPHEADER'=>$headers
