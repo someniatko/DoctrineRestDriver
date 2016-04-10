@@ -45,8 +45,7 @@ class OrderingHeaders {
 
         $headers = [];
         if(isset($tokens['ORDER'])){
-            $orderQueryArr = [];
-            foreach($tokens['ORDER'] as $order){
+            $orderQueryArr = array_map(function($order){
                 $query = null;
                 $field = end($order['no_quotes']['parts']);
                 if( $field ){
@@ -55,8 +54,8 @@ class OrderingHeaders {
                 if($query && isset($order['direction'])){
                     $query.=' '.$order['direction'];
                 }
-                array_push($orderQueryArr, $query);
-            }
+                return $query;
+            },$tokens['ORDER']);
             array_push($headers, 'Order: '.implode(',',$orderQueryArr));
         }
         return $headers;
