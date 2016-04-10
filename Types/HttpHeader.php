@@ -36,16 +36,16 @@ class HttpHeader{
      */
     public static function create(array $options, array $tokens) {
 
-        $options['CURLOPT_HTTPHEADER'] = array_merge(
+        $headers = array_merge(
             $options['CURLOPT_HTTPHEADER'],
             LimitHttpHeader::create($tokens),
             OrderHttpHeader::create($tokens)
         );
 
-        $options['CURLOPT_HTTPHEADER'] = empty($options['CURLOPT_HTTPHEADER']) ? [] : $options['CURLOPT_HTTPHEADER'];
-        $options['CURLOPT_HTTPHEADER'] = is_string($options['CURLOPT_HTTPHEADER']) ? explode(',', $options['CURLOPT_HTTPHEADER']) : $options['CURLOPT_HTTPHEADER'];
+        $headers = empty($headers) ? [] : $headers;
+        $headers = is_string($headers) ? explode(',', $headers) : $headers;
         return [
-            'CURLOPT_HTTPHEADER'=>$options['CURLOPT_HTTPHEADER']
+            'CURLOPT_HTTPHEADER'=>$headers
         ];
     }
 }
