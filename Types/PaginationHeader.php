@@ -27,7 +27,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @author    Djane Rey Mabelin <thedjaney@gmail.com>
  * @copyright 2016
  */
-class LimitHttpHeader {
+class PaginationHeader {
 
     /**
      * Creates a http header using LIMIT
