@@ -46,8 +46,6 @@ class HttpHeader{
             LimitHttpHeader::create($tokens),
             OrderHttpHeader::create($tokens)
         );
-
-
         return [
             'CURLOPT_HTTPHEADER'=>$headers
         ];
