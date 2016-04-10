@@ -40,13 +40,13 @@ class PaginationHeader {
      */
     public static function create(array $tokens) {
         Assertions::assertHashMap('tokens', $tokens);
-        $arr = [];
+        $headers = [];
         if(isset($tokens['LIMIT']['rowcount'])){
-            $arr[] = 'Query-Limit: '.$tokens['LIMIT']['rowcount'];
+            $headers[] = 'Query-Limit: '.$tokens['LIMIT']['rowcount'];
         }
         if(isset($tokens['LIMIT']['offset'])){
-            $arr[] = 'Query-Offset: '.$tokens['LIMIT']['offset'];
+            $headers[] = 'Query-Offset: '.$tokens['LIMIT']['offset'];
         }
-        return $arr;
+        return $headers;
     }
 }
