@@ -64,9 +64,9 @@ class PaginationHeadersTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function create() {
-        $query    = 'SELECT name FROM products LIMIT 10, 10';
-        $parser   = new PHPSQLParser();
-        $token = $parser->parse($query);
+        $query  = 'SELECT name FROM products LIMIT 10, 10';
+        $parser = new PHPSQLParser();
+        $token  = $parser->parse($query);
         $header = PaginationHeaders::create($token);
         $this->assertEquals($this->expected, $header);
     }
