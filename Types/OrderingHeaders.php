@@ -42,18 +42,13 @@ class OrderingHeaders {
         Assertions::assertHashMap('tokens', $tokens);
 
         if (empty($tokens['ORDER'])) return [];
-        
+
         $headers = [];
         $orderQueryArr = array_map(function($order){
             $query = null;
-            $field = end($order['no_quotes']['parts']);
-            if( $field ){
-                $query = $field;
-            }
-            if($query && isset($order['direction'])){
-                $query.=' '.$order['direction'];
-            }
-            return $query;
+            $query = end($order['no_quotes']['parts']);
+            if (empty($query)) return null;
+            return !isset($order['direction']) ? $query : $query . ' ' . $order['direction'];
         },$tokens['ORDER']);
         array_push($headers, 'Order: '.implode(',',$orderQueryArr));
         return $headers;

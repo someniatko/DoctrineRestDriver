@@ -65,8 +65,8 @@ class HttpHeaderTest extends \PHPUnit_Framework_TestCase {
     public function create() {
         $query    = 'SELECT name FROM products WHERE id=1';
         $parser   = new PHPSQLParser();
-        $token = $parser->parse($query);
-        $header = HttpHeader::create($this->options, $token);
+        $token    = $parser->parse($query);
+        $header   = HttpHeader::create($this->options, $token);
         $this->assertEquals($this->expected, $header);
     }
 }

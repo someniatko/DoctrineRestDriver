@@ -55,8 +55,8 @@ class OrderingHeadersTest extends \PHPUnit_Framework_TestCase {
     public function create() {
         $query    = 'SELECT name FROM products a ORDER BY name ASC';
         $parser   = new PHPSQLParser();
-        $token = $parser->parse($query);
-        $header = OrderingHeaders::create($token);
+        $token    = $parser->parse($query);
+        $header   = OrderingHeaders::create($token);
         $this->assertEquals($this->expected, $header);
     }
 }
