@@ -51,7 +51,7 @@ class HttpHeaderTest extends \PHPUnit_Framework_TestCase {
         ];
 
         $this->expected = [
-            'CURLOPT_HTTPHEADER'=> ['Content-Type: text/plain']
+            'CURLOPT_HTTPHEADER' => ['Content-Type: text/plain']
         ];
     }
 

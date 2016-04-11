@@ -45,7 +45,6 @@ class OrderingHeaders {
 
         $headers = [];
         $orderQueryArr = array_map(function($order){
-            $query = null;
             $query = end($order['no_quotes']['parts']);
             if (empty($query)) return null;
             return !isset($order['direction']) ? $query : $query . ' ' . $order['direction'];
