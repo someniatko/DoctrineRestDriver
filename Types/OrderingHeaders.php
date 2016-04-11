@@ -42,22 +42,20 @@ class OrderingHeaders {
         Assertions::assertHashMap('tokens', $tokens);
 
         if (empty($tokens['ORDER'])) return [];
-
+        
         $headers = [];
-        if(isset($tokens['ORDER'])){
-            $orderQueryArr = array_map(function($order){
-                $query = null;
-                $field = end($order['no_quotes']['parts']);
-                if( $field ){
-                    $query = $field;
-                }
-                if($query && isset($order['direction'])){
-                    $query.=' '.$order['direction'];
-                }
-                return $query;
-            },$tokens['ORDER']);
-            array_push($headers, 'Order: '.implode(',',$orderQueryArr));
-        }
+        $orderQueryArr = array_map(function($order){
+            $query = null;
+            $field = end($order['no_quotes']['parts']);
+            if( $field ){
+                $query = $field;
+            }
+            if($query && isset($order['direction'])){
+                $query.=' '.$order['direction'];
+            }
+            return $query;
+        },$tokens['ORDER']);
+        array_push($headers, 'Order: '.implode(',',$orderQueryArr));
         return $headers;
     }
 }
