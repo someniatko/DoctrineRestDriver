@@ -47,7 +47,7 @@ class HttpHeaderTest extends \PHPUnit_Framework_TestCase {
         $this->options = [
             'security_strategy'  => 'none',
             'CURLOPT_MAXREDIRS'  => 22,
-            'CURLOPT_HTTPHEADER' => ['Content-Type: text/plain']
+            'CURLOPT_HTTPHEADER' => 'Content-Type: text/plain'
         ];
 
         $this->expected = [
