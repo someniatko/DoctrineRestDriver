@@ -45,11 +45,8 @@ class PaginationHeaders {
 
         $headers = [];
         array_push($headers, 'Limit: ' . $tokens['LIMIT']['rowcount']);
-        if(!empty($tokens['LIMIT']['offset'])){
-            array_push($headers, 'Offset: ' . $tokens['LIMIT']['offset']);
-        }
-
-
+        if(empty($tokens['LIMIT']['offset'])) return $headers;
+        array_push($headers, 'Offset: ' . $tokens['LIMIT']['offset']);
         return $headers;
     }
 }
