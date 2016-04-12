@@ -26,7 +26,7 @@ use PHPSQLParser\PHPSQLParser;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\CurlOptions
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\OrderingHeaders
  */
 class OrderingHeadersTest extends \PHPUnit_Framework_TestCase {
 
