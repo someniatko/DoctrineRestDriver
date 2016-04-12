@@ -24,7 +24,7 @@ namespace Circle\DoctrineRestDriver\Types;
  * @author    Djane Rey Mabelin <thedjaney@gmail.com>
  * @copyright 2016
  */
-class HttpHeader{
+class HttpHeader {
     /**
      * Returns an array containing CURLOPT_HTTPHEADER options that can be added to
      * the PHP internal curl library by using curl_setopt_array
