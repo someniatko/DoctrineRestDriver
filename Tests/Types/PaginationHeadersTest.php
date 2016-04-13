@@ -18,17 +18,17 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\CurlOptions;
-
+use Circle\DoctrineRestDriver\Types\PaginationHeaders;
+use PHPSQLParser\PHPSQLParser;
 /**
- * Tests the curl options
+ * Tests pagination headers
  *
- * @author    Tobias Hauck <tobias@circle.ai>
- * @copyright 2015 TeeAge-Beatz UG
+ * @author    Djane Rey Mabelin <thedjaney@gmail.com>
+ * @copyright 2016
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\CurlOptions
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\PaginationHeaders
  */
-class CurlOptionsTest extends \PHPUnit_Framework_TestCase {
+class PaginationHeadersTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @var array
@@ -51,13 +51,8 @@ class CurlOptionsTest extends \PHPUnit_Framework_TestCase {
         ];
 
         $this->expected = [
-            CURLOPT_HTTPHEADER     => ['Content-Type: text/plain'],
-            CURLOPT_MAXREDIRS      => 22,
-            CURLOPT_TIMEOUT        => 25,
-            CURLOPT_CONNECTTIMEOUT => 25,
-            CURLOPT_CRLF           => true,
-            CURLOPT_SSLVERSION     => 3,
-            CURLOPT_FOLLOWLOCATION => true,
+            'Limit: 10',
+            'Offset: 10',
         ];
     }
 
@@ -69,6 +64,10 @@ class CurlOptionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function create() {
-        $this->assertEquals($this->expected, CurlOptions::create($this->options));
+        $query  = 'SELECT name FROM products LIMIT 10, 10';
+        $parser = new PHPSQLParser();
+        $token  = $parser->parse($query);
+        $header = PaginationHeaders::create($token);
+        $this->assertEquals($this->expected, $header);
     }
 }

@@ -18,22 +18,18 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\CurlOptions;
-
+use Circle\DoctrineRestDriver\Types\OrderingHeaders;
+use PHPSQLParser\PHPSQLParser;
 /**
- * Tests the curl options
+ * Tests ordering headers
  *
- * @author    Tobias Hauck <tobias@circle.ai>
- * @copyright 2015 TeeAge-Beatz UG
+ * @author    Djane Rey Mabelin <thedjaney@gmail.com>
+ * @copyright 2016
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\CurlOptions
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\OrderingHeaders
  */
-class CurlOptionsTest extends \PHPUnit_Framework_TestCase {
+class OrderingHeadersTest extends \PHPUnit_Framework_TestCase {
 
-    /**
-     * @var array
-     */
-    private $options;
 
     /**
      * @var array
@@ -44,20 +40,8 @@ class CurlOptionsTest extends \PHPUnit_Framework_TestCase {
      * {@inheritdoc}
      */
     public function setUp() {
-        $this->options = [
-            'security_strategy'  => 'none',
-            'CURLOPT_MAXREDIRS'  => 22,
-            'CURLOPT_HTTPHEADER' => ['Content-Type: text/plain']
-        ];
-
         $this->expected = [
-            CURLOPT_HTTPHEADER     => ['Content-Type: text/plain'],
-            CURLOPT_MAXREDIRS      => 22,
-            CURLOPT_TIMEOUT        => 25,
-            CURLOPT_CONNECTTIMEOUT => 25,
-            CURLOPT_CRLF           => true,
-            CURLOPT_SSLVERSION     => 3,
-            CURLOPT_FOLLOWLOCATION => true,
+            'Order: name ASC',
         ];
     }
 
@@ -69,6 +53,10 @@ class CurlOptionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function create() {
-        $this->assertEquals($this->expected, CurlOptions::create($this->options));
+        $query  = 'SELECT name FROM products a ORDER BY name ASC';
+        $parser = new PHPSQLParser();
+        $token  = $parser->parse($query);
+        $header = OrderingHeaders::create($token);
+        $this->assertEquals($this->expected, $header);
     }
 }

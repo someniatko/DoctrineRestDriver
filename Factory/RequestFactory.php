@@ -19,9 +19,12 @@
 namespace Circle\DoctrineRestDriver\Factory;
 
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
+use Circle\DoctrineRestDriver\Types\HttpHeader;
 use Circle\DoctrineRestDriver\Types\CurlOptions;
 use Circle\DoctrineRestDriver\Types\Payload;
 use Circle\DoctrineRestDriver\Types\HttpQuery;
+use Circle\DoctrineRestDriver\Types\LimitHttpHeader;
+use Circle\DoctrineRestDriver\Types\OrderHttpHeader;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\SqlOperation;
 use Circle\DoctrineRestDriver\Types\Url;
@@ -49,6 +52,8 @@ class RequestFactory {
         $url     = Url::create($tokens, $apiUrl);
         $query   = HttpQuery::create($tokens);
         $payload = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? null : Payload::create($tokens);
+
+        $options = array_merge($options, HttpHeader::create($options, $tokens));
 
         return new Request($method, $url, CurlOptions::create($options), $query, $payload);
     }

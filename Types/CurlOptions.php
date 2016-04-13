@@ -66,9 +66,6 @@ class CurlOptions extends \ArrayObject {
 
         $optionsWithIntKeys = array_combine($keys, array_values($filteredOptions));
 
-        $optionsWithIntKeys[CURLOPT_HTTPHEADER] = empty($optionsWithIntKeys[CURLOPT_HTTPHEADER]) ? [] : $optionsWithIntKeys[CURLOPT_HTTPHEADER];
-        $optionsWithIntKeys[CURLOPT_HTTPHEADER] = is_string($optionsWithIntKeys[CURLOPT_HTTPHEADER]) ? explode(',', $optionsWithIntKeys[CURLOPT_HTTPHEADER]) : $optionsWithIntKeys[CURLOPT_HTTPHEADER];
-
         return $optionsWithIntKeys + self::$defaults;
     }
 }
