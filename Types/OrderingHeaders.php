@@ -30,7 +30,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class OrderingHeaders {
 
     /**
-     * Creates http header for Ordering/Sorting
+     * returns http headers for ordering based on parsed query
      *
      * @param  array $tokens
      * @return string
