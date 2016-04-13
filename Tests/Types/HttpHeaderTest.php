@@ -21,10 +21,10 @@ namespace Circle\DoctrineRestDriver\Tests\Types;
 use Circle\DoctrineRestDriver\Types\HttpHeader;
 use PHPSQLParser\PHPSQLParser;
 /**
- * Tests the curl options
+ * Tests the http header
  *
- * @author    Tobias Hauck <tobias@circle.ai>
- * @copyright 2015 TeeAge-Beatz UG
+ * @author    Djane Rey Mabelin <thedjaney@gmail.com>
+ * @copyright 2016
  *
  * @coversDefaultClass Circle\DoctrineRestDriver\Types\HttpHeader
  */
