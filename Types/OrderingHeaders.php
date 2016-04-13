@@ -22,7 +22,7 @@ use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * OrderHttpHeader type
+ * Handles creation cURL headers for ordering/sorting
  *
  * @author    Djane Rey Mabelin <thedjaney@gmail.com>
  * @copyright 2016
@@ -30,8 +30,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class OrderingHeaders {
 
     /**
-     * Creates a http header using ORDER
-     * clause of the parsed sql tokens
+     * Creates http header for Ordering/Sorting
      *
      * @param  array $tokens
      * @return string
