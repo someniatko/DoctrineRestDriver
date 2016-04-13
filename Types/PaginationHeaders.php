@@ -22,7 +22,7 @@ use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * LimitHttpHeader type
+ * Handles creation of pagination related http headers
  *
  * @author    Djane Rey Mabelin <thedjaney@gmail.com>
  * @copyright 2016
@@ -30,8 +30,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class PaginationHeaders {
 
     /**
-     * Creates a http header using LIMIT
-     * clause of the parsed sql tokens
+     * Returns Limit and Offset headers
      *
      * @param  array $tokens
      * @return string
