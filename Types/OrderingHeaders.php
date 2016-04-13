@@ -22,7 +22,7 @@ use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Handles creation cURL headers for ordering/sorting
+ * Handles creation http headers for ordering/sorting
  *
  * @author    Djane Rey Mabelin <thedjaney@gmail.com>
  * @copyright 2016
