@@ -21,10 +21,10 @@ namespace Circle\DoctrineRestDriver\Tests\Types;
 use Circle\DoctrineRestDriver\Types\OrderingHeaders;
 use PHPSQLParser\PHPSQLParser;
 /**
- * Tests the curl options
+ * Tests ordering headers
  *
- * @author    Tobias Hauck <tobias@circle.ai>
- * @copyright 2015 TeeAge-Beatz UG
+ * @author    Djane Rey Mabelin <thedjaney@gmail.com>
+ * @copyright 2016
  *
  * @coversDefaultClass Circle\DoctrineRestDriver\Types\OrderingHeaders
  */
