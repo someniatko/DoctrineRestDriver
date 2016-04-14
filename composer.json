@@ -17,7 +17,10 @@
   "require-dev": {
     "symfony/yaml": "^3.0",
     "sensio/framework-extra-bundle": "^3.0",
+    "symfony/framework-bundle": "^3.0",
     "symfony/expression-language": "^3.0",
+    "doctrine/doctrine-bundle": "^1.6",
+    "symfony/validator": "^3.0",
     "phpmd/phpmd" : "@stable",
     "phpunit/phpunit" : "@stable"
   },
@@ -34,12 +37,9 @@
   },
   "require": {
     "php": ">=5.5",
-    "symfony/framework-bundle": "^3.0",
-    "doctrine/dbal": "^2.5",
+    "doctrine/dbal": ">=2.5",
     "greenlion/php-sql-parser": "^4.0",
-    "doctrine/orm": "^2.5",
-    "doctrine/doctrine-bundle": "^1.6",
-    "symfony/validator": "^3.0",
+    "doctrine/orm": ">=2.5",
     "ci/restclientbundle": "^1.0"
   }
 }
