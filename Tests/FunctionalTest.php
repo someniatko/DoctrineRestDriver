@@ -216,6 +216,7 @@ class FunctionalTest extends WebTestCase {
     /**
      * @test
      * @group  functional
+     * @group  testtest
      * @covers Circle\DoctrineRestDriver\Driver
      * @covers Circle\DoctrineRestDriver\Connection
      * @covers Circle\DoctrineRestDriver\Statement
