@@ -106,17 +106,17 @@ Afterwards you are able to use the created entity as if you were using a databas
 
 By using this setting the driver is doing a lot of stuff by itself:
 
-    - It generally uses the request body to send data in JSON format
-    - It automatically maps the response into a valid entity
-    - It saves the entity as managed doctrine entity
-    - It translates INSERT queries into POST requests to create new data
-        - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}```
-    - UPDATE queries will be turned into PUT requests:
-        - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}/<id>```
-    - The DELETE operation will remain:
-        - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}/<id>```
-    - SELECT queries become GET requests:
-        - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}/<id>``` (if a single entity is requested) or ```http://www.host.de/{pathToApi}/{tableName}``` (if all entities are requested)
+- It generally uses the request body to send data in JSON format
+- It automatically maps the response into a valid entity
+- It saves the entity as managed doctrine entity
+- It translates INSERT queries into POST requests to create new data
+  - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}```
+- UPDATE queries will be turned into PUT requests:
+   - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}/<id>```
+- The DELETE operation will remain:
+  - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}/<id>```
+- SELECT queries become GET requests:
+  - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}/<id>``` (if a single entity is requested) or ```http://www.host.de/{pathToApi}/{tableName}``` (if all entities are requested)
 
 Let's watch the driver in action by implementing some controller methods. In this example we assume that we have configured the ```host```with ```http://www.yourSite.com/api```.
 
