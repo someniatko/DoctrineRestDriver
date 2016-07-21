@@ -17,6 +17,7 @@
  */
 
 namespace Circle\DoctrineRestDriver\Annotations;
+
 use Circle\DoctrineRestDriver\Validation\Assertions;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 

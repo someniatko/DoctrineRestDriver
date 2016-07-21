@@ -50,7 +50,22 @@ class RoutingTable {
         Assertions::assertHashMap('entities', $entities);
 
         $this->reader = new AnnotationReader();
-        foreach ($entities as $alias => $namespace) $this->routingTable = $this->add($this->routingTable, $alias, $namespace);
+
+        $aliases = array_flip($entities);
+        $this->routingTable = array_reduce($entities, function ($carry, $namespace) use ($aliases) {
+            $refl    = new \ReflectionClass($namespace);
+            $alias   = $aliases[$namespace];
+
+            $post    = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Post');
+            $put     = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Put');
+            $get     = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Get');
+            $delete  = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Delete');
+            $getAll  = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\GetAll');
+
+            $carry[$alias] = new Routing($post, $put, $get, $delete, $getAll);
+
+            return $carry;
+        }, []);
     }
 
     /**
@@ -61,27 +76,5 @@ class RoutingTable {
      */
     public function get($alias) {
         return !empty($this->routingTable[$alias]) ? $this->routingTable[$alias] : null;
-    }
-
-    /**
-     * adds a new entry to the given routing table
-     *
-     * @param  array  $routingTable
-     * @param  string $alias
-     * @param  string $namespace
-     * @return array
-     */
-    private function add(array $routingTable, $alias, $namespace) {
-        $refl    = new \ReflectionClass($namespace);
-
-        $post    = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Post');
-        $put     = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Put');
-        $get     = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Get');
-        $delete  = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Delete');
-        $getAll  = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\GetAll');
-
-        $routingTable[$alias] = new Routing($post, $put, $get, $delete, $getAll);
-
-        return $routingTable;
     }
 }
