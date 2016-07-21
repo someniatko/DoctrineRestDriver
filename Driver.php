@@ -18,9 +18,7 @@
 
 namespace Circle\DoctrineRestDriver;
 
-use Circle\DoctrineRestDriver\Factory\RestClientFactory;
-use Circle\DoctrineRestDriver\Types\RestClientOptions;
-use Circle\RestClientBundle\Services\RestClient;
+use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 use Doctrine\DBAL\Driver as DriverInterface;
 use Doctrine\DBAL\Connection as AbstractConnection;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
@@ -43,8 +41,10 @@ class Driver implements DriverInterface {
      * {@inheritdoc}
      */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array()) {
-        $this->connection = empty($this->connection) ? new Connection($params, $this) : $this->connection;
+        if (!empty($this->connection)) return $this->connection;
 
+        $metaDataProvider = new MetaDataProvider();
+        $this->connection = new Connection($params, $this, new RoutingTable($metaDataProvider->getEntityNamespaces()));
         return $this->connection;
     }
 

@@ -16,36 +16,45 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Annotations;
 
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Url type
+ * Trait for all annotations regarding routes
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @Annotation
  */
-class Url {
+trait Route {
 
     /**
-     * Returns an url depending on the given sql tokens
+     * @var string
+     */
+    private $route;
+
+    /**
+     * Constructor
      *
-     * @param  array  $tokens
-     * @param  string $apiUrl
-     * @return string
+     * @param array $values
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, $apiUrl) {
-        Assertions::assertHashMap('tokens', $tokens);
+    public function __construct(array $values) {
+        $route = $values['value'];
+        if (!Assertions::isUrl($route)) return Exceptions::InvalidTypeException('Url', 'route', $route);
+        $this->route = $route;
+    }
 
-        $table  = Table::create($tokens);
-        $id     = Id::create($tokens);
-        $idPath = empty($id) ? '' : '/' . $id;
-
-        if (!Assertions::isUrl($table)) return $apiUrl . '/' . $table . $idPath;
-        if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
-        return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
+    /**
+     * returns the route
+     *
+     * @return string
+     */
+    public function getRoute() {
+        return $this->route;
     }
 }

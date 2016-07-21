@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver;
 
+use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Circle\DoctrineRestDriver\Factory\RestClientFactory;
@@ -94,15 +95,16 @@ class Statement implements \IteratorAggregate, StatementInterface {
     /**
      * Statement constructor
      *
-     * @param  string $query
-     * @param  array  $options
+     * @param  string       $query
+     * @param  array        $options
+     * @param  RoutingTable $routings
      * @throws \Exception
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function __construct($query, array $options) {
+    public function __construct($query, array $options, RoutingTable $routings = null) {
         $this->query             = $query;
-        $this->mysqlToRequest    = new MysqlToRequest($options);
+        $this->mysqlToRequest    = new MysqlToRequest($options, $routings);
         $this->restClientFactory = new RestClientFactory();
 
         $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : 'NoAuthentication';

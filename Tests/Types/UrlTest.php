@@ -44,4 +44,46 @@ class UrlTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame('http://circle.ai/products/1', Url::create($tokens, 'http://circle.ai'));
     }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createWithUrl() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('SELECT name FROM "http://www.circle.ai/products/{id}" WHERE id=1');
+
+        $this->assertSame('http://www.circle.ai/products/1', Url::create($tokens, 'http://circle.ai'));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createWithUrlWithoutSetId() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('SELECT name FROM "http://www.circle.ai/products/{id}"');
+
+        $this->assertSame('http://www.circle.ai/products', Url::create($tokens, 'http://circle.ai'));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createWithoutAnyId() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('SELECT name FROM "http://www.circle.ai/products" WHERE id=1');
+
+        $this->assertSame('http://www.circle.ai/products/1', Url::create($tokens, 'http://circle.ai'));
+    }
 }

@@ -16,36 +16,19 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Annotations;
 
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Url type
+ * Annotation to declare a post route for an entity
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @Annotation
  */
-class Url {
-
-    /**
-     * Returns an url depending on the given sql tokens
-     *
-     * @param  array  $tokens
-     * @param  string $apiUrl
-     * @return string
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public static function create(array $tokens, $apiUrl) {
-        Assertions::assertHashMap('tokens', $tokens);
-
-        $table  = Table::create($tokens);
-        $id     = Id::create($tokens);
-        $idPath = empty($id) ? '' : '/' . $id;
-
-        if (!Assertions::isUrl($table)) return $apiUrl . '/' . $table . $idPath;
-        if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
-        return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
-    }
+class Post {
+    use Route;
 }

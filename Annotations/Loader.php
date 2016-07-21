@@ -16,36 +16,29 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Annotations;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
- * Url type
+ * Loader for annotations
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class Url {
+class Loader {
 
     /**
-     * Returns an url depending on the given sql tokens
+     * loads all annotations of the driver
      *
-     * @param  array  $tokens
-     * @param  string $apiUrl
-     * @return string
+     * @return void
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, $apiUrl) {
-        Assertions::assertHashMap('tokens', $tokens);
-
-        $table  = Table::create($tokens);
-        $id     = Id::create($tokens);
-        $idPath = empty($id) ? '' : '/' . $id;
-
-        if (!Assertions::isUrl($table)) return $apiUrl . '/' . $table . $idPath;
-        if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
-        return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
+    public static function load() {
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Post.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Put.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Get.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Delete.php');
     }
 }

@@ -18,7 +18,10 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Annotations\RoutingTable;
+use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Enums\SqlOperations;
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
@@ -26,6 +29,8 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @SuppressWarnings("PHPMD.StaticAccess")
  */
 class Table {
 
@@ -34,11 +39,11 @@ class Table {
      *
      * @param  array  $tokens
      * @return string
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create(array $tokens) {
         Assertions::assertHashMap('tokens', $tokens);
+
+        if (empty($tokens['FROM']) && empty($tokens['INSERT']) && empty($tokens['UPDATE'])) return Exceptions::InvalidTypeException('array', 'tokens', null);
 
         $operation = SqlOperation::create($tokens);
         if ($operation === SqlOperations::INSERT) return $tokens['INSERT'][1]['no_quotes']['parts'][0];
@@ -51,8 +56,6 @@ class Table {
      *
      * @param  array  $tokens
      * @return null|string
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function alias(array $tokens) {
         Assertions::assertHashMap('tokens', $tokens);
@@ -61,5 +64,41 @@ class Table {
         if ($operation === SqlOperations::INSERT) return null;
         if ($operation === SqlOperations::UPDATE) return $tokens['UPDATE'][0]['alias']['name'];
         return $tokens['FROM'][0]['alias']['name'];
+    }
+
+    /**
+     * replaces the table in the tokens array with the given table
+     *
+     * @param  array $tokens
+     * @param  array $newTable
+     * @return array
+     */
+    public static function replace(array $tokens, $newTable) {
+        Assertions::assertHashMap('tokens', $tokens);
+
+        $operation = SqlOperation::create($tokens);
+        if ($operation === SqlOperations::INSERT) $tokens['INSERT'][1]['no_quotes']['parts'][0] = $newTable;
+        if ($operation === SqlOperations::UPDATE) $tokens['UPDATE'][0]['no_quotes']['parts'][0] = $newTable;
+        $tokens['FROM'][0]['no_quotes']['parts'][0] = $newTable;
+
+        return $tokens;
+    }
+
+    /**
+     * replaces the table name with the related annotation
+     *
+     * @param  array        $tokens
+     * @param  RoutingTable $annotations
+     * @return array
+     */
+    public static function replaceWithAnnotation(array $tokens, RoutingTable $annotations = null) {
+        if (empty($annotations)) return $tokens;
+
+        $table        = Table::create($tokens);
+        $method       = HttpMethods::ofSqlOperation(SqlOperation::create($tokens));
+        $id           = Id::create($tokens);
+        $methodToCall = $method === HttpMethods::GET && empty($id) ? $method . 'All' : $method;
+
+        return !empty($annotations) && $annotations->get($table) !== null && $annotations->get($table)->$methodToCall() !== null ? Table::replace($tokens, $annotations->get($table)->$methodToCall()) : $tokens;
     }
 }
