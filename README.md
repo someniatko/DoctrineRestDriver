@@ -250,7 +250,7 @@ use Circle\DoctrineRestDriver\Annotations as REST;
  * @REST\GetAll("http://www.yourSite.com/api/products/findAll")
  * @REST\Post("http://www.yourSite.com/api/products/insert")
  * @REST\Put("http://www.yourSite.com/api/products/update/{id}")
- * @REST\delete("http://www.yourSite.com/api/products/remove/{id}")
+ * @REST\Delete("http://www.yourSite.com/api/products/remove/{id}")
  */
 class Product {
 
