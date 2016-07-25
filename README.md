@@ -241,7 +241,7 @@ class UserController extends Controller {
 ```
 
 ## If your API doesn't follow our conventions
-Now it's time to introduce you some annotations helping configuring own routes. These class annotations must only be used for entities. The following entity is the one created in the chapter before, but with the additional ```Datasource```annotations.
+Now it's time to introduce you some annotations helping configuring own routes. These class annotations must only be used for entities. The following entity is the one created in the chapter before, but with the additional ```DataSource```annotations.
 
 ```php
 namespace CircleBundle\Entity;
