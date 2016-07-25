@@ -289,7 +289,7 @@ class Product {
 }
 ```
 
-By using these annotations the driver won't send the requests to the default urls, but to the ones configured. You don't need to use all of these annotations if you just want to define a specific route for one method. The annotation will only affect the configured HTTP method. The ```{id}``` string is a placeholder for the entities identifier:
+The annotations tell the driver to send the requests to the configured URLs for each custom configuration. If you just want to define a specific route for one method, you don't need to use all annotations provided. The ```{id}``` act as a placeholder for the entity's identifier.
 
 ```php
 <?php
