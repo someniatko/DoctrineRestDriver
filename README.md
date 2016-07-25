@@ -56,9 +56,18 @@ A full list of all possible options can be found here: http://php.net/manual/en/
 
 # Usage
 
+Using the driver is very easy if your API routes follow these few conventions:
+
+- Each route has the same basic structure: ```{host}/{pathToApi}/{tableName}```
+- The PUT, GET (single) and UPDATE routes have an additional ```id```: ```{host}/{pathToApi}/{tableName}/{id}```
+- POST and GET (all) follow the basic structure: ```{host}/{pathToApi}/{tableName}```
+
+If this ain't the case don't be sad. We provide a few annotations for you to configure your own routes.
+
+
 The following code samples show how to use the driver in a Symfony environment.
 
-## Basic Usage
+## If your API follows our conventions
 
 First of all create your entities:
 
@@ -110,15 +119,15 @@ By using this setting the driver is doing a lot of stuff by itself:
 - It automatically maps the response into a valid entity
 - It saves the entity as managed doctrine entity
 - It translates INSERT queries into POST requests to create new data
-  - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}```
+  - Urls have the following format: ```{host}/{pathToApi}/{tableName}```
 - UPDATE queries will be turned into PUT requests:
-   - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}/<id>```
+   - Urls have the following format: ```{host}/{pathToApi}/{tableName}/{id}```
 - The DELETE operation will remain:
-  - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}/<id>```
+  - Urls have the following format: ```{host}/{pathToApi}/{tableName}/{id}```
 - SELECT queries become GET requests:
-  - Urls have the following format: ```http://www.host.de/{pathToApi}/{tableName}/<id>``` (if a single entity is requested) or ```http://www.host.de/{pathToApi}/{tableName}``` (if all entities are requested)
+  - Urls have the following format: ```{host}/{pathToApi}/{tableName}/{id}``` (if a single entity is requested) or ```{host}/{pathToApi}/{tableName}``` (if all entities are requested)
 
-Let's watch the driver in action by implementing some controller methods. In this example we assume that we have configured the ```host```with ```http://www.yourSite.com/api```.
+Let's watch the driver in action by implementing some controller methods. In this example we assume that we have configured the ```host``` (chapter installation) with ```http://www.yourSite.com/api```. The ```host``` configuration covers ```{host}/{pathToApi}``` mentioned before.
 
 ```php
 <?php
@@ -231,26 +240,25 @@ class UserController extends Controller {
 }
 ```
 
-## Advanced Usage
-If you have an API that doesn't follow the conventions of this driver you need to configure some more things.
-We have defined some entity annotations which you can use to define target URLs.
+## If your API doesn't follow our conventions
+Now it's time to introduce you some annotations helping you to configure your own routes.
 
 ```php
 namespace CircleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Circle\DoctrineRestDriver\Annotations as REST;
+use Circle\DoctrineRestDriver\Annotations as DataSource;
 
 /**
  * This annotation marks the class as managed entity:
  *
  * @ORM\Entity
  * @ORM\Table("products")
- * @REST\Get("http://www.yourSite.com/api/products/findOne/{id}")
- * @REST\GetAll("http://www.yourSite.com/api/products/findAll")
- * @REST\Post("http://www.yourSite.com/api/products/insert")
- * @REST\Put("http://www.yourSite.com/api/products/update/{id}")
- * @REST\Delete("http://www.yourSite.com/api/products/remove/{id}")
+ * @DataSource\Select("http://www.yourSite.com/api/products/findOne/{id}")
+ * @DataSource\Fetch("http://www.yourSite.com/api/products/findAll")
+ * @DataSource\Insert("http://www.yourSite.com/api/products/insert")
+ * @DataSource\Update("http://www.yourSite.com/api/products/update/{id}")
+ * @DataSource\Delete("http://www.yourSite.com/api/products/remove/{id}")
  */
 class Product {
 
