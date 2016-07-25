@@ -47,7 +47,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
             'value' => $url
         ]);
 
-        $routing = new Routing($post);
+        $routing = new Routing(['post' => $post]);
 
         $this->assertSame($url, $routing->post());
     }
@@ -64,7 +64,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
             'value' => $url
         ]);
 
-        $routing = new Routing(null, $put);
+        $routing = new Routing(['put' => $put]);
 
         $this->assertSame($url, $routing->put());
     }
@@ -81,7 +81,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
             'value' => $url
         ]);
 
-        $routing = new Routing(null, null, $get);
+        $routing = new Routing(['get' => $get]);
 
         $this->assertSame($url, $routing->get());
     }
@@ -98,7 +98,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
             'value' => $url
         ]);
 
-        $routing = new Routing(null, null, null, $delete);
+        $routing = new Routing(['delete' => $delete]);
 
         $this->assertSame($url, $routing->delete());
     }
@@ -115,7 +115,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
             'value' => $url
         ]);
 
-        $routing = new Routing(null, null, null, null, $getAll);
+        $routing = new Routing(['getAll' => $getAll]);
 
         $this->assertSame($url, $routing->getAll());
     }

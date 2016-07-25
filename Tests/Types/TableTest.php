@@ -232,18 +232,19 @@ class TableTest extends \PHPUnit_Framework_TestCase {
      * @test
      * @group  unit
      * @covers ::replaceWithAnnotation
+     * @covers ::<private>
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function replaceWithAnnotation() {
         $parser      = new PHPSQLParser();
-        $routing     = new Routing(
-            new Post(['value' => 'http://www.circle.ai/post']),
-            new Put(['value' => 'http://www.circle.ai/put']),
-            new Get(['value' => 'http://www.circle.ai/get']),
-            new Delete(['value' => 'http://www.circle.ai/delete']),
-            new GetAll(['value' => 'http://www.circle.ai/getAll'])
-        );
+        $routing     = new Routing([
+            'post'   => new Post(['value' => 'http://www.circle.ai/post']),
+            'put'    => new Put(['value' => 'http://www.circle.ai/put']),
+            'get'    => new Get(['value' => 'http://www.circle.ai/get']),
+            'delete' => new Delete(['value' => 'http://www.circle.ai/delete']),
+            'getAll' => new GetAll(['value' => 'http://www.circle.ai/getAll'])
+        ]);
 
         $annotations = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\RoutingTable')->disableOriginalConstructor()->getMock();
         $annotations

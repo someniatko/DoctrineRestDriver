@@ -67,7 +67,7 @@ class RoutingTableTest extends \PHPUnit_Framework_TestCase {
 
         $routingTable = new RoutingTable($entities);
 
-        $expected = new Routing();
+        $expected = new Routing([]);
 
         $this->assertEquals($expected, $routingTable->get('categories'));
     }

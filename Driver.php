@@ -43,7 +43,7 @@ class Driver implements DriverInterface {
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array()) {
         if (!empty($this->connection)) return $this->connection;
 
-        $metaDataProvider = new MetaDataProvider();
+        $metaDataProvider = new MetaData();
         $this->connection = new Connection($params, $this, new RoutingTable($metaDataProvider->getEntityNamespaces()));
         return $this->connection;
     }

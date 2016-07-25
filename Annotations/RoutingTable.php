@@ -40,6 +40,17 @@ class RoutingTable {
     private $reader;
 
     /**
+     * @var array
+     */
+    private $annotations = [
+        'post'   => 'Circle\DoctrineRestDriver\Annotations\Post',
+        'put'    => 'Circle\DoctrineRestDriver\Annotations\Put',
+        'get'    => 'Circle\DoctrineRestDriver\Annotations\Get',
+        'delete' => 'Circle\DoctrineRestDriver\Annotations\Delete',
+        'getAll' => 'Circle\DoctrineRestDriver\Annotations\GetAll'
+    ];
+
+    /**
      * RoutingTable constructor
      *
      * @param array $entities
@@ -53,16 +64,16 @@ class RoutingTable {
 
         $aliases = array_flip($entities);
         $this->routingTable = array_reduce($entities, function ($carry, $namespace) use ($aliases) {
-            $refl    = new \ReflectionClass($namespace);
-            $alias   = $aliases[$namespace];
+            $refl  = new \ReflectionClass($namespace);
 
-            $post    = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Post');
-            $put     = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Put');
-            $get     = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Get');
-            $delete  = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\Delete');
-            $getAll  = $this->reader->getClassAnnotation($refl, 'Circle\DoctrineRestDriver\Annotations\GetAll');
+            $annotations = array_flip($this->annotations);
+            $routes      = array_reduce($this->annotations, function($carry, $annotation) use ($refl, $annotations) {
+                $carry[$annotations[$annotation]] = $this->reader->getClassAnnotation($refl, $annotation);
 
-            $carry[$alias] = new Routing($post, $put, $get, $delete, $getAll);
+                return $carry;
+            }, []);
+
+            $carry[$aliases[$namespace]] = new Routing($routes);
 
             return $carry;
         }, []);

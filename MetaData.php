@@ -27,7 +27,7 @@ use Doctrine\ORM\EntityManager;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class MetaDataProvider {
+class MetaData {
 
     /**
      * @var EntityManager

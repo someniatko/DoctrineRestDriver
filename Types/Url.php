@@ -44,7 +44,7 @@ class Url {
         $id     = Id::create($tokens);
         $idPath = empty($id) ? '' : '/' . $id;
 
-        if (!Assertions::isUrl($table)) return $apiUrl . '/' . $table . $idPath;
+        if (!Assertions::isUrl($table))      return $apiUrl . '/' . $table . $idPath;
         if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
         return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
     }

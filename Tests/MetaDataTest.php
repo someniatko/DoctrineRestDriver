@@ -18,7 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Tests;
 
-use Circle\DoctrineRestDriver\MetaDataProvider;
+use Circle\DoctrineRestDriver\MetaData;
 
 /**
  * Tests the meta data provider
@@ -26,12 +26,12 @@ use Circle\DoctrineRestDriver\MetaDataProvider;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\MetaDataProvider
+ * @coversDefaultClass Circle\DoctrineRestDriver\MetaData
  */
-class MetaDataProviderTest extends \PHPUnit_Framework_TestCase {
+class MetaDataTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * @var MetaDataProvider
+     * @var MetaData
      */
     private $provider;
 
@@ -39,7 +39,7 @@ class MetaDataProviderTest extends \PHPUnit_Framework_TestCase {
      * {@inheritdoc}
      */
     public function setUp() {
-        $this->provider = new MetaDataProvider();
+        $this->provider = new MetaData();
     }
 
     /**

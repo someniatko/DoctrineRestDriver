@@ -57,17 +57,18 @@ class Routing {
     /**
      * Routing constructor
      *
-     * @param Post   $post
-     * @param Put    $put
-     * @param Get    $get
-     * @param Delete $delete
+     * @param array $routes
+     *
+     * @SuppressWarnings("PHPMD.NPathComplexity")
      */
-    public function __construct(Post $post = null, Put $put = null, Get $get = null, Delete $delete = null, GetAll $getAll = null) {
-        $this->post   = $post;
-        $this->put    = $put;
-        $this->get    = $get;
-        $this->delete = $delete;
-        $this->getAll = $getAll;
+    public function __construct(array $routes = []) {
+        if (empty($routes)) return;
+
+        $this->post   = !empty($routes['post']) ? $routes['post'] : null;
+        $this->put    = !empty($routes['put']) ? $routes['put'] : null;
+        $this->get    = !empty($routes['get']) ? $routes['get'] : null;
+        $this->delete = !empty($routes['delete']) ? $routes['delete'] : null;
+        $this->getAll = !empty($routes['getAll']) ? $routes['getAll'] : null;
     }
 
     /**
