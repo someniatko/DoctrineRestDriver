@@ -127,7 +127,7 @@ By using this setting the driver is doing a lot of stuff by itself:
 - SELECT queries become GET requests:
   - Urls have the following format: ```{apiHost}/{pathToApi}/{tableName}/{id}``` (if a single entity is requested) or ```{apiHost}/{pathToApi}/{tableName}``` (if all entities are requested)
 
-Let's watch the driver in action by implementing some controller methods. In this example we assume that we have configured the ```host``` setting [(chapter installation)](#Installation) with ```http://www.yourSite.com/api```.
+Let's watch the driver in action by implementing some controller methods. In this example we assume that we have configured the ```host``` setting [(chapter installation)](#installation) with ```http://www.yourSite.com/api```.
 
 ```php
 <?php
