@@ -16,31 +16,19 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Annotations;
+namespace Circle\DoctrineRestDriver\Annotations;
 
-use Circle\DoctrineRestDriver\Annotations\GetAll;
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Tests the get all annotation
+ * Annotation to declare a get all route for an entity
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Annotations\GetAll
+ * @Annotation
  */
-class GetAllTest extends \PHPUnit_Framework_TestCase {
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::__construct
-     * @covers ::getRoute
-     */
-    public function getRoute() {
-        $getAll = new GetAll([
-            'value' => 'http://www.mySite.com/getAll'
-        ]);
-
-        $this->assertSame('http://www.mySite.com/getAll', $getAll->getRoute());
-    }
+class Fetch {
+    use Route;
 }

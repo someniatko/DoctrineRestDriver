@@ -19,10 +19,10 @@
 namespace Circle\DoctrineRestDriver\Tests\Annotations;
 
 use Circle\DoctrineRestDriver\Annotations\Delete;
-use Circle\DoctrineRestDriver\Annotations\Get;
-use Circle\DoctrineRestDriver\Annotations\GetAll;
-use Circle\DoctrineRestDriver\Annotations\Post;
-use Circle\DoctrineRestDriver\Annotations\Put;
+use Circle\DoctrineRestDriver\Annotations\Select;
+use Circle\DoctrineRestDriver\Annotations\Fetch;
+use Circle\DoctrineRestDriver\Annotations\Insert;
+use Circle\DoctrineRestDriver\Annotations\Update;
 use Circle\DoctrineRestDriver\Annotations\Routing;
 
 /**
@@ -43,7 +43,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
      */
     public function post() {
         $url  = 'http://www.mySite.com/post';
-        $post = new Post([
+        $post = new Insert([
             'value' => $url
         ]);
 
@@ -60,7 +60,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
      */
     public function put() {
         $url = 'http://www.mySite.com/put';
-        $put = new Put([
+        $put = new Update([
             'value' => $url
         ]);
 
@@ -77,7 +77,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
      */
     public function get() {
         $url = 'http://www.mySite.com/get';
-        $get = new Get([
+        $get = new Select([
             'value' => $url
         ]);
 
@@ -111,7 +111,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
      */
     public function getAll() {
         $url    = 'http://www.mySite.com/getAll';
-        $getAll = new GetAll([
+        $getAll = new Fetch([
             'value' => $url
         ]);
 

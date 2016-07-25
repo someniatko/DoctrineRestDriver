@@ -36,9 +36,10 @@ class Loader {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function load() {
-        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Post.php');
-        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Put.php');
-        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Get.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Insert.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Update.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Select.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Fetch.php');
         AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Delete.php');
     }
 }

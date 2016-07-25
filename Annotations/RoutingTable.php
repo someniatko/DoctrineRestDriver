@@ -43,11 +43,11 @@ class RoutingTable {
      * @var array
      */
     private $annotations = [
-        'post'   => 'Circle\DoctrineRestDriver\Annotations\Post',
-        'put'    => 'Circle\DoctrineRestDriver\Annotations\Put',
-        'get'    => 'Circle\DoctrineRestDriver\Annotations\Get',
+        'post'   => 'Circle\DoctrineRestDriver\Annotations\Insert',
+        'put'    => 'Circle\DoctrineRestDriver\Annotations\Update',
+        'get'    => 'Circle\DoctrineRestDriver\Annotations\Select',
         'delete' => 'Circle\DoctrineRestDriver\Annotations\Delete',
-        'getAll' => 'Circle\DoctrineRestDriver\Annotations\GetAll'
+        'getAll' => 'Circle\DoctrineRestDriver\Annotations\Fetch'
     ];
 
     /**

@@ -16,19 +16,31 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Annotations;
+namespace Circle\DoctrineRestDriver\Tests\Annotations;
 
-use Circle\DoctrineRestDriver\Exceptions\Exceptions;
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Annotations\Select;
 
 /**
- * Annotation to declare a get all route for an entity
+ * Tests the select annotation
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @Annotation
+ * @coversDefaultClass Circle\DoctrineRestDriver\Annotations\Select
  */
-class GetAll {
-    use Route;
+class SelectTest extends \PHPUnit_Framework_TestCase {
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::__construct
+     * @covers ::getRoute
+     */
+    public function getRoute() {
+        $get = new Select([
+            'value' => 'http://www.mySite.com/get'
+        ]);
+
+        $this->assertSame('http://www.mySite.com/get', $get->getRoute());
+    }
 }

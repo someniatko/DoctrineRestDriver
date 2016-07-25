@@ -16,31 +16,19 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Annotations;
+namespace Circle\DoctrineRestDriver\Annotations;
 
-use Circle\DoctrineRestDriver\Annotations\Post;
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Tests the post annotation
+ * Annotation to declare a post route for an entity
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Annotations\Post
+ * @Annotation
  */
-class PostTest extends \PHPUnit_Framework_TestCase {
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::__construct
-     * @covers ::getRoute
-     */
-    public function getRoute() {
-        $post = new Post([
-            'value' => 'http://www.mySite.com/post'
-        ]);
-
-        $this->assertSame('http://www.mySite.com/post', $post->getRoute());
-    }
+class Insert {
+    use Route;
 }

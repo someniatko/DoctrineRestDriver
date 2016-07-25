@@ -21,7 +21,7 @@ namespace Circle\DoctrineRestDriver\Tests\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Circle\DoctrineRestDriver\Annotations\Get;
+use Circle\DoctrineRestDriver\Annotations as DataSource;
 
 /**
  * This is a test entity
@@ -31,7 +31,7 @@ use Circle\DoctrineRestDriver\Annotations\Get;
  *
  * @ORM\Entity
  * @ORM\Table(name="products")
- * @Get("http://127.0.0.1:3000/app_dev.php/mockapi/products")
+ * @DataSource\Select("http://127.0.0.1:3000/app_dev.php/mockapi/products")
  */
 class TestEntity {
     /**

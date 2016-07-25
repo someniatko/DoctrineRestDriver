@@ -18,17 +18,17 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Annotations;
 
-use Circle\DoctrineRestDriver\Annotations\Put;
+use Circle\DoctrineRestDriver\Annotations\Update;
 
 /**
- * Tests the put annotation
+ * Tests the update annotation
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Annotations\Put
+ * @coversDefaultClass Circle\DoctrineRestDriver\Annotations\Update
  */
-class PutTest extends \PHPUnit_Framework_TestCase {
+class UpdateTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
@@ -37,7 +37,7 @@ class PutTest extends \PHPUnit_Framework_TestCase {
      * @covers ::getRoute
      */
     public function getRoute() {
-        $put = new Put([
+        $put = new Update([
             'value' => 'http://www.mySite.com/put'
         ]);
 

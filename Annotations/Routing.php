@@ -30,17 +30,17 @@ use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 class Routing {
 
     /**
-     * @var Post
+     * @var Insert
      */
     private $post;
 
     /**
-     * @var Put
+     * @var Update
      */
     private $put;
 
     /**
-     * @var Get
+     * @var Select
      */
     private $get;
 
@@ -50,7 +50,7 @@ class Routing {
     private $delete;
 
     /**
-     * @var GetAll
+     * @var Fetch
      */
     private $getAll;
 

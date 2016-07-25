@@ -18,17 +18,17 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Annotations;
 
-use Circle\DoctrineRestDriver\Annotations\Get;
+use Circle\DoctrineRestDriver\Annotations\Fetch;
 
 /**
- * Tests the get annotation
+ * Tests the fetch annotation
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Annotations\Get
+ * @coversDefaultClass Circle\DoctrineRestDriver\Annotations\Fetch
  */
-class GetTest extends \PHPUnit_Framework_TestCase {
+class FetchTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
@@ -37,10 +37,10 @@ class GetTest extends \PHPUnit_Framework_TestCase {
      * @covers ::getRoute
      */
     public function getRoute() {
-        $get = new Get([
-            'value' => 'http://www.mySite.com/get'
+        $getAll = new Fetch([
+            'value' => 'http://www.mySite.com/getAll'
         ]);
 
-        $this->assertSame('http://www.mySite.com/get', $get->getRoute());
+        $this->assertSame('http://www.mySite.com/getAll', $getAll->getRoute());
     }
 }
