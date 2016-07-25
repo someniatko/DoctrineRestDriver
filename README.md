@@ -12,7 +12,7 @@ And because we have absolutely no idea how to write a programming language, we'r
 - You need composer to download the library
 - Your REST API has to return JSON
 - GET, PUT and POST requests must be answered with 200 if successful
-- DELETE requests must be responded with 204 if successful
+- A response for a DELETE request needs to contain a status code of 204 if successful
 
 # Installation
 
@@ -56,16 +56,16 @@ A full list of all possible options can be found here: http://php.net/manual/en/
 
 # Usage
 
-Using the driver is very easy if your API routes follow these few conventions:
+If your API routes follow these few conventions, using the driver is very easy:
 
-- Each route must have the same basic structure: ```{apiHost}/{pathToApi}/{tableName}```
-- The PUT, GET (single) and UPDATE routes must have an additional ```id```: ```{apiHost}/{pathToApi}/{tableName}/{id}```
+- Each route must be structured the same: ```{apiHost}/{pathToApi}/{tableName}```
+- The PUT, GET (single) and UPDATE routes need to contain an additional ```id```: ```{apiHost}/{pathToApi}/{tableName}/{id}```
 - POST and GET (all) must follow the basic structure: ```{apiHost}/{pathToApi}/{tableName}```
 
-If this ain't the case don't be sad. We provide a few annotations for you to configure your own routes.
+Don't worry, if this is not the case: Luckily, we provide a few annotations for you to configure your own routes.
 
 
-The following code samples show how to use the driver in a Symfony environment.
+The examples below show how to use the driver in a Symfony environment.
 
 ## If your API follows our conventions
 
@@ -111,7 +111,7 @@ class Product {
 }
 ```
 
-Afterwards you are able to use the created entity as if you were using a database.
+Afterwards, you are able to use the created entity as if you were using a database.
 
 By using this setting the driver is doing a lot of stuff by itself:
 
@@ -241,7 +241,7 @@ class UserController extends Controller {
 ```
 
 ## If your API doesn't follow our conventions
-Now it's time to introduce you some annotations helping configuring own routes. These class annotations must only be used for entities. The following entity is the one created in the chapter before, but with the additional ```DataSource```annotations.
+Now it's time to introduce you to some annotations, which help you to configure your own routes. Be sure to use them only with ```Doctrine``` entities. To demonstrate their capabilities, let's customize some parts of the previous chapter with the ```DataSource``` annotation:
 
 ```php
 namespace CircleBundle\Entity;
