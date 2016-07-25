@@ -58,9 +58,9 @@ A full list of all possible options can be found here: http://php.net/manual/en/
 
 Using the driver is very easy if your API routes follow these few conventions:
 
-- Each route has the same basic structure: ```{host}/{pathToApi}/{tableName}```
-- The PUT, GET (single) and UPDATE routes have an additional ```id```: ```{host}/{pathToApi}/{tableName}/{id}```
-- POST and GET (all) follow the basic structure: ```{host}/{pathToApi}/{tableName}```
+- Each route has the same basic structure: ```{apiHost}/{pathToApi}/{tableName}```
+- The PUT, GET (single) and UPDATE routes have an additional ```id```: ```{apiHost}/{pathToApi}/{tableName}/{id}```
+- POST and GET (all) follow the basic structure: ```{apiHost}/{pathToApi}/{tableName}```
 
 If this ain't the case don't be sad. We provide a few annotations for you to configure your own routes.
 
@@ -119,15 +119,15 @@ By using this setting the driver is doing a lot of stuff by itself:
 - It automatically maps the response into a valid entity
 - It saves the entity as managed doctrine entity
 - It translates INSERT queries into POST requests to create new data
-  - Urls have the following format: ```{host}/{pathToApi}/{tableName}```
+  - Urls have the following format: ```{apiHost}/{pathToApi}/{tableName}```
 - UPDATE queries will be turned into PUT requests:
-   - Urls have the following format: ```{host}/{pathToApi}/{tableName}/{id}```
+   - Urls have the following format: ```{apiHost}/{pathToApi}/{tableName}/{id}```
 - The DELETE operation will remain:
-  - Urls have the following format: ```{host}/{pathToApi}/{tableName}/{id}```
+  - Urls have the following format: ```{apiHost}/{pathToApi}/{tableName}/{id}```
 - SELECT queries become GET requests:
-  - Urls have the following format: ```{host}/{pathToApi}/{tableName}/{id}``` (if a single entity is requested) or ```{host}/{pathToApi}/{tableName}``` (if all entities are requested)
+  - Urls have the following format: ```{apiHost}/{pathToApi}/{tableName}/{id}``` (if a single entity is requested) or ```{apiHost}/{pathToApi}/{tableName}``` (if all entities are requested)
 
-Let's watch the driver in action by implementing some controller methods. In this example we assume that we have configured the ```host``` (chapter installation) with ```http://www.yourSite.com/api```. The ```host``` configuration covers ```{host}/{pathToApi}``` mentioned before.
+Let's watch the driver in action by implementing some controller methods. In this example we assume that we have configured the ```host``` setting [(chapter installation)](#Installation) with ```http://www.yourSite.com/api```.
 
 ```php
 <?php
