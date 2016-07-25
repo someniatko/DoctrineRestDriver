@@ -58,9 +58,9 @@ A full list of all possible options can be found here: http://php.net/manual/en/
 
 Using the driver is very easy if your API routes follow these few conventions:
 
-- Each route has the same basic structure: ```{apiHost}/{pathToApi}/{tableName}```
-- The PUT, GET (single) and UPDATE routes have an additional ```id```: ```{apiHost}/{pathToApi}/{tableName}/{id}```
-- POST and GET (all) follow the basic structure: ```{apiHost}/{pathToApi}/{tableName}```
+- Each route must have the same basic structure: ```{apiHost}/{pathToApi}/{tableName}```
+- The PUT, GET (single) and UPDATE routes must have an additional ```id```: ```{apiHost}/{pathToApi}/{tableName}/{id}```
+- POST and GET (all) must follow the basic structure: ```{apiHost}/{pathToApi}/{tableName}```
 
 If this ain't the case don't be sad. We provide a few annotations for you to configure your own routes.
 
