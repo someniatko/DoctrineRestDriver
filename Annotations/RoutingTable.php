@@ -62,7 +62,7 @@ class RoutingTable {
 
         $this->reader = new AnnotationReader();
 
-        $aliases = array_flip($entities);
+        $aliases            = array_flip($entities);
         $this->routingTable = array_reduce($entities, function ($carry, $namespace) use ($aliases) {
             $refl  = new \ReflectionClass($namespace);
 
