@@ -113,7 +113,7 @@ class Product {
 
 Afterwards, you are able to use the created entity as if you were using a database.
 
-By using this setting the driver is doing a lot of stuff by itself:
+By using this setting, the driver is performing a lot of magic under the hood:
 
 - It generally uses the request body to send data in JSON format
 - It automatically maps the response into a valid entity
