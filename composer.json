@@ -15,12 +15,7 @@
     "GPL"
   ],
   "require-dev": {
-    "symfony/yaml": "^3.0",
-    "sensio/framework-extra-bundle": "^3.0",
-    "symfony/framework-bundle": "^3.0",
     "symfony/expression-language": "^3.0",
-    "doctrine/doctrine-bundle": "^1.6",
-    "symfony/validator": "^3.0",
     "phpmd/phpmd" : "@stable",
     "phpunit/phpunit" : "@stable"
   },
@@ -41,6 +36,11 @@
     "doctrine/dbal": "2.*",
     "greenlion/php-sql-parser": "^4.0",
     "doctrine/orm": "2.*",
-    "ci/restclientbundle": "^1.0"
+    "ci/restclientbundle": "^1.0",
+    "symfony/yaml": "3.*",
+    "sensio/framework-extra-bundle": "3.*",
+    "symfony/framework-bundle": "^3.*",
+    "doctrine/doctrine-bundle": "^1.6",
+    "symfony/validator": "^3.*"
   }
 }
