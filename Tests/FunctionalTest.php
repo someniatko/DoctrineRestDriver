@@ -52,6 +52,11 @@ class FunctionalTest extends WebTestCase {
         AnnotationRegistry::registerFile(__DIR__ . '/../vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/GeneratedValue.php');
         AnnotationRegistry::registerFile(__DIR__ . '/../vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/OneToMany.php');
         AnnotationRegistry::registerFile(__DIR__ . '/../vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/ManyToOne.php');
+        AnnotationRegistry::registerFile(__DIR__ . '/../Annotations/Insert.php');
+        AnnotationRegistry::registerFile(__DIR__ . '/../Annotations/Update.php');
+        AnnotationRegistry::registerFile(__DIR__ . '/../Annotations/Select.php');
+        AnnotationRegistry::registerFile(__DIR__ . '/../Annotations/Delete.php');
+        AnnotationRegistry::registerFile(__DIR__ . '/../Annotations/Fetch.php');
 
         static::bootKernel();
         $this->em = static::$kernel->getContainer()->get('doctrine.orm.default_entity_manager');

@@ -16,36 +16,49 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Annotations;
 
 use Circle\DoctrineRestDriver\Validation\Assertions;
+use Doctrine\Common\Annotations\AnnotationReader;
 
 /**
- * Url type
+ * Contains all routing information about all entities
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class Url {
+class RoutingTable {
 
     /**
-     * Returns an url depending on the given sql tokens
+     * @var array
+     */
+    private $routingTable = [];
+
+    /**
+     * RoutingTable constructor
      *
-     * @param  array  $tokens
-     * @param  string $apiUrl
-     * @return string
+     * @param array $entities
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, $apiUrl) {
-        Assertions::assertHashMap('tokens', $tokens);
+    public function __construct(array $entities) {
+        Assertions::assertHashMap('entities', $entities);
 
-        $table  = Table::create($tokens);
-        $id     = Id::create($tokens);
-        $idPath = empty($id) ? '' : '/' . $id;
+        $aliases            = array_flip($entities);
+        $this->routingTable = array_reduce($entities, function ($carry, $namespace) use ($aliases) {
+            $carry[$aliases[$namespace]] = new Routing($namespace);
 
-        if (!Assertions::isUrl($table))      return $apiUrl . '/' . $table . $idPath;
-        if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
-        return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
+            return $carry;
+        }, []);
+    }
+
+    /**
+     * returns the routing information about the entity alias
+     *
+     * @param  string $alias
+     * @return Routing
+     */
+    public function get($alias) {
+        return !empty($this->routingTable[$alias]) ? $this->routingTable[$alias] : null;
     }
 }

@@ -18,6 +18,9 @@
 
 namespace Circle\DoctrineRestDriver;
 
+use Circle\DoctrineRestDriver\Annotations\RoutingTable;
+use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection as AbstractConnection;
 
 /**
@@ -34,13 +37,20 @@ class Connection extends AbstractConnection {
     private $statement;
 
     /**
+     * @var array
+     */
+    private $routings;
+
+    /**
      * Connection constructor
      *
-     * @param array         $params
-     * @param Driver        $driver
+     * @param array        $params
+     * @param Driver       $driver
+     * @param RoutingTable $routings
      */
-    public function __construct(array $params, Driver $driver) {
-        parent::__construct($params, $driver);
+    public function __construct(array $params, Driver $driver, RoutingTable $routings, Configuration $config = null, EventManager $eventManager = null) {
+        $this->routings = $routings;
+        parent::__construct($params, $driver, $config, $eventManager);
     }
 
     /**
@@ -52,7 +62,7 @@ class Connection extends AbstractConnection {
     public function prepare($statement) {
         $this->connect();
 
-        $this->statement = new Statement($statement, $this->getParams());
+        $this->statement = new Statement($statement, $this->getParams(), $this->routings);
         $this->statement->setFetchMode($this->defaultFetchMode);
 
         return $this->statement;

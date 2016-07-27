@@ -27,7 +27,8 @@
   "autoload": {
     "psr-0": {
       "Circle\\DoctrineRestDriver": ""
-    }
+    },
+    "files": ["Tests/app/AppKernel.php"]
   },
   "target-dir": "Circle/DoctrineRestDriver",
   "extra": {

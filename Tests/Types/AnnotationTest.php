@@ -16,36 +16,33 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Annotations\RoutingTable;
+use Circle\DoctrineRestDriver\Types\Annotation;
+use PHPSQLParser\PHPSQLParser;
 
 /**
- * Url type
+ * Tests the annotation type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\Annotation
  */
-class Url {
+class AnnotationTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * Returns an url depending on the given sql tokens
-     *
-     * @param  array  $tokens
-     * @param  string $apiUrl
-     * @return string
+     * @test
+     * @group  unit
+     * @covers ::exists
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, $apiUrl) {
-        Assertions::assertHashMap('tokens', $tokens);
+    public function exists() {
+        $routings = new RoutingTable(['products' => 'Circle\DoctrineRestDriver\Tests\Entity\TestEntity']);
 
-        $table  = Table::create($tokens);
-        $id     = Id::create($tokens);
-        $idPath = empty($id) ? '' : '/' . $id;
-
-        if (!Assertions::isUrl($table))      return $apiUrl . '/' . $table . $idPath;
-        if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
-        return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
+        $this->assertTrue(Annotation::exists($routings, 'products', 'get'));
+        $this->assertFalse(Annotation::exists($routings, 'products', 'post'));
     }
 }

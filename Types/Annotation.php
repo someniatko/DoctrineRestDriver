@@ -18,34 +18,25 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 
 /**
- * Url type
+ * Extracts id information from a sql token array
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class Url {
+class Annotation {
 
     /**
-     * Returns an url depending on the given sql tokens
+     * checks if the annotation exists
      *
-     * @param  array  $tokens
-     * @param  string $apiUrl
-     * @return string
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
+     * @param  RoutingTable $annotations
+     * @param  string       $entityAlias
+     * @param  string       $method
+     * @return boolean
      */
-    public static function create(array $tokens, $apiUrl) {
-        Assertions::assertHashMap('tokens', $tokens);
-
-        $table  = Table::create($tokens);
-        $id     = Id::create($tokens);
-        $idPath = empty($id) ? '' : '/' . $id;
-
-        if (!Assertions::isUrl($table))      return $apiUrl . '/' . $table . $idPath;
-        if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
-        return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
+    public static function exists(RoutingTable $annotations = null, $entityAlias, $method) {
+        return !empty($annotations) && $annotations->get($entityAlias) !== null && $annotations->get($entityAlias)->$method() !== null;
     }
 }

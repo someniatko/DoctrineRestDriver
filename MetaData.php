@@ -16,36 +16,49 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Annotations\Loader;
+use Doctrine\ORM\EntityManager;
 
 /**
- * Url type
+ * Provider for doctrine meta data
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class Url {
+class MetaData {
 
     /**
-     * Returns an url depending on the given sql tokens
-     *
-     * @param  array  $tokens
-     * @param  string $apiUrl
-     * @return string
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * MetaDataProvider constructor
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, $apiUrl) {
-        Assertions::assertHashMap('tokens', $tokens);
+    public function __construct() {
+        Loader::load();
 
-        $table  = Table::create($tokens);
-        $id     = Id::create($tokens);
-        $idPath = empty($id) ? '' : '/' . $id;
+        $kernel = new \AppKernel('prod', true);
+        $kernel->boot();
 
-        if (!Assertions::isUrl($table))      return $apiUrl . '/' . $table . $idPath;
-        if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
-        return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
+        $this->em = $kernel->getContainer()->get('doctrine')->getManager();
+    }
+
+    /**
+     * returns all namespaces of managed entities
+     *
+     * @return array
+     */
+    public function getEntityNamespaces() {
+        $meta = $this->em->getMetadataFactory()->getAllMetadata();
+
+        return array_reduce($meta, function($carry, $item) {
+            $carry[$item->table['name']] = $item->getName();
+            return $carry;
+        }, []);
     }
 }
