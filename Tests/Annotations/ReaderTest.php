@@ -18,19 +18,18 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Annotations;
 
-use Circle\DoctrineRestDriver\Annotations\Routing;
-use Circle\DoctrineRestDriver\Annotations\RoutingTable;
+use Circle\DoctrineRestDriver\Annotations\Reader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
- * Tests the routing table
+ * Tests the annotation reader
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Annotations\RoutingTable
+ * @coversDefaultClass Circle\DoctrineRestDriver\Annotations\Reader
  */
-class RoutingTableTest extends \PHPUnit_Framework_TestCase {
+class ReaderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * {@inheritdoc}
@@ -56,19 +55,12 @@ class RoutingTableTest extends \PHPUnit_Framework_TestCase {
      * @test
      * @group  unit
      * @covers ::__construct
-     * @covers ::get
-     * @covers ::<private>
+     * @covers ::read
      */
-    public function get() {
-        $entities = [
-            'categories'     => 'Circle\DoctrineRestDriver\Tests\Entity\AssociatedEntity',
-            'nonImplemented' => 'Circle\DoctrineRestDriver\Tests\Entity\NonImplementedEntity',
-            'products'       => 'Circle\DoctrineRestDriver\Tests\Entity\TestEntity',
-        ];
+    public function getRoute() {
+        $reader = new Reader();
+        $class  = new \ReflectionClass('Circle\DoctrineRestDriver\Tests\Entity\TestEntity');
 
-        $routingTable = new RoutingTable($entities);
-        $expected     = new Routing($entities['categories']);
-
-        $this->assertEquals($expected, $routingTable->get('categories'));
+        $this->assertSame('http://127.0.0.1:3000/app_dev.php/mockapi/products', $reader->read($class, 'Circle\DoctrineRestDriver\Annotations\Select'));
     }
 }

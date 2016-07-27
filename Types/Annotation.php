@@ -16,16 +16,27 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Annotations;
+namespace Circle\DoctrineRestDriver\Types;
+
+use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 
 /**
- * Annotation to declare a get all route for an entity
+ * Extracts id information from a sql token array
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @Annotation
  */
-class Fetch {
-    use Route;
+class Annotation {
+
+    /**
+     * checks if the annotation exists
+     *
+     * @param  RoutingTable $annotations
+     * @param  string       $entityAlias
+     * @param  string       $method
+     * @return boolean
+     */
+    public static function exists(RoutingTable $annotations = null, $entityAlias, $method) {
+        return !empty($annotations) && $annotations->get($entityAlias) !== null && $annotations->get($entityAlias)->$method() !== null;
+    }
 }

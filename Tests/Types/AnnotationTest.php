@@ -16,16 +16,33 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Annotations;
+namespace Circle\DoctrineRestDriver\Tests\Types;
+
+use Circle\DoctrineRestDriver\Annotations\RoutingTable;
+use Circle\DoctrineRestDriver\Types\Annotation;
+use PHPSQLParser\PHPSQLParser;
 
 /**
- * Annotation to declare a get all route for an entity
+ * Tests the annotation type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @Annotation
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\Annotation
  */
-class Fetch {
-    use Route;
+class AnnotationTest extends \PHPUnit_Framework_TestCase {
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::exists
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function exists() {
+        $routings = new RoutingTable(['products' => 'Circle\DoctrineRestDriver\Tests\Entity\TestEntity']);
+
+        $this->assertTrue(Annotation::exists($routings, 'products', 'get'));
+        $this->assertFalse(Annotation::exists($routings, 'products', 'post'));
+    }
 }

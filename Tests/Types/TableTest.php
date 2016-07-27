@@ -238,13 +238,7 @@ class TableTest extends \PHPUnit_Framework_TestCase {
      */
     public function replaceWithAnnotation() {
         $parser      = new PHPSQLParser();
-        $routing     = new Routing([
-            'post'   => new Insert(['value' => 'http://www.circle.ai/post']),
-            'put'    => new Update(['value' => 'http://www.circle.ai/put']),
-            'get'    => new Select(['value' => 'http://www.circle.ai/get']),
-            'delete' => new Delete(['value' => 'http://www.circle.ai/delete']),
-            'getAll' => new Fetch(['value' => 'http://www.circle.ai/getAll'])
-        ]);
+        $routing     = new Routing('Circle\DoctrineRestDriver\Tests\Entity\TestEntity');
 
         $annotations = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\RoutingTable')->disableOriginalConstructor()->getMock();
         $annotations
@@ -253,18 +247,18 @@ class TableTest extends \PHPUnit_Framework_TestCase {
             ->will($this->returnValue($routing));
 
         $tokens = $parser->parse('UPDATE products p0 set name="name"');
-        $this->assertSame('http://www.circle.ai/put', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
+        $this->assertSame('products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
 
         $tokens = $parser->parse('INSERT INTO products (test) VALUES ("test")');
-        $this->assertSame('http://www.circle.ai/post', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
+        $this->assertSame('products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
 
         $tokens = $parser->parse('SELECT * FROM products');
-        $this->assertSame('http://www.circle.ai/getAll', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
+        $this->assertSame('products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
 
         $tokens = $parser->parse('SELECT * FROM products WHERE id = 1');
-        $this->assertSame('http://www.circle.ai/get', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
+        $this->assertSame('http://127.0.0.1:3000/app_dev.php/mockapi/products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
 
         $tokens = $parser->parse('DELETE FROM products');
-        $this->assertSame('http://www.circle.ai/delete', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
+        $this->assertSame('products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
     }
 }

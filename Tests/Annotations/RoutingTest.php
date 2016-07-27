@@ -36,20 +36,20 @@ use Circle\DoctrineRestDriver\Annotations\Routing;
 class RoutingTest extends \PHPUnit_Framework_TestCase {
 
     /**
+     * {@inheritdoc}
+     */
+    public function setUp() {
+        $this->routing = new Routing('Circle\DoctrineRestDriver\Tests\Entity\AssociatedEntity');
+    }
+
+    /**
      * @test
      * @group  unit
      * @covers ::__construct
      * @covers ::post
      */
     public function post() {
-        $url  = 'http://www.mySite.com/post';
-        $post = new Insert([
-            'value' => $url
-        ]);
-
-        $routing = new Routing(['post' => $post]);
-
-        $this->assertSame($url, $routing->post());
+        $this->assertSame(null, $this->routing->post());
     }
 
     /**
@@ -59,14 +59,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
      * @covers ::put
      */
     public function put() {
-        $url = 'http://www.mySite.com/put';
-        $put = new Update([
-            'value' => $url
-        ]);
-
-        $routing = new Routing(['put' => $put]);
-
-        $this->assertSame($url, $routing->put());
+        $this->assertSame(null, $this->routing->put());
     }
 
     /**
@@ -76,14 +69,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
      * @covers ::get
      */
     public function get() {
-        $url = 'http://www.mySite.com/get';
-        $get = new Select([
-            'value' => $url
-        ]);
-
-        $routing = new Routing(['get' => $get]);
-
-        $this->assertSame($url, $routing->get());
+        $this->assertSame(null, $this->routing->get());
     }
 
     /**
@@ -93,14 +79,7 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
      * @covers ::delete
      */
     public function delete() {
-        $url    = 'http://www.mySite.com/delete';
-        $delete = new Delete([
-            'value' => $url
-        ]);
-
-        $routing = new Routing(['delete' => $delete]);
-
-        $this->assertSame($url, $routing->delete());
+        $this->assertSame(null, $this->routing->delete());
     }
 
     /**
@@ -110,13 +89,6 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
      * @covers ::getAll
      */
     public function getAll() {
-        $url    = 'http://www.mySite.com/getAll';
-        $getAll = new Fetch([
-            'value' => $url
-        ]);
-
-        $routing = new Routing(['getAll' => $getAll]);
-
-        $this->assertSame($url, $routing->getAll());
+        $this->assertSame(null, $this->routing->getAll());
     }
 }

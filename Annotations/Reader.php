@@ -18,47 +18,38 @@
 
 namespace Circle\DoctrineRestDriver\Annotations;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 /**
- * Contains all routing information about all entities
+ * Reads annotations
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class RoutingTable {
+class Reader {
 
     /**
-     * @var array
+     * @var AnnotationReader
      */
-    private $routingTable = [];
+    private $annotationReader;
 
     /**
-     * RoutingTable constructor
-     *
-     * @param array $entities
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
+     * Reader constructor.
      */
-    public function __construct(array $entities) {
-        Assertions::assertHashMap('entities', $entities);
-
-        $aliases            = array_flip($entities);
-        $this->routingTable = array_reduce($entities, function ($carry, $namespace) use ($aliases) {
-            $carry[$aliases[$namespace]] = new Routing($namespace);
-
-            return $carry;
-        }, []);
+    public function __construct() {
+        $this->annotationReader = new AnnotationReader();
     }
 
     /**
-     * returns the routing information about the entity alias
+     * returns the route annotation value or null if no annotation exists
      *
-     * @param  string $alias
-     * @return Routing
+     * @param  \ReflectionClass  $class
+     * @param  string $namespace
+     * @return null|string
      */
-    public function get($alias) {
-        return !empty($this->routingTable[$alias]) ? $this->routingTable[$alias] : null;
+    public function read(\ReflectionClass $class, $namespace) {
+        $annotation = $this->annotationReader->getClassAnnotation($class, $namespace);
+
+        return $annotation instanceof $namespace ? $annotation->getRoute() : null;
     }
 }

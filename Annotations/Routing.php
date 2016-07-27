@@ -18,9 +18,6 @@
 
 namespace Circle\DoctrineRestDriver\Annotations;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
-use Circle\DoctrineRestDriver\Exceptions\Exceptions;
-
 /**
  * Contains routing information about a specific entity
  *
@@ -55,20 +52,26 @@ class Routing {
     private $getAll;
 
     /**
+     * @var array
+     */
+    private static $annotations = [
+        'post'   => 'Circle\DoctrineRestDriver\Annotations\Insert',
+        'put'    => 'Circle\DoctrineRestDriver\Annotations\Update',
+        'get'    => 'Circle\DoctrineRestDriver\Annotations\Select',
+        'delete' => 'Circle\DoctrineRestDriver\Annotations\Delete',
+        'getAll' => 'Circle\DoctrineRestDriver\Annotations\Fetch'
+    ];
+
+    /**
      * Routing constructor
      *
-     * @param array $routes
-     *
-     * @SuppressWarnings("PHPMD.NPathComplexity")
+     * @param string $namespace
      */
-    public function __construct(array $routes = []) {
-        if (empty($routes)) return;
+    public function __construct($namespace) {
+        $reader = new Reader();
+        $class  = new \ReflectionClass($namespace);
 
-        $this->post   = !empty($routes['post']) ? $routes['post'] : null;
-        $this->put    = !empty($routes['put']) ? $routes['put'] : null;
-        $this->get    = !empty($routes['get']) ? $routes['get'] : null;
-        $this->delete = !empty($routes['delete']) ? $routes['delete'] : null;
-        $this->getAll = !empty($routes['getAll']) ? $routes['getAll'] : null;
+        foreach (self::$annotations as $alias => $annotation) $this->$alias = $reader->read($class, $annotation);
     }
 
     /**
@@ -77,7 +80,7 @@ class Routing {
      * @return string|null
      */
     public function post() {
-        return empty($this->post) ? null : $this->post->getRoute();
+        return $this->post;
     }
 
     /**
@@ -86,7 +89,7 @@ class Routing {
      * @return string|null
      */
     public function get() {
-        return empty($this->get) ? null : $this->get->getRoute();
+        return $this->get;
     }
 
     /**
@@ -95,7 +98,7 @@ class Routing {
      * @return string|null
      */
     public function put() {
-        return empty($this->put) ? null : $this->put->getRoute();
+        return $this->put;
     }
 
     /**
@@ -104,7 +107,7 @@ class Routing {
      * @return string|null
      */
     public function delete() {
-        return empty($this->delete) ? null : $this->delete->getRoute();
+        return $this->delete;
     }
 
     /**
@@ -113,6 +116,6 @@ class Routing {
      * @return string|null
      */
     public function getAll() {
-        return empty($this->getAll) ? null : $this->getAll->getRoute();
+        return $this->getAll;
     }
 }

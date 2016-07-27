@@ -77,8 +77,11 @@ class Table {
         Assertions::assertHashMap('tokens', $tokens);
 
         $operation = SqlOperation::create($tokens);
-        if ($operation === SqlOperations::INSERT) return self::replaceTableName($tokens, $newTable, 'INSERT', 1);
-        return $operation === SqlOperations::UPDATE ? self::replaceTableName($tokens, $newTable, 'UPDATE', 0) : self::replaceTableName($tokens, $newTable, 'FROM', 0);
+        $firstKey  = $operation === SqlOperations::DELETE || $operation === SqlOperations::SELECT ? 'FROM' : strtoupper($operation);
+
+        $tokens[$firstKey][$operation === SqlOperations::INSERT ? 1 : 0]['no_quotes']['parts'][0] = $newTable;
+
+        return $tokens;
     }
 
     /**
@@ -96,21 +99,6 @@ class Table {
         $id           = Id::create($tokens);
         $methodToCall = $method === HttpMethods::GET && empty($id) ? $method . 'All' : $method;
 
-        return !empty($annotations) && $annotations->get($table) !== null && $annotations->get($table)->$methodToCall() !== null ? Table::replace($tokens, $annotations->get($table)->$methodToCall()) : $tokens;
-    }
-
-    /**
-     * replaces the table name of the tokens array by the newTable name
-     * $tokens[$firstKey][$secondKey]... = $newTable;
-     *
-     * @param  array  $tokens
-     * @param  string $newTable
-     * @param  mixed  $firstKey
-     * @param  mixed  $secondKey
-     * @return array
-     */
-    private static function replaceTableName(array $tokens, $newTable, $firstKey, $secondKey) {
-        $tokens[$firstKey][$secondKey]['no_quotes']['parts'][0] = $newTable;
-        return $tokens;
+        return Annotation::exists($annotations, $table, $methodToCall) ? Table::replace($tokens, $annotations->get($table)->$methodToCall()) : $tokens;
     }
 }
