@@ -39,8 +39,8 @@
     "ci/restclientbundle": "^1.0",
     "symfony/yaml": "3.*",
     "sensio/framework-extra-bundle": "3.*",
-    "symfony/framework-bundle": "^3.*",
+    "symfony/framework-bundle": "3.*",
     "doctrine/doctrine-bundle": "^1.6",
-    "symfony/validator": "^3.*"
+    "symfony/validator": "3.*"
   }
 }
