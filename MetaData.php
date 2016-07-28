@@ -64,9 +64,10 @@ class MetaData {
      * @return array
      */
     private function getMetaData(array $traces) {
-        return array_reduce($traces, function($carry, $trace) {
-            if (!empty($carry)) return $carry;
-            return isset($trace['object']) && $trace['object'] instanceof ObjectManager ? $trace['object']->getMetaDataFactory()->getAllMetaData() : [];
-        }, []);
+        $em = array_filter($traces, function($trace) {
+            return isset($trace['object']) && $trace['object'] instanceof ObjectManager;
+        });
+
+        return empty($em) ? [] : array_pop($em)['object']->getMetaDataFactory()->getAllMetaData();
     }
 }
