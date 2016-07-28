@@ -90,8 +90,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase {
         $params = [
             'driverClass'   => 'Circle\DoctrineRestDriver\Driver',
             'driverOptions' => [
-                'security_strategy' => 'none',
-                'entity_paths'      => __DIR__ . '/app/config/paths.yml'
+                'security_strategy' => 'none'
             ],
             'user'     => 'user',
             'password' => 'password',

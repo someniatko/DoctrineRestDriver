@@ -43,16 +43,6 @@ class MetaData {
         AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Delete.php');
     }
 
-    private function getMetaData(array $traces) {
-        foreach($traces as $trace) {
-            if (isset($trace['object']) && $trace['object'] instanceof ObjectManager) {
-                return $trace['object']->getMetaDataFactory()->getAllMetaData();
-            }
-        }
-
-        return [];
-    }
-
     /**
      * returns all namespaces of managed entities
      *
@@ -64,6 +54,19 @@ class MetaData {
         return array_reduce($meta, function($carry, $item) {
             $carry[$item->table['name']] = $item->getName();
             return $carry;
+        }, []);
+    }
+
+    /**
+     * returns all entity meta data if existing
+     *
+     * @param  array $traces
+     * @return array
+     */
+    private function getMetaData(array $traces) {
+        return array_reduce($traces, function($carry, $trace) {
+            if (!empty($carry)) return $carry;
+            return isset($trace['object']) && $trace['object'] instanceof ObjectManager ? $trace['object']->getMetaDataFactory()->getAllMetaData() : [];
         }, []);
     }
 }
