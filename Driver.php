@@ -39,12 +39,14 @@ class Driver implements DriverInterface {
 
     /**
      * {@inheritdoc}
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array()) {
         if (!empty($this->connection)) return $this->connection;
 
-        $metaDataProvider = new MetaData();
-        $this->connection = new Connection($params, $this, new RoutingTable($metaDataProvider->getEntityNamespaces()));
+        $metaData         = new MetaData();
+        $this->connection = new Connection($params, $this, new RoutingTable($metaData->getEntityNamespaces()));
         return $this->connection;
     }
 

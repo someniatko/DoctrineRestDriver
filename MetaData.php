@@ -19,7 +19,8 @@
 namespace Circle\DoctrineRestDriver;
 
 use Circle\DoctrineRestDriver\Annotations\Loader;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * Provider for doctrine meta data
@@ -30,22 +31,26 @@ use Doctrine\ORM\EntityManager;
 class MetaData {
 
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
      * MetaDataProvider constructor
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct() {
-        Loader::load();
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Insert.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Update.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Select.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Fetch.php');
+        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Delete.php');
+    }
 
-        $kernel = new \AppKernel('prod', true);
-        $kernel->boot();
+    private function getMetaData(array $traces) {
+        foreach($traces as $trace) {
+            if (isset($trace['object']) && $trace['object'] instanceof ObjectManager) {
+                return $trace['object']->getMetaDataFactory()->getAllMetaData();
+            }
+        }
 
-        $this->em = $kernel->getContainer()->get('doctrine')->getManager();
+        return [];
     }
 
     /**
@@ -54,7 +59,7 @@ class MetaData {
      * @return array
      */
     public function getEntityNamespaces() {
-        $meta = $this->em->getMetadataFactory()->getAllMetadata();
+        $meta = $this->getMetaData(debug_backtrace());
 
         return array_reduce($meta, function($carry, $item) {
             $carry[$item->table['name']] = $item->getName();
