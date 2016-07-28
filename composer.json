@@ -17,13 +17,17 @@
   "require-dev": {
     "symfony/expression-language": "^3.0",
     "phpmd/phpmd" : "@stable",
-    "phpunit/phpunit" : "@stable"
+    "phpunit/phpunit" : "@stable",
+    "symfony/yaml": "3.*",
+    "sensio/framework-extra-bundle": "3.*",
+    "symfony/framework-bundle": "3.*",
+    "doctrine/doctrine-bundle": "^1.6",
+    "symfony/validator": "3.*"
   },
   "autoload": {
     "psr-0": {
       "Circle\\DoctrineRestDriver": ""
-    },
-    "files": ["Tests/app/AppKernel.php"]
+    }
   },
   "target-dir": "Circle/DoctrineRestDriver",
   "extra": {
@@ -36,11 +40,6 @@
     "doctrine/dbal": "2.*",
     "greenlion/php-sql-parser": "^4.0",
     "doctrine/orm": "2.*",
-    "ci/restclientbundle": "^1.0",
-    "symfony/yaml": "3.*",
-    "sensio/framework-extra-bundle": "3.*",
-    "symfony/framework-bundle": "3.*",
-    "doctrine/doctrine-bundle": "^1.6",
-    "symfony/validator": "3.*"
+    "ci/restclientbundle": "^1.0"
   }
 }

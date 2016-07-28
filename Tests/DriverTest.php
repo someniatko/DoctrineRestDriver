@@ -88,6 +88,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase {
      */
     public function connect() {
         $params = [
+            'driverClass'   => 'Circle\DoctrineRestDriver\Driver',
             'driverOptions' => [
                 'security_strategy' => 'none'
             ],
@@ -95,7 +96,7 @@ class DriverTest extends \PHPUnit_Framework_TestCase {
             'password' => 'password',
             'host'     => 'localhost'
         ];
-        $connection = $this->driver->connect($params);
+        $connection = $this->driver->connect($params, null, null, $params['driverOptions']);
         $this->assertInstanceOf('Circle\DoctrineRestDriver\Connection', $connection);
     }
 }
