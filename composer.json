@@ -27,7 +27,14 @@
   "autoload": {
     "psr-0": {
       "Circle\\DoctrineRestDriver": ""
-    }
+    },
+    "files": [
+      "Annotations/Delete.php",
+      "Annotations/Fetch.php",
+      "Annotations/Insert.php",
+      "Annotations/Select.php",
+      "Annotations/Update.php"
+    ]
   },
   "target-dir": "Circle/DoctrineRestDriver",
   "extra": {
