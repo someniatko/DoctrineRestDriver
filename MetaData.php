@@ -31,19 +31,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 class MetaData {
 
     /**
-     * MetaDataProvider constructor
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function __construct() {
-        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Insert.php');
-        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Update.php');
-        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Select.php');
-        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Fetch.php');
-        AnnotationRegistry::registerFile(__DIR__ . DIRECTORY_SEPARATOR . 'Annotations' . DIRECTORY_SEPARATOR . 'Delete.php');
-    }
-
-    /**
      * returns all namespaces of managed entities
      *
      * @return array
