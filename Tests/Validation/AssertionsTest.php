@@ -28,6 +28,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @coversDefaultClass Circle\DoctrineRestDriver\Validation\Assertions
+ * @SuppressWarnings("PHPMD.TooManyPublicMethods")
  */
 class AssertionsTest extends \PHPUnit_Framework_TestCase {
 
@@ -149,5 +150,103 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function assertAuthStrategy() {
         $this->assertSame(null, Assertions::assertAuthStrategy(new HttpAuthentication([])));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertMaybeList
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function assertMaybeList() {
+        $this->assertSame(null, Assertions::assertMaybeList('null', null));
+        $this->assertSame(null, Assertions::assertMaybeList('list', []));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertMaybeList
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     * @expectedException \Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException
+     */
+    public function assertMaybeListOnException() {
+        Assertions::assertMaybeList('string', 'hello');
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertMaybeString
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function assertMaybeString() {
+        $this->assertSame(null, Assertions::assertMaybeString('null', null));
+        $this->assertSame(null, Assertions::assertMaybeString('string', 'value'));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertMaybeString
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     * @expectedException \Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException
+     */
+    public function assertMaybeStringOnException() {
+        Assertions::assertMaybeString('array', []);
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertMaybeInt
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function assertMaybeInt() {
+        $this->assertSame(null, Assertions::assertMaybeInt('null', null));
+        $this->assertSame(null, Assertions::assertMaybeInt('int', 123));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertMaybeInt
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     * @expectedException \Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException
+     */
+    public function assertMaybeIntOnException() {
+        Assertions::assertMaybeInt('float', 3.2);
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertUrl
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function assertUrl() {
+        $this->assertSame(null, Assertions::assertUrl('Url', 'http://www.test.com'));
+        $this->assertSame(null, Assertions::assertUrl('Url', 'http://www.test.com?filter=1'));
+        $this->assertSame(null, Assertions::assertUrl('Url', 'http://circle.ai'));
+        $this->assertSame(null, Assertions::assertUrl('Url', 'http://circle.ai/test?test=test'));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertUrl
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     * @expectedException \Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException
+     */
+    public function assertUrlOnException() {
+        Assertions::assertUrl('Url', 'localhost:3000');
     }
 }

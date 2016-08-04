@@ -18,33 +18,29 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Annotations\DataSource;
+use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Validation\Assertions;
-use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 
 /**
- * Value type
+ * Type for HTTP method
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class Value {
+class HttpMethod {
 
     /**
-     * Infers the type of a given string
+     * Returns the right HTTP method
      *
-     * @param  string $value
+     * @param  string     $sqlOperation
+     * @param  DataSource $annotation
      * @return string
-     * @throws InvalidTypeException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create($value) {
-        Assertions::assertString('value', $value);
-        if (empty($value)) return null;
-
-        $return = preg_replace('/\"|\\\'|\`$/', '', preg_replace('/^\"|\\\'|\`/', '', $value));
-        if (!is_numeric($return)) return $return;
-
-        return ((string) intval($return) === $return) ? intval($return) : floatval($return);
+    public static function create($sqlOperation, DataSource $annotation = null) {
+        Assertions::assertString('sqlOperation', $sqlOperation);
+        return empty($annotation) || $annotation->getMethod() === null ? HttpMethods::ofSqlOperation($sqlOperation) : $annotation->getMethod();
     }
 }

@@ -40,15 +40,38 @@ class InsertPayload {
     public static function create(array $tokens) {
         Assertions::assertHashMap('tokens', $tokens);
 
+        return json_encode(array_combine(self::columns($tokens), self::values($tokens)));
+    }
+
+    /**
+     * returns the columns as list
+     *
+     * @param  array $tokens
+     * @return array
+     */
+    public static function columns(array $tokens) {
         $columns = array_filter($tokens['INSERT'], function($token) {
             return $token['expr_type'] === 'column-list';
         });
 
-        $columns = explode(',', str_replace(['(', ')', ' '], '', end($columns)['base_expr']));
-        $values  = explode(',', str_replace(['(', ')', ' '], '', end($tokens['VALUES'])['base_expr']));
+        return array_map(function($column) {
+            return end($column['no_quotes']['parts']);
+        }, end($columns)['sub_tree']);
+    }
 
-        return json_encode(array_combine($columns, array_map(function($value) {
+    /**
+     * returns the values as list
+     *
+     * @param  array $tokens
+     * @return array
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function values(array $tokens) {
+        $values = explode(',', preg_replace('/\)$/', '', preg_replace('/^\(/', '', str_replace(', ', ',', end($tokens['VALUES'])['base_expr']))));
+
+        return array_map(function($value) {
             return Value::create($value);
-        }, $values)));
+        }, $values);
     }
 }

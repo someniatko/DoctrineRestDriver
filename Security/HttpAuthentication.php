@@ -52,6 +52,6 @@ class HttpAuthentication implements AuthStrategy {
         array_push($headers, 'Authorization: Basic ' . base64_encode($this->config['user'] . ':' . $this->config['password']));
         $options[CURLOPT_HTTPHEADER] = $headers;
 
-        return new Request($request->getMethod(), $request->getUrl(), $options, $request->getQuery(), $request->getPayload());
+        return new Request($request->getMethod(), $request->getUrl(), $options, $request->getQuery(), $request->getPayload(), $request->getExpectedStatusCode());
     }
 }

@@ -18,48 +18,50 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Annotations\RoutingTable;
-use Circle\DoctrineRestDriver\Annotations\Select;
-use Circle\DoctrineRestDriver\Types\Annotation;
-use PHPSQLParser\PHPSQLParser;
+use Circle\DoctrineRestDriver\Enums\SqlOperations;
+use Circle\DoctrineRestDriver\Types\StatusCode;
 
 /**
- * Tests the annotation type
+ * Tests the status code type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\Annotation
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\StatusCode
  */
-class AnnotationTest extends \PHPUnit_Framework_TestCase {
+class StatusCodeTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
      * @group  unit
-     * @covers ::exists
+     * @covers ::create
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function exists() {
-        $routings = new RoutingTable(['products' => 'Circle\DoctrineRestDriver\Tests\Entity\TestEntity']);
+    public function create() {
+        $annotation = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\DataSource')->getMock();
+        $annotation
+            ->expects($this->exactly(2))
+            ->method('getStatusCode')
+            ->will($this->returnValue(202));
 
-        $this->assertTrue(Annotation::exists($routings, 'products', 'get'));
-        $this->assertFalse(Annotation::exists($routings, 'products', 'post'));
+        $this->assertSame(202, StatusCode::create(SqlOperations::INSERT, $annotation));
     }
 
     /**
      * @test
      * @group  unit
-     * @covers ::get
+     * @covers ::create
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function get() {
-        $routings   = new RoutingTable(['products' => 'Circle\DoctrineRestDriver\Tests\Entity\TestEntity']);
-        $annotation = new Select([
-            'value' => 'http://127.0.0.1:3000/app_dev.php/mockapi/products'
-        ]);
+    public function createWithEmptyStatusCode() {
+        $annotation = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\DataSource')->getMock();
+        $annotation
+            ->expects($this->once())
+            ->method('getStatusCode')
+            ->will($this->returnValue(null));
 
-        $this->assertEquals($annotation, Annotation::get($routings, 'products', 'get'));
+        $this->assertSame(201, StatusCode::create(SqlOperations::INSERT, $annotation));
     }
 }

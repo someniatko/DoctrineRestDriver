@@ -67,7 +67,7 @@ class MysqlToRequest {
      * @param array        $options
      * @param RoutingTable $routings
      */
-    public function __construct(array $options, RoutingTable $routings = null) {
+    public function __construct(array $options, RoutingTable $routings) {
         $this->apiUrl         = $options['host'];
         $this->options        = $options['driverOptions'];
         $this->parser         = new PHPSQLParser();
@@ -94,6 +94,8 @@ class MysqlToRequest {
             return $carry . (Assertions::isUrl($part) ? ('"' . $part . '" ') : ($part . ' '));
         });
 
-        return $this->requestFactory->createOne(Table::replaceWithAnnotation($this->parser->parse($transformedQuery), $this->routings), $this->apiUrl, $this->options);
+        $tokens = $this->parser->parse($transformedQuery);
+
+        return $this->requestFactory->createOne($tokens, $this->apiUrl, $this->options, $this->routings);
     }
 }

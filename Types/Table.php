@@ -83,22 +83,4 @@ class Table {
 
         return $tokens;
     }
-
-    /**
-     * replaces the table name with the related annotation
-     *
-     * @param  array        $tokens
-     * @param  RoutingTable $annotations
-     * @return array
-     */
-    public static function replaceWithAnnotation(array $tokens, RoutingTable $annotations = null) {
-        if (empty($annotations)) return $tokens;
-
-        $table        = Table::create($tokens);
-        $method       = HttpMethods::ofSqlOperation(SqlOperation::create($tokens));
-        $id           = Id::create($tokens);
-        $methodToCall = $method === HttpMethods::GET && empty($id) ? $method . 'All' : $method;
-
-        return Annotation::exists($annotations, $table, $methodToCall) ? Table::replace($tokens, $annotations->get($table)->$methodToCall()) : $tokens;
-    }
 }

@@ -52,6 +52,11 @@ class Request {
     private $query;
 
     /**
+     * @var int
+     */
+    private $expectedStatusCode;
+
+    /**
      * Request constructor
      *
      * @param string      $method
@@ -59,13 +64,15 @@ class Request {
      * @param array       $curlOptions
      * @param string|null $query
      * @param string|null $payload
+     * @param int|null    $expectedStatusCode
      */
-    public function __construct($method, $url, array $curlOptions, $query = null, $payload = null) {
-        $this->method      = $method;
-        $this->url         = $url;
-        $this->payload     = $payload;
-        $this->curlOptions = $curlOptions;
-        $this->query       = $query;
+    public function __construct($method, $url, array $curlOptions, $query = null, $payload = null, $expectedStatusCode = 200) {
+        $this->method             = strtolower($method);
+        $this->url                = $url;
+        $this->payload            = $payload;
+        $this->curlOptions        = $curlOptions;
+        $this->query              = $query;
+        $this->expectedStatusCode = $expectedStatusCode;
     }
 
     /**
@@ -123,9 +130,18 @@ class Request {
     }
 
     /**
+     * returns the expected response http code
+     *
+     * @return int
+     */
+    public function getExpectedStatusCode() {
+        return $this->expectedStatusCode;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __toString() {
-        return $this->method . ' ' . $this->getUrlAndQuery() . ' HTTP/1.1' . (!empty($this->payload) ? ' ' . $this->payload : '');
+        return strtoupper($this->method) . ' ' . $this->getUrlAndQuery() . ' HTTP/1.1' . (!empty($this->payload) ? ' ' . $this->payload : '');
     }
 }

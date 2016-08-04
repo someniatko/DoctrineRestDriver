@@ -77,7 +77,7 @@ class Routing {
     /**
      * returns the post route
      *
-     * @return string|null
+     * @return \Circle\DoctrineRestDriver\Annotations\Insert|null
      */
     public function post() {
         return $this->post;
@@ -86,7 +86,7 @@ class Routing {
     /**
      * returns the get route
      *
-     * @return string|null
+     * @return \Circle\DoctrineRestDriver\Annotations\Select|null
      */
     public function get() {
         return $this->get;
@@ -95,7 +95,7 @@ class Routing {
     /**
      * returns the put route
      *
-     * @return string|null
+     * @return \Circle\DoctrineRestDriver\Annotations\Update|null
      */
     public function put() {
         return $this->put;
@@ -104,7 +104,7 @@ class Routing {
     /**
      * returns the delete route
      *
-     * @return string|null
+     * @return \Circle\DoctrineRestDriver\Annotations\Delete|null
      */
     public function delete() {
         return $this->delete;
@@ -113,7 +113,7 @@ class Routing {
     /**
      * returns the get all route
      *
-     * @return string|null
+     * @return \Circle\DoctrineRestDriver\Annotations\Fetch|null
      */
     public function getAll() {
         return $this->getAll;

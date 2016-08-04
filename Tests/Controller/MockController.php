@@ -79,7 +79,7 @@ class MockController extends Controller {
             'id'    => 1,
             'name'  => $payload->name,
             'value' => $payload->value,
-        ]));
+        ]), 201);
     }
 
     /**
@@ -123,6 +123,6 @@ class MockController extends Controller {
             'id'         => 1,
             'name'       => $payload->name,
             'product_id' => $payload->product_id,
-        ]));
+        ]), 201);
     }
 }

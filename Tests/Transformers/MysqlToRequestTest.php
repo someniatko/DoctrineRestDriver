@@ -59,6 +59,12 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * {@inheritdoc}
      */
     public function setUp() {
+        $routings = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\RoutingTable')->disableOriginalConstructor()->getMock();
+        $routings
+            ->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue(null));
+
         $this->mysqlToRequest = new MysqlToRequest([
             'host'          => 'http://www.test.de',
             'driverOptions' => [
@@ -70,7 +76,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
                 'CURLOPT_SSLVERSION'     => 3,
                 'CURLOPT_FOLLOWLOCATION' => true,
             ]
-        ]);
+        ], $routings);
     }
 
     /**
@@ -161,12 +167,12 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function insert() {
-        $query    = 'INSERT INTO products ("name") VALUES ("myName")';
+        $query    = 'INSERT INTO products (name) VALUES ("myName")';
         $expected = new Request('post', $this->apiUrl . '/products', $this->options, null, json_encode([
             'name' => 'myName'
-        ]));
+        ]), 201);
 
-        $this->assertEquals($expected, str_replace('\\"', '', $this->mysqlToRequest->transform($query)));
+        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
     }
 
     /**
@@ -185,7 +191,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'name' => 'myValue'
         ]));
 
-        $this->assertEquals($expected, str_replace('\\"', '', $this->mysqlToRequest->transform($query, $params)));
+        $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }
 
     /**
@@ -201,7 +207,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'name' => 'myValue'
         ]));
 
-        $this->assertEquals($expected, str_replace('\\"', '', $this->mysqlToRequest->transform($query)));
+        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
     }
 
     /**
@@ -216,7 +222,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
         $params = [
             1
         ];
-        $expected = new Request('delete', $this->apiUrl . '/products/1', $this->options, null, null);
+        $expected = new Request('delete', $this->apiUrl . '/products/1', $this->options, null, null, 204);
 
         $this->assertEquals($expected, $this->mysqlToRequest->transform($query, $params));
     }

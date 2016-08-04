@@ -18,33 +18,40 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Annotations\DataSource;
 use Circle\DoctrineRestDriver\Validation\Assertions;
-use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 
 /**
- * Value type
+ * Type class for status codes
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class Value {
+class StatusCode {
 
     /**
-     * Infers the type of a given string
+     * @var array
+     */
+    private static $expectedStatusCodes = [
+        'select' => 200,
+        'update' => 200,
+        'insert' => 201,
+        'delete' => 204
+    ];
+
+    /**
+     * returns the status code depending on its input
      *
-     * @param  string $value
+     * @param  string     $operation
+     * @param  DataSource $annotation
      * @return string
-     * @throws InvalidTypeException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create($value) {
-        Assertions::assertString('value', $value);
-        if (empty($value)) return null;
+    public static function create($operation, DataSource $annotation = null) {
+        Assertions::assertString('operation', $operation);
+        $code = empty($annotation) || $annotation->getStatusCode() === null ? null : $annotation->getStatusCode();
 
-        $return = preg_replace('/\"|\\\'|\`$/', '', preg_replace('/^\"|\\\'|\`/', '', $value));
-        if (!is_numeric($return)) return $return;
-
-        return ((string) intval($return) === $return) ? intval($return) : floatval($return);
+        return empty($code) ? self::$expectedStatusCodes[$operation] : $code;
     }
 }

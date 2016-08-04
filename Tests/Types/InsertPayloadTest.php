@@ -59,7 +59,7 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
      */
     public function createWithQuotedValues() {
         $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES ("testname", "testvalue")');
+        $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES ("testname", `testvalue`)');
         $expected = json_encode([
             'name'  => 'testname',
             'value' => 'testvalue',
@@ -84,5 +84,35 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
         ]);
 
         $this->assertSame($expected, InsertPayload::create($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::values
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function values() {
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES (testname, testvalue)');
+        $expected = ['testname', 'testvalue'];
+
+        $this->assertEquals($expected, InsertPayload::values($tokens));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::columns
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function columns() {
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES (testname, testvalue)');
+        $expected = ['name', 'value'];
+
+        $this->assertEquals($expected, InsertPayload::columns($tokens));
     }
 }

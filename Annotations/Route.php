@@ -20,6 +20,7 @@ namespace Circle\DoctrineRestDriver\Annotations;
 
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Circle\DoctrineRestDriver\Validation\Assertions;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Trait for all annotations regarding routes
@@ -37,6 +38,21 @@ trait Route {
     private $route;
 
     /**
+     * @var string
+     */
+    private $method;
+
+    /**
+     * @var int
+     */
+    private $statusCode;
+
+    /**
+     * @var array
+     */
+    private $options = [];
+
+    /**
      * Constructor
      *
      * @param array $values
@@ -44,9 +60,19 @@ trait Route {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct(array $values) {
-        $route = $values['value'];
-        if (!Assertions::isUrl($route)) return Exceptions::InvalidTypeException('Url', 'route', $route);
-        $this->route = $route;
+        $settings = new ArrayCollection($values);
+
+        $this->route = $settings->get('value');
+        Assertions::assertUrl('value', $this->route);
+
+        $this->statusCode = $settings->get('statusCode');
+        Assertions::assertMaybeInt('statusCode', $this->statusCode);
+
+        $this->method = $settings->get('method');
+        Assertions::assertMaybeString('method', $this->method);
+
+        $this->options = $settings->get('options');
+        Assertions::assertMaybeList('options', $this->options);
     }
 
     /**
@@ -56,5 +82,32 @@ trait Route {
      */
     public function getRoute() {
         return $this->route;
+    }
+
+    /**
+     * returns the status code
+     *
+     * @return int|null
+     */
+    public function getStatusCode() {
+        return $this->statusCode;
+    }
+
+    /**
+     * returns the method
+     *
+     * @return string|null
+     */
+    public function getMethod() {
+        return $this->method;
+    }
+
+    /**
+     * returns the options
+     *
+     * @return array|null
+     */
+    public function getOptions() {
+        return $this->options;
     }
 }

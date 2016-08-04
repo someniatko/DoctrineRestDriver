@@ -42,7 +42,7 @@ class Exceptions {
      * @throws InvalidTypeException
      */
     public static function InvalidTypeException($expectedType, $key, $value) {
-        throw new InvalidTypeException($expectedType, $key, $value);
+        throw new InvalidTypeException($expectedType, $key, is_array($value) ? print_r($value) : $value);
     }
 
     /**

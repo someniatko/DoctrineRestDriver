@@ -93,6 +93,11 @@ class Statement implements \IteratorAggregate, StatementInterface {
     private $authStrategy;
 
     /**
+     * @var RoutingTable
+     */
+    private $routings;
+
+    /**
      * Statement constructor
      *
      * @param  string       $query
@@ -102,9 +107,10 @@ class Statement implements \IteratorAggregate, StatementInterface {
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function __construct($query, array $options, RoutingTable $routings = null) {
+    public function __construct($query, array $options, RoutingTable $routings) {
         $this->query             = $query;
-        $this->mysqlToRequest    = new MysqlToRequest($options, $routings);
+        $this->routings          = $routings;
+        $this->mysqlToRequest    = new MysqlToRequest($options, $this->routings);
         $this->restClientFactory = new RestClientFactory();
 
         $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : 'NoAuthentication';
@@ -157,7 +163,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
         $response   = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? $restClient->$method($request->getUrlAndQuery()) : $restClient->$method($request->getUrlAndQuery(), $request->getPayload());
         $statusCode = $response->getStatusCode();
 
-        return $statusCode === 200 || ($method === HttpMethods::DELETE && $statusCode === 204) ? $this->onSuccess($response, $method) : $this->onError($request, $response);
+        return $statusCode === $request->getExpectedStatusCode() ? $this->onSuccess($response, $method) : $this->onError($request, $response);
     }
 
     /**

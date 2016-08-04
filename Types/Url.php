@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Annotations\DataSource;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
@@ -29,23 +30,42 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class Url {
 
     /**
-     * Returns an url depending on the given sql tokens
+     * returns an url depending on the given route, apiUrl
+     * and id
      *
-     * @param  array  $tokens
-     * @param  string $apiUrl
+     * @param  string      $route
+     * @param  string      $apiUrl
+     * @param  string|null $id
      * @return string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, $apiUrl) {
-        Assertions::assertHashMap('tokens', $tokens);
+    public static function create($route, $apiUrl, $id = null) {
+        Assertions::assertString('route', $route);
+        Assertions::assertString('apiUrl', $apiUrl);
+        Assertions::assertMaybeString('id', $id);
 
-        $table  = Table::create($tokens);
-        $id     = Id::create($tokens);
         $idPath = empty($id) ? '' : '/' . $id;
 
-        if (!Assertions::isUrl($table))      return $apiUrl . '/' . $table . $idPath;
-        if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
-        return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
+        if (!Assertions::isUrl($route))      return $apiUrl . '/' . $route . $idPath;
+        if (!preg_match('/\{id\}/', $route)) return $route . $idPath;
+        return !empty($id) ? str_replace('{id}', $id, $route) : str_replace('/{id}', '', $route);
+    }
+
+    /**
+     * returns an url depending on the given tokens
+     *
+     * @param  array      $tokens
+     * @param  string     $apiUrl
+     * @param  DataSource $annotation
+     * @return string
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function createFromTokens(array $tokens, $apiUrl, DataSource $annotation = null) {
+        $id    = Id::create($tokens);
+        $route = empty($annotation) || $annotation->getRoute() === null ? Table::create($tokens) : $annotation->getRoute();
+
+        return self::create($route, $apiUrl, $id);
     }
 }

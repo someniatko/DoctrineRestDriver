@@ -33,6 +33,7 @@ use Prophecy\Exception\Doubler\ClassNotFoundException;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @SuppressWarnings("PHPMD.StaticAccess")
+ * @SuppressWarnings("PHPMD.TooManyPublicMethods")
  */
 class Assertions {
 
@@ -60,6 +61,45 @@ class Assertions {
     public static function assertString($varName, $value) {
         self::assertNotNil($varName, $value);
         return !is_string($value) ? Exceptions::InvalidTypeException('string', $varName, $value) : null;
+    }
+
+    /**
+     * Asserts if the given value is a maybe list
+     *
+     * @param  string $varName
+     * @param  mixed  $value
+     * @return null
+     * @throws InvalidTypeException
+     * @throws NotNilException
+     */
+    public static function assertMaybeList($varName, $value) {
+        return !is_array($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeList', $varName, $value) : null;
+    }
+
+    /**
+     * Asserts if the given value is a maybe string
+     *
+     * @param  string $varName
+     * @param  mixed  $value
+     * @return null
+     * @throws InvalidTypeException
+     * @throws NotNilException
+     */
+    public static function assertMaybeString($varName, $value) {
+        return !is_string($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeString', $varName, $value) : null;
+    }
+
+    /**
+     * Asserts if the given value is a maybe int
+     *
+     * @param  string $varName
+     * @param  mixed  $value
+     * @return null
+     * @throws InvalidTypeException
+     * @throws NotNilException
+     */
+    public static function assertMaybeInt($varName, $value) {
+        return !is_int($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeInt', $varName, $value) : null;
     }
 
     /**
@@ -104,6 +144,17 @@ class Assertions {
     public static function assertHashMapEntryExists($varName, $hashMap, $entryName) {
         self::assertHashMap($varName, $hashMap);
         return array_key_exists($entryName, $hashMap) ? null : Exceptions::InvalidTypeException('HashMapEntry', $varName . '[\'' . $entryName . '\']', 'undefined');
+    }
+
+    /**
+     * Asserts if the given value is an url
+     *
+     * @param  string $varName
+     * @param  mixed  $value
+     * @throws InvalidTypeException
+     */
+    public static function assertUrl($varName, $value) {
+        if (!self::isUrl($value)) return Exceptions::InvalidTypeException('Url', $varName, $value);
     }
 
     /**

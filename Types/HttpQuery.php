@@ -34,7 +34,7 @@ class HttpQuery {
      * clause of the parsed sql tokens
      *
      * @param  array $tokens
-     * @return string
+     * @return string|null
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
@@ -42,7 +42,7 @@ class HttpQuery {
         Assertions::assertHashMap('tokens', $tokens);
 
         $operation = SqlOperation::create($tokens);
-        if ($operation !== SqlOperations::SELECT || empty($tokens['WHERE'])) return '';
+        if ($operation !== SqlOperations::SELECT || empty($tokens['WHERE'])) return null;
 
         $tableAlias = Table::alias($tokens);
         $query      = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {

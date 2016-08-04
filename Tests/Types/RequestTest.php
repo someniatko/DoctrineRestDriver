@@ -41,18 +41,20 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::getPayload
      * @covers ::getQuery
      * @covers ::getCurlOptions
+     * @covers ::getExpectedStatusCode
      * @covers ::__toString
      */
     public function constructAndGetAll() {
         $options = [];
 
-        $request = new Request('GET', 'http://circle.ai', $options, 'genious=1');
-        $this->assertSame('GET', $request->getMethod());
+        $request = new Request('get', 'http://circle.ai', $options, 'genious=1');
+        $this->assertSame('get', $request->getMethod());
         $this->assertSame('http://circle.ai', $request->getUrl());
         $this->assertSame('http://circle.ai?genious=1', $request->getUrlAndQuery());
         $this->assertSame(null, $request->getPayload());
         $this->assertSame('genious=1', $request->getQuery());
         $this->assertSame('GET http://circle.ai?genious=1 HTTP/1.1', $request->__toString());
         $this->assertEquals([], $request->getCurlOptions());
+        $this->assertEquals(200, $request->getExpectedStatusCode());
     }
 }

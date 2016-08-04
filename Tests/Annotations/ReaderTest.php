@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver\Tests\Annotations;
 
 use Circle\DoctrineRestDriver\Annotations\Reader;
+use Circle\DoctrineRestDriver\Annotations\Select;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
@@ -58,9 +59,12 @@ class ReaderTest extends \PHPUnit_Framework_TestCase {
      * @covers ::read
      */
     public function getRoute() {
-        $reader = new Reader();
-        $class  = new \ReflectionClass('Circle\DoctrineRestDriver\Tests\Entity\TestEntity');
+        $reader   = new Reader();
+        $class    = new \ReflectionClass('Circle\DoctrineRestDriver\Tests\Entity\TestEntity');
+        $expected = new Select([
+            'value' => 'http://127.0.0.1:3000/app_dev.php/mockapi/products'
+        ]);
 
-        $this->assertSame('http://127.0.0.1:3000/app_dev.php/mockapi/products', $reader->read($class, 'Circle\DoctrineRestDriver\Annotations\Select'));
+        $this->assertEquals($expected, $reader->read($class, 'Circle\DoctrineRestDriver\Annotations\Select'));
     }
 }

@@ -50,6 +50,6 @@ class Reader {
     public function read(\ReflectionClass $class, $namespace) {
         $annotation = $this->annotationReader->getClassAnnotation($class, $namespace);
 
-        return $annotation instanceof $namespace ? $annotation->getRoute() : null;
+        return $annotation instanceof $namespace ? $annotation : null;
     }
 }

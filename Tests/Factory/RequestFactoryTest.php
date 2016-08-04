@@ -69,6 +69,12 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
         $factory  = new RequestFactory();
         $expected = new Request('get', 'http://circle.ai/products/1', $this->requestOptions);
 
-        $this->assertEquals($expected, $factory->createOne($parser->parse($query), 'http://circle.ai', $this->factoryOptions));
+        $routings = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\RoutingTable')->disableOriginalConstructor()->getMock();
+        $routings
+            ->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue(null));
+
+        $this->assertEquals($expected, $factory->createOne($parser->parse($query), 'http://circle.ai', $this->factoryOptions, $routings));
     }
 }
