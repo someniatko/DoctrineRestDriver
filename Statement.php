@@ -22,15 +22,16 @@ use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Circle\DoctrineRestDriver\Factory\RestClientFactory;
-use Circle\DoctrineRestDriver\Factory\ResultSetFactory;
 use Circle\DoctrineRestDriver\Security\AuthStrategy;
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
+use Circle\DoctrineRestDriver\Types\Authentication;
+use Circle\DoctrineRestDriver\Types\Format;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\Result;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Response;
+use Circle\DoctrineRestDriver\Formatters\Formatter;
 
 /**
  * Executes the statement - sends requests to an api
@@ -39,6 +40,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @SuppressWarnings("PHPMD.TooManyPublicMethods")
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class Statement implements \IteratorAggregate, StatementInterface {
 
@@ -98,6 +100,11 @@ class Statement implements \IteratorAggregate, StatementInterface {
     private $routings;
 
     /**
+     * @var Formatter
+     */
+    private $formatter;
+
+    /**
      * Statement constructor
      *
      * @param  string       $query
@@ -113,11 +120,8 @@ class Statement implements \IteratorAggregate, StatementInterface {
         $this->mysqlToRequest    = new MysqlToRequest($options, $this->routings);
         $this->restClientFactory = new RestClientFactory();
 
-        $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : 'NoAuthentication';
-        $className          = preg_match('/\\\\/', $authenticatorClass) ? $authenticatorClass : 'Circle\DoctrineRestDriver\Security\\' . $authenticatorClass;
-        Assertions::assertClassExists($className);
-        $this->authStrategy = new $className($options);
-        Assertions::assertAuthStrategy($this->authStrategy);
+        $this->authStrategy = Authentication::create($options);
+        $this->formatter    = Format::create($options);
     }
 
     /**
@@ -255,7 +259,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     private function onSuccess(Response $response, $method) {
-        $this->result = Result::create($this->query, json_decode($response->getContent(), true));
+        $this->result = Result::create($this->query, $this->formatter->decode($response->getContent()));
         $this->id     = $method === HttpMethods::POST ? $this->result['id'] : null;
         krsort($this->result);
 

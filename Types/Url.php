@@ -49,6 +49,7 @@ class Url {
 
         if (!Assertions::isUrl($route))      return $apiUrl . '/' . $route . $idPath;
         if (!preg_match('/\{id\}/', $route)) return $route . $idPath;
+
         return !empty($id) ? str_replace('{id}', $id, $route) : str_replace('/{id}', '', $route);
     }
 

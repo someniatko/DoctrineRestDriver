@@ -16,36 +16,24 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Types;
-
-use Circle\DoctrineRestDriver\Types\UpdatePayload;
-use PHPSQLParser\PHPSQLParser;
+namespace Circle\DoctrineRestDriver\Exceptions;
 
 /**
- * Tests the UpdatePayload type
+ * Exception class for invalid format
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\UpdatePayload
+ * @SuppressWarnings("PHPMD.StaticAccess")
  */
-class UpdatePayloadTest extends \PHPUnit_Framework_TestCase {
+class InvalidFormatException extends \Exception {
 
     /**
-     * @test
-     * @group  unit
-     * @covers ::create
+     * InvalidFormatException constructor
      *
-     * @SuppressWarnings("PHPMD.StaticAccess")
+     * @param string $class
      */
-    public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('UPDATE products set name="testname", value="testvalue" WHERE id=1');
-        $expected = [
-            'name'  => 'testname',
-            'value' => 'testvalue',
-        ];
-
-        $this->assertSame($expected, UpdatePayload::create($tokens));
+    public function __construct($class) {
+        parent::__construct('Class ' . $class . ' must implement Circle\DoctrineRestDriver\Formatters\Formatter to act as formatter');
     }
 }

@@ -40,7 +40,7 @@ class InsertPayload {
     public static function create(array $tokens) {
         Assertions::assertHashMap('tokens', $tokens);
 
-        return json_encode(array_combine(self::columns($tokens), self::values($tokens)));
+        return array_combine(self::columns($tokens), self::values($tokens));
     }
 
     /**
@@ -68,10 +68,31 @@ class InsertPayload {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function values(array $tokens) {
-        $values = explode(',', preg_replace('/\)$/', '', preg_replace('/^\(/', '', str_replace(', ', ',', end($tokens['VALUES'])['base_expr']))));
+        $values = explode(',', self::removeBrackets(self::removeSpacesBetweenComma(end($tokens['VALUES'])['base_expr'])));
 
         return array_map(function($value) {
             return Value::create($value);
         }, $values);
+    }
+
+    /**
+     * removes spaces between commas
+     *
+     * @param  string $string
+     * @return string
+     */
+    private static function removeSpacesBetweenComma($string) {
+        return str_replace(', ', ',', $string);
+    }
+
+    /**
+     * removes beginning and ending brackets
+     *
+     * @param  string $string
+     * @return string
+     */
+    private static function removeBrackets($string) {
+        $return = preg_replace('/^\(/', '', $string);
+        return preg_replace('/\)$/', '', $return);
     }
 }

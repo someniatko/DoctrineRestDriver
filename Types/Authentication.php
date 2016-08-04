@@ -16,36 +16,34 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Types;
+namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Types\UpdatePayload;
-use PHPSQLParser\PHPSQLParser;
+use Circle\DoctrineRestDriver\Security\AuthStrategy;
+use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Tests the UpdatePayload type
+ * Type for Authentication
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\UpdatePayload
  */
-class UpdatePayloadTest extends \PHPUnit_Framework_TestCase {
+class Authentication {
 
     /**
-     * @test
-     * @group  unit
-     * @covers ::create
+     * Returns the right HTTP method
+     *
+     * @param  array  $options
+     * @return AuthStrategy
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('UPDATE products set name="testname", value="testvalue" WHERE id=1');
-        $expected = [
-            'name'  => 'testname',
-            'value' => 'testvalue',
-        ];
+    public static function create(array $options) {
+        $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : 'NoAuthentication';
+        $className          = preg_match('/\\\\/', $authenticatorClass) ? $authenticatorClass : 'Circle\DoctrineRestDriver\Security\\' . $authenticatorClass;
+        Assertions::assertClassExists($className);
+        $authStrategy = new $className($options);
+        Assertions::assertAuthStrategy($authStrategy);
 
-        $this->assertSame($expected, UpdatePayload::create($tokens));
+        return $authStrategy;
     }
 }

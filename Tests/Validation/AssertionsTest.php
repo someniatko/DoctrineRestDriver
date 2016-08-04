@@ -161,7 +161,7 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function assertMaybeList() {
         $this->assertSame(null, Assertions::assertMaybeList('null', null));
-        $this->assertSame(null, Assertions::assertMaybeList('list', []));
+        $this->assertSame([], Assertions::assertMaybeList('list', []));
     }
 
     /**
@@ -185,7 +185,7 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function assertMaybeString() {
         $this->assertSame(null, Assertions::assertMaybeString('null', null));
-        $this->assertSame(null, Assertions::assertMaybeString('string', 'value'));
+        $this->assertSame('value', Assertions::assertMaybeString('string', 'value'));
     }
 
     /**
@@ -209,7 +209,7 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function assertMaybeInt() {
         $this->assertSame(null, Assertions::assertMaybeInt('null', null));
-        $this->assertSame(null, Assertions::assertMaybeInt('int', 123));
+        $this->assertSame(123, Assertions::assertMaybeInt('int', 123));
     }
 
     /**
@@ -232,10 +232,10 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function assertUrl() {
-        $this->assertSame(null, Assertions::assertUrl('Url', 'http://www.test.com'));
-        $this->assertSame(null, Assertions::assertUrl('Url', 'http://www.test.com?filter=1'));
-        $this->assertSame(null, Assertions::assertUrl('Url', 'http://circle.ai'));
-        $this->assertSame(null, Assertions::assertUrl('Url', 'http://circle.ai/test?test=test'));
+        $this->assertSame('http://www.test.com', Assertions::assertUrl('Url', 'http://www.test.com'));
+        $this->assertSame('http://www.test.com?filter=1', Assertions::assertUrl('Url', 'http://www.test.com?filter=1'));
+        $this->assertSame('http://circle.ai', Assertions::assertUrl('Url', 'http://circle.ai'));
+        $this->assertSame('http://circle.ai/test?test=test', Assertions::assertUrl('Url', 'http://circle.ai/test?test=test'));
     }
 
     /**
@@ -248,5 +248,17 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function assertUrlOnException() {
         Assertions::assertUrl('Url', 'localhost:3000');
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertFormatter
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function assertFormatter() {
+        $formatter = $this->getMockBuilder('Circle\DoctrineRestDriver\Formatters\Formatter')->getMock();
+        $this->assertSame(null, Assertions::assertFormatter($formatter));
     }
 }

@@ -16,36 +16,34 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Types;
+namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Types\UpdatePayload;
-use PHPSQLParser\PHPSQLParser;
+use Circle\DoctrineRestDriver\Formatters\Formatter;
+use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Tests the UpdatePayload type
+ * Type for Format
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\UpdatePayload
  */
-class UpdatePayloadTest extends \PHPUnit_Framework_TestCase {
+class Format {
 
     /**
-     * @test
-     * @group  unit
-     * @covers ::create
+     * Returns the right format
+     *
+     * @param  array  $options
+     * @return Formatter
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('UPDATE products set name="testname", value="testvalue" WHERE id=1');
-        $expected = [
-            'name'  => 'testname',
-            'value' => 'testvalue',
-        ];
+    public static function create(array $options) {
+        $formatterClass = ucfirst(!empty($options['driverOptions']['format']) ? $options['driverOptions']['format'] : 'json');
+        $className      = preg_match('/\\\\/', $formatterClass) ? $formatterClass : 'Circle\DoctrineRestDriver\Formatters\\' . $formatterClass;
+        Assertions::assertClassExists($className);
+        $formatter = new $className($options);
+        Assertions::assertFormatter($formatter);
 
-        $this->assertSame($expected, UpdatePayload::create($tokens));
+        return $formatter;
     }
 }

@@ -61,7 +61,7 @@ class RequestFactory {
         $url        = Url::createFromTokens($tokens, $apiUrl, $annotation);
         $options    = CurlOptions::create(array_merge($options, HttpHeader::create($options, $tokens)));
         $query      = HttpQuery::create($tokens);
-        $payload    = Payload::create($tokens);
+        $payload    = Payload::create($tokens, $options);
         $statusCode = StatusCode::create($operation, $annotation);
 
         return new Request($method, $url, $options, $query, $payload, $statusCode);

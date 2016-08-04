@@ -18,18 +18,17 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\UpdatePayload;
-use PHPSQLParser\PHPSQLParser;
+use Circle\DoctrineRestDriver\Types\Authentication;
 
 /**
- * Tests the UpdatePayload type
+ * Tests the authentication type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\UpdatePayload
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\Authentication
  */
-class UpdatePayloadTest extends \PHPUnit_Framework_TestCase {
+class AuthenticationTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
@@ -39,13 +38,17 @@ class UpdatePayloadTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('UPDATE products set name="testname", value="testvalue" WHERE id=1');
-        $expected = [
-            'name'  => 'testname',
-            'value' => 'testvalue',
-        ];
+        $this->assertInstanceOf('Circle\DoctrineRestDriver\Security\AuthStrategy', Authentication::create([]));
+    }
 
-        $this->assertSame($expected, UpdatePayload::create($tokens));
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createWithOptions() {
+        $this->assertInstanceOf('Circle\DoctrineRestDriver\Security\HttpAuthentication', Authentication::create(['driverOptions' => ['authenticator_class' => 'HttpAuthentication']]));
     }
 }

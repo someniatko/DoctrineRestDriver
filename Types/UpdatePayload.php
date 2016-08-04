@@ -50,6 +50,6 @@ class UpdatePayload {
             return Value::create($segments[1]);
         }, $tokens['SET']);
 
-        return json_encode(array_combine($columns, $values));
+        return array_combine($columns, $values);
     }
 }

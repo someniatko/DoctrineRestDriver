@@ -34,15 +34,18 @@ class Payload {
      * result or null depending on the given tokens array
      *
      * @param  array       $tokens
+     * @param  array       $options
      * @return null|string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens) {
+    public static function create(array $tokens, array $options) {
         Assertions::assertHashMap('tokens', $tokens);
 
+        $formatter = Format::create($options);
         $operation = SqlOperation::create($tokens);
+
         if ($operation === SqlOperations::SELECT || $operation === SqlOperations::DELETE) return null;
-        return $operation === SqlOperations::INSERT ? InsertPayload::create($tokens) : UpdatePayload::create($tokens);
+        return $formatter->encode($operation === SqlOperations::INSERT ? InsertPayload::create($tokens) : UpdatePayload::create($tokens));
     }
 }

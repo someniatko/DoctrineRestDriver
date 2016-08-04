@@ -46,7 +46,7 @@ class PayloadTest extends \PHPUnit_Framework_TestCase {
             'value' => 'testvalue',
         ]);
 
-        $this->assertSame($expected, Payload::create($tokens));
+        $this->assertSame($expected, Payload::create($tokens, []));
     }
 
     /**
@@ -64,6 +64,6 @@ class PayloadTest extends \PHPUnit_Framework_TestCase {
             'value' => 'testvalue',
         ]);
 
-        $this->assertSame($expected, Payload::create($tokens));
+        $this->assertSame($expected, Payload::create($tokens, []));
     }
 }

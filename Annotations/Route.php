@@ -62,17 +62,10 @@ trait Route {
     public function __construct(array $values) {
         $settings = new ArrayCollection($values);
 
-        $this->route = $settings->get('value');
-        Assertions::assertUrl('value', $this->route);
-
-        $this->statusCode = $settings->get('statusCode');
-        Assertions::assertMaybeInt('statusCode', $this->statusCode);
-
-        $this->method = $settings->get('method');
-        Assertions::assertMaybeString('method', $this->method);
-
-        $this->options = $settings->get('options');
-        Assertions::assertMaybeList('options', $this->options);
+        $this->route      = Assertions::assertUrl('value', $settings->get('value'));
+        $this->statusCode = Assertions::assertMaybeInt('statusCode', $settings->get('statusCode'));
+        $this->method     = Assertions::assertMaybeString('method', $settings->get('method'));
+        $this->options    = Assertions::assertMaybeList('options', $settings->get('options'));
     }
 
     /**

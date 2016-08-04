@@ -20,6 +20,7 @@ namespace Circle\DoctrineRestDriver\Validation;
 
 use Circle\DoctrineRestDriver\Exceptions\InvalidAuthStrategyException;
 use Circle\DoctrineRestDriver\Exceptions\UnsupportedFetchModeException;
+use Circle\DoctrineRestDriver\Formatters\Formatter;
 use Circle\DoctrineRestDriver\Security\AuthStrategy;
 use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
@@ -68,12 +69,12 @@ class Assertions {
      *
      * @param  string $varName
      * @param  mixed  $value
-     * @return null
+     * @return array|null
      * @throws InvalidTypeException
      * @throws NotNilException
      */
     public static function assertMaybeList($varName, $value) {
-        return !is_array($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeList', $varName, $value) : null;
+        return !is_array($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeList', $varName, $value) : $value;
     }
 
     /**
@@ -81,12 +82,12 @@ class Assertions {
      *
      * @param  string $varName
      * @param  mixed  $value
-     * @return null
+     * @return string|null
      * @throws InvalidTypeException
      * @throws NotNilException
      */
     public static function assertMaybeString($varName, $value) {
-        return !is_string($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeString', $varName, $value) : null;
+        return !is_string($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeString', $varName, $value) : $value;
     }
 
     /**
@@ -94,12 +95,12 @@ class Assertions {
      *
      * @param  string $varName
      * @param  mixed  $value
-     * @return null
+     * @return int|null
      * @throws InvalidTypeException
      * @throws NotNilException
      */
     public static function assertMaybeInt($varName, $value) {
-        return !is_int($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeInt', $varName, $value) : null;
+        return !is_int($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeInt', $varName, $value) : $value;
     }
 
     /**
@@ -151,10 +152,11 @@ class Assertions {
      *
      * @param  string $varName
      * @param  mixed  $value
+     * @return string
      * @throws InvalidTypeException
      */
     public static function assertUrl($varName, $value) {
-        if (!self::isUrl($value)) return Exceptions::InvalidTypeException('Url', $varName, $value);
+        return !self::isUrl($value) ? Exceptions::InvalidTypeException('Url', $varName, $value) : $value;
     }
 
     /**
@@ -200,5 +202,16 @@ class Assertions {
      */
     public static function assertAuthStrategy($instance) {
         return !$instance instanceof AuthStrategy ? Exceptions::invalidAuthStrategyException(get_class($instance)) : null;
+    }
+
+    /**
+     * Checks if the given instance is instanceof Formatter
+     *
+     * @param  object $instance
+     * @return null
+     * @throws InvalidAuthStrategyException
+     */
+    public static function assertFormatter($instance) {
+        return !$instance instanceof Formatter ? Exceptions::invalidFormatException(get_class($instance)) : null;
     }
 }

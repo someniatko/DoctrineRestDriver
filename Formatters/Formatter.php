@@ -16,36 +16,29 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Types;
-
-use Circle\DoctrineRestDriver\Types\UpdatePayload;
-use PHPSQLParser\PHPSQLParser;
+namespace Circle\DoctrineRestDriver\Formatters;
 
 /**
- * Tests the UpdatePayload type
+ * Contract for formatters
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\UpdatePayload
  */
-class UpdatePayloadTest extends \PHPUnit_Framework_TestCase {
+interface Formatter {
 
     /**
-     * @test
-     * @group  unit
-     * @covers ::create
+     * encodes the given values into json
      *
-     * @SuppressWarnings("PHPMD.StaticAccess")
+     * @param  array $values
+     * @return string
      */
-    public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('UPDATE products set name="testname", value="testvalue" WHERE id=1');
-        $expected = [
-            'name'  => 'testname',
-            'value' => 'testvalue',
-        ];
+    public function encode(array $values);
 
-        $this->assertSame($expected, UpdatePayload::create($tokens));
-    }
+    /**
+     * decodes the given json string into an array
+     *
+     * @param  string $json
+     * @return array
+     */
+    public function decode($json);
 }

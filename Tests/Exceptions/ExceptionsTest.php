@@ -117,4 +117,17 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase {
     public function invalidSqlOperationExceptionTest() {
         Exceptions::invalidSqlOperationException('operation');
     }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::invalidFormatException
+     * @covers Circle\DoctrineRestDriver\Exceptions\InvalidFormatException::__construct
+     * @expectedException \Circle\DoctrineRestDriver\Exceptions\InvalidFormatException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function invalidFormatExceptionTest() {
+        Exceptions::invalidFormatException('class');
+    }
 }
