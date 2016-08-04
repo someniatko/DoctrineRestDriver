@@ -18,15 +18,12 @@
 
 namespace Circle\DoctrineRestDriver\Factory;
 
-use Circle\DoctrineRestDriver\Annotations\Routing;
 use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Types\Annotation;
 use Circle\DoctrineRestDriver\Types\HttpHeader;
 use Circle\DoctrineRestDriver\Types\CurlOptions;
 use Circle\DoctrineRestDriver\Types\HttpMethod;
-use Circle\DoctrineRestDriver\Types\Id;
 use Circle\DoctrineRestDriver\Types\Payload;
 use Circle\DoctrineRestDriver\Types\HttpQuery;
 use Circle\DoctrineRestDriver\Types\Request;
