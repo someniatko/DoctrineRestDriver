@@ -30,7 +30,7 @@ doctrine:
     user:         "%default_api_username%"
     password:     "%default_api_password%"
     options:
-      format:               "json"
+      format:               "json" | "YourOwnNamespaceName" | if not specified json will be used
       authenticator_class:  "HttpAuthentication" | "YourOwnNamespaceName" | if not specified no authentication will be used
 ```
 
