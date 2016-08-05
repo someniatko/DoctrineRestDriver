@@ -10,9 +10,6 @@ And because we have absolutely no idea how to write a programming language, we'r
 # Prerequisites
 
 - You need composer to download the library
-- Your REST API has to return JSON
-- GET, PUT and POST requests must be answered with 200 if successful
-- A response for a DELETE request needs to contain a status code of 204 if successful
 
 # Installation
 
@@ -33,7 +30,8 @@ doctrine:
     user:         "%default_api_username%"
     password:     "%default_api_password%"
     options:
-      authentication_class:  "HttpAuthentication" | "YourOwnNamespaceName" | if not specified no authentication will be used
+      format:               "json"
+      authenticator_class:  "HttpAuthentication" | "YourOwnNamespaceName" | if not specified no authentication will be used
 ```
 
 Additionally you can add CURL-specific options:
@@ -47,7 +45,8 @@ doctrine:
     user:         "%default_api_username%"
     password:     "%default_api_password%"
     options:
-      authentication_class:           "HttpAuthentication"
+      format:                         "json"
+      authenticator_class:            "HttpAuthentication"
       CURLOPT_CURLOPT_FOLLOWLOCATION: true
       CURLOPT_HEADER:                 true
 ```
@@ -116,7 +115,7 @@ Afterwards, you are able to use the created entity as if you were using a databa
 By using this setting, the driver is performing a lot of magic under the hood:
 
 - It generally uses the request body to send data in JSON format
-- It automatically maps the response into a valid entity
+- It automatically maps the response into a valid entity if the status code matches the default expected status codes (200 for GET and PUT, 201 for POST 204 for DELETE)
 - It saves the entity as managed doctrine entity
 - It translates INSERT queries into POST requests to create new data
   - Urls have the following format: ```{apiHost}/{pathToApi}/{tableName}```
@@ -145,7 +144,7 @@ class UserController extends Controller {
      * {"name": "Circle"}
      *
      * Let's assume the API responded with:
-     * HTTP/1.1 200 OK
+     * HTTP/1.1 201 Created
      * {"id": 1, "name": "Circle"}
      *
      * Response body is "1"
@@ -241,7 +240,15 @@ class UserController extends Controller {
 ```
 
 ## If your API doesn't follow our conventions
-Now it's time to introduce you to some annotations, which help you to configure your own routes. Be sure to use them only with ```Doctrine``` entities. To demonstrate their capabilities, let's customize some parts of the previous chapter with the ```DataSource``` annotation:
+Now it's time to introduce you to some annotations, which help you to configure your own routes. Be sure to use them only with ```Doctrine``` entities. All these annotations have the same structure so we will call them ```DataSource``` annotation:
+
+```php
+@DataSource\SomeName("http://www.myRoute.com", method="POST", statusCode=200)
+```
+
+The ```ROUTE``` value is mandatory, method and statusCode are optional.
+
+To demonstrate their capabilities, let's customize some parts of the previous chapter with the ```DataSource``` annotation:
 
 ```php
 namespace CircleBundle\Entity;
@@ -256,9 +263,9 @@ use Circle\DoctrineRestDriver\Annotations as DataSource;
  * @ORM\Table("products")
  * @DataSource\Select("http://www.yourSite.com/api/products/findOne/{id}")
  * @DataSource\Fetch("http://www.yourSite.com/api/products/findAll")
- * @DataSource\Insert("http://www.yourSite.com/api/products/insert")
- * @DataSource\Update("http://www.yourSite.com/api/products/update/{id}")
- * @DataSource\Delete("http://www.yourSite.com/api/products/remove/{id}")
+ * @DataSource\Insert("http://www.yourSite.com/api/products/insert", statusCode=200)
+ * @DataSource\Update("http://www.yourSite.com/api/products/update/{id}", method="POST")
+ * @DataSource\Delete("http://www.yourSite.com/api/products/remove/{id}", method="POST", statusCode=200)
  */
 class Product {
 
@@ -359,14 +366,14 @@ class UserController extends Controller {
     /**
      * After sending a GET request (readAction) it sends the following 
      * request to the API by default:
-     * PUT http://www.yourSite.com/api/products/update/1 HTTP/1.1
+     * POST http://www.yourSite.com/api/products/update/1 HTTP/1.1
      * {"name": "myName"}
      *
      * Let's assume the API responded the GET request with:
      * HTTP/1.1 200 OK
      * {"id": 1, "name": "Circle"}
      *
-     * and the PUT request with:
+     * and the POST request with:
      * HTTP/1.1 200 OK
      * {"id": 1, "name": "myName"}
      *
@@ -384,10 +391,10 @@ class UserController extends Controller {
     /**
      * After sending a GET request (readAction) it sends the following 
      * request to the API by default:
-     * DELETE http://www.yourSite.com/api/products/remove/1 HTTP/1.1
+     * POST http://www.yourSite.com/api/products/remove/1 HTTP/1.1
      *
      * If the response is:
-     * HTTP/1.1 204 No Content
+     * HTTP/1.1 200 OK
      *
      * the response body is ""
      */
