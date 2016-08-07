@@ -33,25 +33,24 @@ class StatusCode {
      * @var array
      */
     private static $expectedStatusCodes = [
-        'select' => 200,
-        'update' => 200,
-        'insert' => 201,
+        'get'    => 200,
+        'put'    => 200,
+        'post'   => 201,
         'delete' => 204
     ];
 
     /**
      * returns the status code depending on its input
      *
-     * @param  string     $operation
+     * @param  string     $method
      * @param  DataSource $annotation
      * @return string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create($operation, DataSource $annotation = null) {
-        Assertions::assertString('operation', $operation);
-        $code = empty($annotation) || $annotation->getStatusCode() === null ? null : $annotation->getStatusCode();
+    public static function create($method, DataSource $annotation = null) {
+        Assertions::assertString('method', $method);
 
-        return empty($code) ? self::$expectedStatusCodes[$operation] : $code;
+        return !empty($annotation) && $annotation->getStatusCode() !== null ? $annotation->getStatusCode() : self::$expectedStatusCodes[$method];
     }
 }

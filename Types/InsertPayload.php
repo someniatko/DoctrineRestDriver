@@ -92,7 +92,6 @@ class InsertPayload {
      * @return string
      */
     private static function removeBrackets($string) {
-        $return = preg_replace('/^\(/', '', $string);
-        return preg_replace('/\)$/', '', $return);
+        return preg_replace('/\)$/', '', preg_replace('/^\(/', '', $string));
     }
 }

@@ -89,7 +89,7 @@ class ExceptionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function requestFailedExceptionTest() {
-        Exceptions::requestFailedException(new Request('get', 'url', []), 1, 'errorMessage');
+        Exceptions::requestFailedException(new Request(['method' => 'get', 'url' => 'url']), 1, 'errorMessage');
     }
 
     /**

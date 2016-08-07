@@ -18,8 +18,6 @@
 
 namespace Circle\DoctrineRestDriver;
 
-use Circle\DoctrineRestDriver\Annotations\Loader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**

@@ -18,18 +18,14 @@
 
 namespace Circle\DoctrineRestDriver\Factory;
 
-use Circle\DoctrineRestDriver\Annotations\RoutingTable;
-use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\Types\Annotation;
+use Circle\DoctrineRestDriver\Annotations\DataSource;
 use Circle\DoctrineRestDriver\Types\HttpHeader;
 use Circle\DoctrineRestDriver\Types\CurlOptions;
 use Circle\DoctrineRestDriver\Types\HttpMethod;
 use Circle\DoctrineRestDriver\Types\Payload;
 use Circle\DoctrineRestDriver\Types\HttpQuery;
 use Circle\DoctrineRestDriver\Types\Request;
-use Circle\DoctrineRestDriver\Types\SqlOperation;
 use Circle\DoctrineRestDriver\Types\StatusCode;
-use Circle\DoctrineRestDriver\Types\Table;
 use Circle\DoctrineRestDriver\Types\Url;
 
 /**
@@ -37,33 +33,28 @@ use Circle\DoctrineRestDriver\Types\Url;
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class RequestFactory {
 
     /**
      * Creates a new Request with the given options
      *
-     * @param  array        $tokens
-     * @param  string       $apiUrl
-     * @param  array        $options
-     * @param  RoutingTable $routings
+     * @param  string     $method
+     * @param  array      $tokens
+     * @param  array      $options
+     * @param  DataSource $annotation
      * @return Request
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createOne(array $tokens, $apiUrl, array $options, RoutingTable $routings = null) {
-        $operation  = SqlOperation::create($tokens);
-        $annotation = Annotation::get($routings, Table::create($tokens), HttpMethods::ofSqlOperation($operation));
-
-        $method     = HttpMethod::create($operation, $annotation);
-        $url        = Url::createFromTokens($tokens, $apiUrl, $annotation);
-        $options    = CurlOptions::create(array_merge($options, HttpHeader::create($options, $tokens)));
-        $query      = HttpQuery::create($tokens);
-        $payload    = Payload::create($tokens, $options);
-        $statusCode = StatusCode::create($operation, $annotation);
-
-        return new Request($method, $url, $options, $query, $payload, $statusCode);
+    public function createOne($method, array $tokens, array $options, DataSource $annotation = null) {
+        return new Request([
+            'method'              => HttpMethod::create($method, $annotation),
+            'url'                 => Url::createFromTokens($tokens, $options['host'], $annotation),
+            'curlOptions'         => CurlOptions::create(array_merge($options['driverOptions'], HttpHeader::create($options['driverOptions'], $tokens))),
+            'query'               => HttpQuery::create($tokens),
+            'payload'             => Payload::create($tokens, $options),
+            'expectedStatusCode'  => StatusCode::create($method, $annotation)
+        ]);
     }
 }

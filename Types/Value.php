@@ -42,9 +42,9 @@ class Value {
         Assertions::assertString('value', $value);
         if (empty($value)) return null;
 
-        $return = preg_replace('/\"|\\\'|\`$/', '', preg_replace('/^\"|\\\'|\`/', '', $value));
-        if (!is_numeric($return)) return $return;
+        $unquoted = preg_replace('/\"|\\\'|\`$/', '', preg_replace('/^\"|\\\'|\`/', '', $value));
+        if (!is_numeric($unquoted)) return $unquoted;
 
-        return ((string) intval($return) === $return) ? intval($return) : floatval($return);
+        return ((string) intval($unquoted) === $unquoted) ? intval($unquoted) : floatval($unquoted);
     }
 }

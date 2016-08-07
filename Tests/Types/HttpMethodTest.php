@@ -19,7 +19,6 @@
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Types\HttpMethod;
 
 /**
@@ -46,7 +45,7 @@ class HttpMethodTest extends \PHPUnit_Framework_TestCase {
             ->method('getMethod')
             ->will($this->returnValue(HttpMethods::PUT));
 
-        $this->assertSame(HttpMethods::PUT, HttpMethod::create(SqlOperations::INSERT, $annotation));
+        $this->assertSame(HttpMethods::PUT, HttpMethod::create(HttpMethods::POST, $annotation));
     }
 
     /**
@@ -63,6 +62,6 @@ class HttpMethodTest extends \PHPUnit_Framework_TestCase {
             ->method('getMethod')
             ->will($this->returnValue(null));
 
-        $this->assertSame(HttpMethods::POST, HttpMethod::create(SqlOperations::INSERT, $annotation));
+        $this->assertSame(HttpMethods::POST, HttpMethod::create(HttpMethods::POST, $annotation));
     }
 }

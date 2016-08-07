@@ -21,7 +21,6 @@ namespace Circle\DoctrineRestDriver;
 use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
-use Circle\DoctrineRestDriver\Factory\RestClientFactory;
 use Circle\DoctrineRestDriver\Security\AuthStrategy;
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
 use Circle\DoctrineRestDriver\Types\Authentication;
@@ -40,7 +39,6 @@ use Circle\DoctrineRestDriver\Formatters\Formatter;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @SuppressWarnings("PHPMD.TooManyPublicMethods")
- * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class Statement implements \IteratorAggregate, StatementInterface {
 
@@ -60,9 +58,9 @@ class Statement implements \IteratorAggregate, StatementInterface {
     private $params = [];
 
     /**
-     * @var \Circle\DoctrineRestDriver\Factory\RestClientFactory
+     * @var RestClient
      */
-    private $restClientFactory;
+    private $restClient;
 
     /**
      * @var array
@@ -118,7 +116,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
         $this->query             = $query;
         $this->routings          = $routings;
         $this->mysqlToRequest    = new MysqlToRequest($options, $this->routings);
-        $this->restClientFactory = new RestClientFactory();
+        $this->restClient        = new RestClient();
 
         $this->authStrategy = Authentication::create($options);
         $this->formatter    = Format::create($options);
@@ -157,17 +155,20 @@ class Statement implements \IteratorAggregate, StatementInterface {
 
     /**
      * {@inheritdoc}
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function execute($params = null) {
         $rawRequest = $this->mysqlToRequest->transform($this->query, $this->params);
         $request    = $this->authStrategy->transformRequest($rawRequest);
-        $restClient = $this->restClientFactory->createOne($request->getCurlOptions());
 
-        $method     = strtolower($request->getMethod());
-        $response   = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? $restClient->$method($request->getUrlAndQuery()) : $restClient->$method($request->getUrlAndQuery(), $request->getPayload());
-        $statusCode = $response->getStatusCode();
+        $response = $this->restClient->send($request);
 
-        return $statusCode === $request->getExpectedStatusCode() ? $this->onSuccess($response, $method) : $this->onError($request, $response);
+        $this->result = Result::create($this->query, $this->formatter->decode($response->getContent()));
+        $this->id     = !empty($this->result['id']) ? $this->result['id'] : null;
+        krsort($this->result);
+
+        return true;
     }
 
     /**
@@ -247,38 +248,5 @@ class Statement implements \IteratorAggregate, StatementInterface {
      */
     public function getId() {
         return $this->id;
-    }
-
-    /**
-     * Handles the statement if the execution succeeded
-     *
-     * @param  Response $response
-     * @param  string   $method
-     * @return bool
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    private function onSuccess(Response $response, $method) {
-        $this->result = Result::create($this->query, $this->formatter->decode($response->getContent()));
-        $this->id     = $method === HttpMethods::POST ? $this->result['id'] : null;
-        krsort($this->result);
-
-        return true;
-    }
-
-    /**
-     * Handles the statement if the execution failed
-     *
-     * @param  Request  $request
-     * @param  Response $response
-     * @throws \Exception
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    private function onError(Request $request, Response $response) {
-        $this->errorCode    = $response->getStatusCode();
-        $this->errorMessage = $response->getContent();
-
-        return Exceptions::RequestFailedException($request, $response->getStatusCode(), $response->getContent());
     }
 }

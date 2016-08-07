@@ -33,14 +33,14 @@ class HttpMethod {
     /**
      * Returns the right HTTP method
      *
-     * @param  string     $sqlOperation
+     * @param  string     $method
      * @param  DataSource $annotation
      * @return string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create($sqlOperation, DataSource $annotation = null) {
-        Assertions::assertString('sqlOperation', $sqlOperation);
-        return empty($annotation) || $annotation->getMethod() === null ? HttpMethods::ofSqlOperation($sqlOperation) : $annotation->getMethod();
+    public static function create($method, DataSource $annotation = null) {
+        Assertions::assertString('method', $method);
+        return empty($annotation) || $annotation->getMethod() === null ? $method : $annotation->getMethod();
     }
 }

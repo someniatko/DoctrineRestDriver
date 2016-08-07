@@ -17,6 +17,7 @@
  */
 
 namespace Circle\DoctrineRestDriver\Types;
+use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
  * Request type
@@ -44,7 +45,7 @@ class Request {
     /**
      * @var array
      */
-    private $curlOptions;
+    private $curlOptions = [];
 
     /**
      * @var string
@@ -54,25 +55,38 @@ class Request {
     /**
      * @var int
      */
-    private $expectedStatusCode;
+    private $expectedStatusCode = 200;
 
     /**
      * Request constructor
      *
-     * @param string      $method
-     * @param string      $url
-     * @param array       $curlOptions
-     * @param string|null $query
-     * @param string|null $payload
-     * @param int|null    $expectedStatusCode
+     * @param array $options
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function __construct($method, $url, array $curlOptions, $query = null, $payload = null, $expectedStatusCode = 200) {
-        $this->method             = strtolower($method);
-        $this->url                = $url;
-        $this->payload            = $payload;
-        $this->curlOptions        = $curlOptions;
-        $this->query              = $query;
-        $this->expectedStatusCode = $expectedStatusCode;
+    public function __construct(array $options) {
+        Assertions::assertHashMap('options', $options);
+        Assertions::assertHashMapEntryExists('options.method', $options, 'method');
+        Assertions::assertHashMapEntryExists('options.url', $options, 'url');
+
+        foreach ($options as $key => $value) $this->$key = $value;
+    }
+
+    /**
+     * sets the curl options
+     *
+     * @param  array $options
+     * @return Request
+     */
+    public function setCurlOptions(array $options) {
+        return new Request([
+            'method'              => $this->method,
+            'url'                 => $this->url,
+            'curlOptions'         => $options,
+            'query'               => $this->query,
+            'payload'             => $this->payload,
+            'expectedStatusCode'  => $this->expectedStatusCode
+        ]);
     }
 
     /**

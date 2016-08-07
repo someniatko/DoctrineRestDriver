@@ -18,7 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Enums\SqlOperations;
+use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Types\StatusCode;
 
 /**
@@ -45,7 +45,7 @@ class StatusCodeTest extends \PHPUnit_Framework_TestCase {
             ->method('getStatusCode')
             ->will($this->returnValue(202));
 
-        $this->assertSame(202, StatusCode::create(SqlOperations::INSERT, $annotation));
+        $this->assertSame(202, StatusCode::create(HttpMethods::POST, $annotation));
     }
 
     /**
@@ -62,6 +62,6 @@ class StatusCodeTest extends \PHPUnit_Framework_TestCase {
             ->method('getStatusCode')
             ->will($this->returnValue(null));
 
-        $this->assertSame(201, StatusCode::create(SqlOperations::INSERT, $annotation));
+        $this->assertSame(201, StatusCode::create(HttpMethods::POST, $annotation));
     }
 }

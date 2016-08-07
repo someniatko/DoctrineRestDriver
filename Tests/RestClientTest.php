@@ -16,58 +16,53 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Security;
+namespace Circle\DoctrineRestDriver\Tests;
 
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\Security\NoAuthentication;
+use Circle\DoctrineRestDriver\RestClient;
 use Circle\DoctrineRestDriver\Types\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Tests the result mapping
+ * Tests the rest client
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Security\NoAuthentication
+ * @coversDefaultClass Circle\DoctrineRestDriver\RestClient
  */
-class NoAuthenticationTest extends \PHPUnit_Framework_TestCase {
+class RestClientTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * @var NoAuthentication
+     * @var RestClient
      */
-    private $authentication;
+    private $restClient;
 
     /**
      * {@inheritdoc}
      */
     public function setUp() {
-        $this->authentication = new NoAuthentication([
-            'host'          => 'http://circle.ai',
-            'user'          => 'Aladdin',
-            'password'      => 'OpenSesame',
-            'driverOptions' => []
-        ]);
+        $this->restClient = new RestClient();
     }
 
     /**
      * @test
      * @group  unit
-     * @covers ::transformRequest
+     * @covers ::__construct
+     * @covers ::send
      */
-    public function transformRequest() {
-        $expectedOptions = [];
-
-        $request  = new Request([
+    public function send() {
+        $request = new Request([
             'method' => HttpMethods::GET,
-            'url'    => 'http://circle.ai'
+            'url'    => 'http://127.0.0.1:3000/app_dev.php/mockapi/products/1'
         ]);
 
-        $expected = new Request([
-            'method'      => HttpMethods::GET,
-            'url'         => 'http://circle.ai',
-            'curlOptions' => $expectedOptions
-        ]);
+        $response = new Response(json_encode([
+            'id'    => 1,
+            'name'  => 'MyName',
+            'value' => 'MyValue'
+        ]));
 
-        $this->assertEquals($expected, $this->authentication->transformRequest($request));
+        $this->assertEquals($response->getContent(), $this->restClient->send($request)->getContent());
     }
 }

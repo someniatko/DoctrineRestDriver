@@ -21,6 +21,7 @@ namespace Circle\DoctrineRestDriver\Transformers;
 use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Factory\RequestFactory;
+use Circle\DoctrineRestDriver\Types\Annotation;
 use Circle\DoctrineRestDriver\Types\Id;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\SqlOperation;
@@ -37,11 +38,6 @@ use PHPSQLParser\PHPSQLParser;
 class MysqlToRequest {
 
     /**
-     * @var string
-     */
-    private $apiUrl;
-
-    /**
      * @var PHPSQLParser
      */
     private $parser;
@@ -52,7 +48,7 @@ class MysqlToRequest {
     private $requestFactory;
 
     /**
-     * @var string
+     * @var array
      */
     private $options;
 
@@ -68,8 +64,7 @@ class MysqlToRequest {
      * @param RoutingTable $routings
      */
     public function __construct(array $options, RoutingTable $routings) {
-        $this->apiUrl         = $options['host'];
-        $this->options        = $options['driverOptions'];
+        $this->options        = $options;
         $this->parser         = new PHPSQLParser();
         $this->requestFactory = new RequestFactory();
         $this->routings       = $routings;
@@ -94,8 +89,10 @@ class MysqlToRequest {
             return $carry . (Assertions::isUrl($part) ? ('"' . $part . '" ') : ($part . ' '));
         });
 
-        $tokens = $this->parser->parse($transformedQuery);
+        $tokens     = $this->parser->parse($transformedQuery);
+        $method     = HttpMethods::ofSqlOperation(SqlOperation::create($tokens));
+        $annotation = Annotation::get($this->routings, Table::create($tokens), $method);
 
-        return $this->requestFactory->createOne($tokens, $this->apiUrl, $this->options, $this->routings);
+        return $this->requestFactory->createOne($method, $tokens, $this->options, $annotation);
     }
 }
