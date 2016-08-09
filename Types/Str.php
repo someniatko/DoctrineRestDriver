@@ -18,29 +18,31 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Annotations\DataSource;
-use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 /**
- * Type for HTTP method
+ * String type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class HttpMethod {
+class Str {
 
     /**
-     * Returns the right HTTP method
+     * Asserts if the given value is a string
      *
-     * @param  string     $method
-     * @param  DataSource $annotation
+     * @param  mixed  $value
+     * @param  string $varName
      * @return string
+     * @throws InvalidTypeException
+     * @throws NotNilException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create($method, DataSource $annotation = null) {
-        Str::assert($method, 'method');
-        return empty($annotation) || $annotation->getMethod() === null ? $method : $annotation->getMethod();
+    public static function assert($value, $varName) {
+        NotNil::assert($value, $varName);
+        return !is_string($value) ? Exceptions::InvalidTypeException('string', $varName, $value) : $value;
     }
 }

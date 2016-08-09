@@ -18,13 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Validation;
 
-use Circle\DoctrineRestDriver\Exceptions\InvalidAuthStrategyException;
 use Circle\DoctrineRestDriver\Exceptions\UnsupportedFetchModeException;
-use Circle\DoctrineRestDriver\Formatters\Formatter;
-use Circle\DoctrineRestDriver\Security\AuthStrategy;
-use Circle\DoctrineRestDriver\Types\HashMap;
-use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
-use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Prophecy\Exception\Doubler\ClassNotFoundException;
 
@@ -37,71 +31,6 @@ use Prophecy\Exception\Doubler\ClassNotFoundException;
  * @SuppressWarnings("PHPMD.StaticAccess")
  */
 class Assertions {
-
-    /**
-     * Asserts if the given value is not nil
-     *
-     * @param  string $varName
-     * @param  mixed  $value
-     * @return mixed
-     * @throws NotNilException
-     */
-    public static function assertNotNil($varName, $value) {
-        return $value === null ? Exceptions::NotNilException($varName) : $value;
-    }
-
-    /**
-     * Asserts if the given value is a string
-     *
-     * @param  string $varName
-     * @param  mixed  $value
-     * @return mixed
-     * @throws InvalidTypeException
-     * @throws NotNilException
-     */
-    public static function assertString($varName, $value) {
-        self::assertNotNil($varName, $value);
-        return !is_string($value) ? Exceptions::InvalidTypeException('string', $varName, $value) : $value;
-    }
-
-    /**
-     * Asserts if the given value is a maybe list
-     *
-     * @param  string $varName
-     * @param  mixed  $value
-     * @return array|null
-     * @throws InvalidTypeException
-     * @throws NotNilException
-     */
-    public static function assertMaybeList($varName, $value) {
-        return !is_array($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeList', $varName, $value) : $value;
-    }
-
-    /**
-     * Asserts if the given value is a maybe string
-     *
-     * @param  string $varName
-     * @param  mixed  $value
-     * @return string|null
-     * @throws InvalidTypeException
-     * @throws NotNilException
-     */
-    public static function assertMaybeString($varName, $value) {
-        return !is_string($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeString', $varName, $value) : $value;
-    }
-
-    /**
-     * Asserts if the given value is a maybe int
-     *
-     * @param  string $varName
-     * @param  mixed  $value
-     * @return int|null
-     * @throws InvalidTypeException
-     * @throws NotNilException
-     */
-    public static function assertMaybeInt($varName, $value) {
-        return !is_int($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeInt', $varName, $value) : $value;
-    }
 
     /**
      * Checks if the given fetch mode is supported

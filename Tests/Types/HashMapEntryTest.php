@@ -21,7 +21,7 @@ namespace Circle\DoctrineRestDriver\Tests\Types;
 use Circle\DoctrineRestDriver\Types\HashMapEntry;
 
 /**
- * Tests the hash map type
+ * Tests the hash map entry type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG

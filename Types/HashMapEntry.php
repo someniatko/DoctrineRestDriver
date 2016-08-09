@@ -19,7 +19,6 @@
 namespace Circle\DoctrineRestDriver\Types;
 
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
-use Circle\DoctrineRestDriver\Validation\Assertions;
 use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 
 /**
@@ -47,7 +46,7 @@ class HashMapEntry {
         $keys = array_keys($value);
         $key  = end($keys);
 
-        Assertions::assertString('HashMapEntry of "' . $varName . '": "' . $key . '"', $key);
+        Str::assert($key, 'HashMapEntry of "' . $varName . '": "' . $key . '"');
 
         return $value;
     }

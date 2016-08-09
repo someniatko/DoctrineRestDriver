@@ -16,31 +16,40 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Annotations\DataSource;
-use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Types\Str;
 
 /**
- * Type for HTTP method
+ * Tests the string type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\Str
  */
-class HttpMethod {
+class StrTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * Returns the right HTTP method
-     *
-     * @param  string     $method
-     * @param  DataSource $annotation
-     * @return string
+     * @test
+     * @group  unit
+     * @covers ::assert
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create($method, DataSource $annotation = null) {
-        Str::assert($method, 'method');
-        return empty($annotation) || $annotation->getMethod() === null ? $method : $annotation->getMethod();
+    public function assert() {
+        $this->assertSame('test', Str::assert('test', 'test'));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assert
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     * @expectedException \Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException
+     */
+    public function assertOnException() {
+        Str::assert([], 'array');
     }
 }

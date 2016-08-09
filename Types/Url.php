@@ -43,9 +43,9 @@ class Url {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create($route, $apiUrl, $id = null) {
-        Assertions::assertString('route', $route);
-        Assertions::assertString('apiUrl', $apiUrl);
-        Assertions::assertMaybeString('id', $id);
+        Str::assert($route, 'route');
+        Str::assert($apiUrl, 'apiUrl');
+        MaybeString::assert($id, 'id');
 
         $idPath = empty($id) ? '' : '/' . $id;
 

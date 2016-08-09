@@ -39,7 +39,7 @@ class Value {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create($value) {
-        Assertions::assertString('value', $value);
+        Str::assert($value, 'value');
         if (empty($value)) return null;
 
         $unquoted = preg_replace('/\"|\\\'|\`$/', '', preg_replace('/^\"|\\\'|\`/', '', $value));

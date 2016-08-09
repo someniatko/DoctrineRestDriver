@@ -49,7 +49,7 @@ class StatusCode {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create($method, DataSource $annotation = null) {
-        Assertions::assertString('method', $method);
+        Str::assert($method, 'method');
 
         return !empty($annotation) && $annotation->getStatusCode() !== null ? $annotation->getStatusCode() : self::$expectedStatusCodes[$method];
     }

@@ -18,9 +18,10 @@
 
 namespace Circle\DoctrineRestDriver\Annotations;
 
-use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Types\MaybeInt;
+use Circle\DoctrineRestDriver\Types\MaybeList;
+use Circle\DoctrineRestDriver\Types\MaybeString;
 use Circle\DoctrineRestDriver\Types\Url;
-use Circle\DoctrineRestDriver\Validation\Assertions;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -64,9 +65,9 @@ trait Route {
         $settings = new ArrayCollection($values);
 
         $this->route      = Url::assert($settings->get('value'), 'value');
-        $this->statusCode = Assertions::assertMaybeInt('statusCode', $settings->get('statusCode'));
-        $this->method     = Assertions::assertMaybeString('method', $settings->get('method'));
-        $this->options    = Assertions::assertMaybeList('options', $settings->get('options'));
+        $this->statusCode = MaybeInt::assert($settings->get('statusCode'), 'statusCode');
+        $this->method     = MaybeString::assert($settings->get('method'), 'method');
+        $this->options    = MaybeList::assert($settings->get('options'), 'options');
     }
 
     /**

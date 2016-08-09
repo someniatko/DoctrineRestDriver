@@ -18,29 +18,28 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Annotations\DataSource;
-use Circle\DoctrineRestDriver\Enums\HttpMethods;
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 /**
- * Type for HTTP method
+ * MaybeList type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class HttpMethod {
+class MaybeList {
 
     /**
-     * Returns the right HTTP method
+     * Asserts if the given value is a maybe list
      *
-     * @param  string     $method
-     * @param  DataSource $annotation
-     * @return string
+     * @param  mixed  $value
+     * @param  string $varName
+     * @return array|null
+     * @throws InvalidTypeException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create($method, DataSource $annotation = null) {
-        Str::assert($method, 'method');
-        return empty($annotation) || $annotation->getMethod() === null ? $method : $annotation->getMethod();
+    public static function assert($value, $varName) {
+        return !is_array($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeList', $varName, $value) : $value;
     }
 }
