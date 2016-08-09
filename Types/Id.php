@@ -38,7 +38,7 @@ class Id {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+        HashMap::assert($tokens, 'tokens');
 
         if (empty($tokens['WHERE'])) return '';
 

@@ -22,6 +22,7 @@ use Circle\DoctrineRestDriver\Exceptions\InvalidAuthStrategyException;
 use Circle\DoctrineRestDriver\Exceptions\UnsupportedFetchModeException;
 use Circle\DoctrineRestDriver\Formatters\Formatter;
 use Circle\DoctrineRestDriver\Security\AuthStrategy;
+use Circle\DoctrineRestDriver\Types\HashMap;
 use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 use Circle\DoctrineRestDriver\Validation\Exceptions\NotNilException;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
@@ -100,52 +101,6 @@ class Assertions {
      */
     public static function assertMaybeInt($varName, $value) {
         return !is_int($value) && $value !== null ? Exceptions::InvalidTypeException('MaybeInt', $varName, $value) : $value;
-    }
-
-    /**
-     * Asserts if the given value is a hash map
-     *
-     * @param  string $varName
-     * @param  mixed  $value
-     * @return mixed
-     * @throws InvalidTypeException
-     */
-    public static function assertHashMap($varName, $value) {
-        if(!is_array($value)) return Exceptions::InvalidTypeException('HashMap', $varName, $value);
-        foreach($value as $key => $v) self::assertHashMapEntry($varName, [$key => $v]);
-
-        return $value;
-    }
-
-    /**
-     * Asserts if the given value is a hash map entry
-     *
-     * @param  string $varName
-     * @param  mixed  $value
-     * @return mixed
-     * @throws InvalidTypeException
-     */
-    public static function assertHashMapEntry($varName, $value) {
-        if(!is_array($value)) return Exceptions::InvalidTypeException('HashMapEntry', $varName, $value);
-        if(count($value) > 1) return Exceptions::InvalidTypeException('HashMapEntry', $varName, $value);
-
-        $keys = array_keys($value);
-        $key  = end($keys);
-        self::assertString('HashMapEntry of "' . $varName . '": "' . $key . '"', $key);
-    }
-
-    /**
-     * Asserts if the given hash map entry exists
-     *
-     * @param  string $varName
-     * @param  array  $hashMap
-     * @param  string $entryName
-     * @return array
-     * @throws InvalidTypeException
-     */
-    public static function assertHashMapEntryExists($varName, $hashMap, $entryName) {
-        self::assertHashMap($varName, $hashMap);
-        return array_key_exists($entryName, $hashMap) ? $hashMap : Exceptions::InvalidTypeException('HashMapEntry', $varName . '[\'' . $entryName . '\']', 'undefined');
     }
 
     /**

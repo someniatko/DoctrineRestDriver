@@ -17,7 +17,6 @@
  */
 
 namespace Circle\DoctrineRestDriver\Types;
-use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
  * Request type
@@ -65,9 +64,9 @@ class Request {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct(array $options) {
-        Assertions::assertHashMap('options', $options);
-        Assertions::assertHashMapEntryExists('options.method', $options, 'method');
-        Assertions::assertHashMapEntryExists('options.url', $options, 'url');
+        HashMap::assert($options, 'options');
+        HashMapEntry::assertExists($options, 'method', 'options.method');
+        HashMapEntry::assertExists($options, 'url', 'options.url');
 
         foreach ($options as $key => $value) $this->$key = $value;
     }

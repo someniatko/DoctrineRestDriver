@@ -16,36 +16,45 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Tests\Types;
+
+use Circle\DoctrineRestDriver\Types\HashMapEntry;
 
 /**
- * Maps the response content of a GET query to a valid
- * Doctrine result for SELECT ... WHERE id = <id>
+ * Tests the hash map type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\HashMapEntry
  */
-class SelectSingleResult {
+class HashMapEntryTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * Returns a valid Doctrine result for SELECT ... WHERE id = <id>
-     *
-     * @param  array  $tokens
-     * @param  array  $content
-     * @return string
+     * @test
+     * @group  unit
+     * @covers ::assert
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, $content) {
-        HashMap::assert($tokens, 'tokens');
-        $tableAlias = Table::alias($tokens);
+    public function assert() {
+        $hashMap = [
+            'test' => 'test'
+        ];
+        $this->assertSame($hashMap, HashMapEntry::assert($hashMap, 'test'));
+    }
 
-        $attributeValueMap = array_map(function($token) use ($content, $tableAlias) {
-            $key   = empty($token['alias']['name']) ? $token['base_expr'] : $token['alias']['name'];
-            $value = $content[str_replace($tableAlias . '.', '', $token['base_expr'])];
-            return [$key => $value];
-        }, $tokens['SELECT']);
-
-        return [ array_reduce($attributeValueMap, 'array_merge', []) ];
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assertExists
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function assertExists() {
+        $hashMap = [
+            'test' => 'test'
+        ];
+        $this->assertSame($hashMap, HashMapEntry::assertExists($hashMap, 'test', 'test'));
     }
 }

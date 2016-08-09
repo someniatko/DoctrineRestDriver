@@ -18,34 +18,32 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
+
 /**
- * Maps the response content of a GET query to a valid
- * Doctrine result for SELECT ... WHERE id = <id>
+ * HashMap type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class SelectSingleResult {
+class HashMap {
 
     /**
-     * Returns a valid Doctrine result for SELECT ... WHERE id = <id>
+     * Asserts if the given value is a hash map
      *
-     * @param  array  $tokens
-     * @param  array  $content
-     * @return string
+     * @param  mixed  $value
+     * @param  string $varName
+     * @return mixed
+     * @throws InvalidTypeException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, $content) {
-        HashMap::assert($tokens, 'tokens');
-        $tableAlias = Table::alias($tokens);
+    public static function assert($value, $varName) {
+        if(!is_array($value)) return Exceptions::InvalidTypeException('HashMap', $varName, $value);
+        foreach($value as $key => $v) HashMapEntry::assert([$key => $v], $varName);
 
-        $attributeValueMap = array_map(function($token) use ($content, $tableAlias) {
-            $key   = empty($token['alias']['name']) ? $token['base_expr'] : $token['alias']['name'];
-            $value = $content[str_replace($tableAlias . '.', '', $token['base_expr'])];
-            return [$key => $value];
-        }, $tokens['SELECT']);
-
-        return [ array_reduce($attributeValueMap, 'array_merge', []) ];
+        return $value;
     }
 }

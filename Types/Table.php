@@ -18,11 +18,8 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Annotations\RoutingTable;
-use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
-use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
  * Table type
@@ -41,7 +38,7 @@ class Table {
      * @return string
      */
     public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+        HashMap::assert($tokens, 'tokens');
 
         if (empty($tokens['FROM']) && empty($tokens['INSERT']) && empty($tokens['UPDATE'])) return Exceptions::InvalidTypeException('array', 'tokens', null);
 
@@ -58,7 +55,7 @@ class Table {
      * @return null|string
      */
     public static function alias(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+        HashMap::assert($tokens, 'tokens');
 
         $operation = SqlOperation::create($tokens);
         if ($operation === SqlOperations::INSERT) return null;
@@ -74,7 +71,7 @@ class Table {
      * @return array
      */
     public static function replace(array $tokens, $newTable) {
-        Assertions::assertHashMap('tokens', $tokens);
+        HashMap::assert($tokens, 'tokens');
 
         $operation = SqlOperation::create($tokens);
         $firstKey  = $operation === SqlOperations::DELETE || $operation === SqlOperations::SELECT ? 'FROM' : strtoupper($operation);

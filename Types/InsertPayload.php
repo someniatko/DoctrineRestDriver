@@ -18,8 +18,6 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
-
 /**
  * InsertPayload type
  *
@@ -38,7 +36,7 @@ class InsertPayload {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+        HashMap::assert($tokens, 'tokens');
 
         return array_combine(self::columns($tokens), self::values($tokens));
     }

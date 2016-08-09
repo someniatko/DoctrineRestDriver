@@ -56,35 +56,6 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      * @group  unit
-     * @covers ::assertHashMap
-     * @covers ::assertHashMapEntry
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertHashMapTest() {
-        $hashMap = [
-            'test' => 'test'
-        ];
-        $this->assertSame($hashMap, Assertions::assertHashMap('test', $hashMap));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertHashMapEntryExists
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertHashMapEntryExistsTest() {
-        $hashMap = [
-            'test' => 'test'
-        ];
-        $this->assertSame($hashMap, Assertions::assertHashMapEntryExists('test', $hashMap, 'test'));
-    }
-
-    /**
-     * @test
-     * @group  unit
      * @covers ::assertClassExists
      *
      * @SuppressWarnings("PHPMD.StaticAccess")

@@ -39,7 +39,7 @@ class HttpQuery {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+        HashMap::assert($tokens, 'tokens');
 
         $operation = SqlOperation::create($tokens);
         if ($operation !== SqlOperations::SELECT || empty($tokens['WHERE'])) return null;

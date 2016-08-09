@@ -16,35 +16,31 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Types;
+namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Enums\SqlOperations;
+use Circle\DoctrineRestDriver\Types\HashMap;
 
 /**
- * Payload type: Union type for UpdatePayload and InsertPayload
+ * Tests the hash map type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
+ *
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\HashMap
  */
-class Payload {
+class HashMapTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * Returns an InsertPayload::create or UpdatePayload::create
-     * result or null depending on the given tokens array
-     *
-     * @param  array       $tokens
-     * @param  array       $options
-     * @return null|string
+     * @test
+     * @group  unit
+     * @covers ::assert
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, array $options) {
-        HashMap::assert($tokens, 'tokens');
-
-        $formatter = Format::create($options);
-        $operation = SqlOperation::create($tokens);
-
-        if ($operation === SqlOperations::SELECT || $operation === SqlOperations::DELETE) return null;
-        return $formatter->encode($operation === SqlOperations::INSERT ? InsertPayload::create($tokens) : UpdatePayload::create($tokens));
+    public function assert() {
+        $hashMap = [
+            'test' => 'test'
+        ];
+        $this->assertSame($hashMap, HashMap::assert($hashMap, 'test'));
     }
 }

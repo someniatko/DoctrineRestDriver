@@ -18,8 +18,6 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
-
 /**
  * UpdatePayload type
  *
@@ -38,7 +36,7 @@ class UpdatePayload {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+        HashMap::assert($tokens, 'tokens');
 
         $columns = array_map(function($token) {
             $segments = explode('=', $token['base_expr']);

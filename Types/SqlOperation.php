@@ -18,8 +18,6 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
-
 /**
  * SqlOperation type
  *
@@ -37,7 +35,7 @@ class SqlOperation {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+        HashMap::assert($tokens, 'tokens');
 
         return strtolower(array_keys($tokens)[0]);
     }
