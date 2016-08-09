@@ -18,6 +18,8 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Exceptions\InvalidAuthStrategyException;
 use Circle\DoctrineRestDriver\Formatters\Formatter;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
@@ -42,6 +44,19 @@ class Format {
         $className      = preg_match('/\\\\/', $formatterClass) ? $formatterClass : 'Circle\DoctrineRestDriver\Formatters\\' . $formatterClass;
         Assertions::assertClassExists($className);
 
-        return Assertions::assertFormatter(new $className($options));
+        return self::assert(new $className($options));
+    }
+
+    /**
+     * Checks if the given instance is instanceof Formatter
+     *
+     * @param  object $instance
+     * @return null
+     * @throws InvalidAuthStrategyException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function assert($instance) {
+        return !$instance instanceof Formatter ? Exceptions::invalidFormatException(get_class($instance)) : $instance;
     }
 }

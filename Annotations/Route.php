@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver\Annotations;
 
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Types\Url;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -62,7 +63,7 @@ trait Route {
     public function __construct(array $values) {
         $settings = new ArrayCollection($values);
 
-        $this->route      = Assertions::assertUrl('value', $settings->get('value'));
+        $this->route      = Url::assert($settings->get('value'), 'value');
         $this->statusCode = Assertions::assertMaybeInt('statusCode', $settings->get('statusCode'));
         $this->method     = Assertions::assertMaybeString('method', $settings->get('method'));
         $this->options    = Assertions::assertMaybeList('options', $settings->get('options'));

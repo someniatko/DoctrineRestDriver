@@ -51,4 +51,16 @@ class AuthenticationTest extends \PHPUnit_Framework_TestCase {
     public function createWithOptions() {
         $this->assertInstanceOf('Circle\DoctrineRestDriver\Security\HttpAuthentication', Authentication::create(['driverOptions' => ['authenticator_class' => 'HttpAuthentication']]));
     }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assert
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function assert() {
+        $authStrategy = $this->getMockBuilder('Circle\DoctrineRestDriver\Security\HttpAuthentication')->disableOriginalConstructor()->getMock();
+        $this->assertSame($authStrategy, Authentication::assert($authStrategy));
+    }
 }

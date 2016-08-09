@@ -107,56 +107,6 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      * @group  unit
-     * @covers ::isUrl
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function isUrlTest() {
-        $this->assertTrue(Assertions::isUrl('http://www.circle.ai'));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::isUrl
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function isUrlLocalhostTest() {
-        $this->assertTrue(Assertions::isUrl('http://localhost:3000'));
-        $this->assertTrue(Assertions::isUrl('http://localhost:3000/api?filter=true'));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::isUrl
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function isNoUrlTest() {
-        $this->assertFalse(Assertions::isUrl('http:/localhost:3000'));
-        $this->assertFalse(Assertions::isUrl('localhost:3000'));
-        $this->assertFalse(Assertions::isUrl('www.circle.ai'));
-        $this->assertFalse(Assertions::isUrl('noUrl'));
-        $this->assertFalse(Assertions::isUrl(1));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertAuthStrategy
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertAuthStrategy() {
-        $authStrategy = $this->getMockBuilder('Circle\DoctrineRestDriver\Security\HttpAuthentication')->disableOriginalConstructor()->getMock();
-        $this->assertSame($authStrategy, Assertions::assertAuthStrategy($authStrategy));
-    }
-
-    /**
-     * @test
-     * @group  unit
      * @covers ::assertMaybeList
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
@@ -224,43 +174,5 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function assertMaybeIntOnException() {
         Assertions::assertMaybeInt('float', 3.2);
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertUrl
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertUrl() {
-        $this->assertSame('http://www.test.com', Assertions::assertUrl('Url', 'http://www.test.com'));
-        $this->assertSame('http://www.test.com?filter=1', Assertions::assertUrl('Url', 'http://www.test.com?filter=1'));
-        $this->assertSame('http://circle.ai', Assertions::assertUrl('Url', 'http://circle.ai'));
-        $this->assertSame('http://circle.ai/test?test=test', Assertions::assertUrl('Url', 'http://circle.ai/test?test=test'));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertUrl
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     * @expectedException \Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException
-     */
-    public function assertUrlOnException() {
-        Assertions::assertUrl('Url', 'localhost:3000');
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertFormatter
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertFormatter() {
-        $formatter = $this->getMockBuilder('Circle\DoctrineRestDriver\Formatters\Formatter')->getMock();
-        $this->assertSame($formatter, Assertions::assertFormatter($formatter));
     }
 }

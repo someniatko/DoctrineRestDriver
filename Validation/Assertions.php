@@ -34,7 +34,6 @@ use Prophecy\Exception\Doubler\ClassNotFoundException;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @SuppressWarnings("PHPMD.StaticAccess")
- * @SuppressWarnings("PHPMD.TooManyPublicMethods")
  */
 class Assertions {
 
@@ -108,7 +107,7 @@ class Assertions {
      *
      * @param  string $varName
      * @param  mixed  $value
-     * @return void
+     * @return mixed
      * @throws InvalidTypeException
      */
     public static function assertHashMap($varName, $value) {
@@ -123,7 +122,7 @@ class Assertions {
      *
      * @param  string $varName
      * @param  mixed  $value
-     * @return void
+     * @return mixed
      * @throws InvalidTypeException
      */
     public static function assertHashMapEntry($varName, $value) {
@@ -141,7 +140,7 @@ class Assertions {
      * @param  string $varName
      * @param  array  $hashMap
      * @param  string $entryName
-     * @return null
+     * @return array
      * @throws InvalidTypeException
      */
     public static function assertHashMapEntryExists($varName, $hashMap, $entryName) {
@@ -150,32 +149,10 @@ class Assertions {
     }
 
     /**
-     * Asserts if the given value is an url
-     *
-     * @param  string $varName
-     * @param  mixed  $value
-     * @return string
-     * @throws InvalidTypeException
-     */
-    public static function assertUrl($varName, $value) {
-        return !self::isUrl($value) ? Exceptions::InvalidTypeException('Url', $varName, $value) : $value;
-    }
-
-    /**
-     * Checks if the given value is a url
-     *
-     * @param  mixed $value
-     * @return bool
-     */
-    public static function isUrl($value) {
-        return (bool) (preg_match('/^(http|ftp|https):\/\/([0-9a-zA-Z_-]+(\.[0-9a-zA-Z_-]+)+|localhost)([0-9a-zA-Z_\-.,@?^=%&amp;:\/~+#-]*[0-9a-zA-Z_\-@?^=%&amp;\/~+#-])?/', $value));
-    }
-
-    /**
      * Checks if the given fetch mode is supported
      *
-     * @param  int  $fetchMode
-     * @return null
+     * @param  int $fetchMode
+     * @return int
      * @throws UnsupportedFetchModeException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
@@ -187,33 +164,11 @@ class Assertions {
     /**
      * Checks if the given class exists
      *
-     * @param  string     $className
-     * @return void
+     * @param  string $className
+     * @return string
      * @throws ClassNotFoundException
      */
     public static function assertClassExists($className) {
         if (!empty($className) && !class_exists($className)) throw new ClassNotFoundException('Class not found', $className);
-    }
-
-    /**
-     * Checks if the given instance is instanceof AuthStrategy
-     *
-     * @param  object $instance
-     * @return null
-     * @throws InvalidAuthStrategyException
-     */
-    public static function assertAuthStrategy($instance) {
-        return !$instance instanceof AuthStrategy ? Exceptions::invalidAuthStrategyException(get_class($instance)) : $instance;
-    }
-
-    /**
-     * Checks if the given instance is instanceof Formatter
-     *
-     * @param  object $instance
-     * @return null
-     * @throws InvalidAuthStrategyException
-     */
-    public static function assertFormatter($instance) {
-        return !$instance instanceof Formatter ? Exceptions::invalidFormatException(get_class($instance)) : $instance;
     }
 }

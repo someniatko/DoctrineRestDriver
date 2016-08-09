@@ -51,4 +51,16 @@ class FormatTest extends \PHPUnit_Framework_TestCase {
     public function createWithOptions() {
         $this->assertInstanceOf('Circle\DoctrineRestDriver\Formatters\Json', Format::create(['driverOptions' => ['format' => 'json']]));
     }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::assert
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function assert() {
+        $formatter = $this->getMockBuilder('Circle\DoctrineRestDriver\Formatters\Formatter')->getMock();
+        $this->assertSame($formatter, Format::assert($formatter));
+    }
 }

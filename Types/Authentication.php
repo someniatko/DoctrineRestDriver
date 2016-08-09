@@ -18,6 +18,8 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Exceptions\InvalidAuthStrategyException;
 use Circle\DoctrineRestDriver\Security\AuthStrategy;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
@@ -42,6 +44,19 @@ class Authentication {
         $className          = preg_match('/\\\\/', $authenticatorClass) ? $authenticatorClass : 'Circle\DoctrineRestDriver\Security\\' . $authenticatorClass;
         Assertions::assertClassExists($className);
 
-        return Assertions::assertAuthStrategy(new $className($options));
+        return self::assert(new $className($options));
+    }
+
+    /**
+     * Checks if the given instance is instanceof AuthStrategy
+     *
+     * @param  object $instance
+     * @return null
+     * @throws InvalidAuthStrategyException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function assert($instance) {
+        return !$instance instanceof AuthStrategy ? Exceptions::invalidAuthStrategyException(get_class($instance)) : $instance;
     }
 }

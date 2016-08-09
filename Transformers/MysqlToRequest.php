@@ -26,6 +26,7 @@ use Circle\DoctrineRestDriver\Types\Id;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\SqlOperation;
 use Circle\DoctrineRestDriver\Types\Table;
+use Circle\DoctrineRestDriver\Types\Url;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 use PHPSQLParser\PHPSQLParser;
 
@@ -86,7 +87,7 @@ class MysqlToRequest {
 
         $queryParts       = explode(' ', $query);
         $transformedQuery = array_reduce($queryParts, function($carry, $part) {
-            return $carry . (Assertions::isUrl($part) ? ('"' . $part . '" ') : ($part . ' '));
+            return $carry . (Url::is($part) ? ('"' . $part . '" ') : ($part . ' '));
         });
 
         $tokens     = $this->parser->parse($transformedQuery);
