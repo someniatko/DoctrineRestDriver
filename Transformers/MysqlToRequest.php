@@ -25,6 +25,7 @@ use Circle\DoctrineRestDriver\Types\Annotation;
 use Circle\DoctrineRestDriver\Types\Id;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\SqlOperation;
+use Circle\DoctrineRestDriver\Types\SqlQuery;
 use Circle\DoctrineRestDriver\Types\Table;
 use Circle\DoctrineRestDriver\Types\Url;
 use Circle\DoctrineRestDriver\Validation\Assertions;
@@ -75,22 +76,12 @@ class MysqlToRequest {
      * Transforms the given query into a request object
      *
      * @param  string $query
-     * @param  array  $params
      * @return Request
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function transform($query, array $params = []) {
-        $query = array_reduce($params, function($query, $param) {
-            return strpos($query, '?') ? substr_replace($query, $param, strpos($query, '?'), strlen('?')) : $query;
-        }, $query);
-
-        $queryParts       = explode(' ', $query);
-        $transformedQuery = array_reduce($queryParts, function($carry, $part) {
-            return $carry . (Url::is($part) ? ('"' . $part . '" ') : ($part . ' '));
-        });
-
-        $tokens     = $this->parser->parse($transformedQuery);
+    public function transform($query) {
+        $tokens     = $this->parser->parse($query);
         $method     = HttpMethods::ofSqlOperation(SqlOperation::create($tokens));
         $annotation = Annotation::get($this->routings, Table::create($tokens), $method);
 

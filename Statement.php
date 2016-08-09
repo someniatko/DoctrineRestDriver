@@ -27,6 +27,7 @@ use Circle\DoctrineRestDriver\Types\Authentication;
 use Circle\DoctrineRestDriver\Types\Format;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\Result;
+use Circle\DoctrineRestDriver\Types\SqlQuery;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -159,12 +160,13 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function execute($params = null) {
-        $rawRequest = $this->mysqlToRequest->transform($this->query, $this->params);
-        $request    = $this->authStrategy->transformRequest($rawRequest);
+        $transformedQuery = SqlQuery::quoteUrl(SqlQuery::setParams($this->query, $params !== null ? $params : $this->params));
+        $rawRequest       = $this->mysqlToRequest->transform($transformedQuery);
+        $request          = $this->authStrategy->transformRequest($rawRequest);
 
         $response = $this->restClient->send($request);
 
-        $this->result = Result::create($this->query, $this->formatter->decode($response->getContent()));
+        $this->result = Result::create($transformedQuery, $this->formatter->decode($response->getContent()));
         $this->id     = !empty($this->result['id']) ? $this->result['id'] : null;
         krsort($this->result);
 
