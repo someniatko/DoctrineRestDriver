@@ -28,7 +28,7 @@ use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Prophecy\Exception\Doubler\ClassNotFoundException;
 
 /**
- * Trait including assertions
+ * Assertions
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -43,11 +43,11 @@ class Assertions {
      *
      * @param  string $varName
      * @param  mixed  $value
-     * @return null
+     * @return mixed
      * @throws NotNilException
      */
     public static function assertNotNil($varName, $value) {
-        return $value === null ? Exceptions::NotNilException($varName) : null;
+        return $value === null ? Exceptions::NotNilException($varName) : $value;
     }
 
     /**
@@ -55,13 +55,13 @@ class Assertions {
      *
      * @param  string $varName
      * @param  mixed  $value
-     * @return null
+     * @return mixed
      * @throws InvalidTypeException
      * @throws NotNilException
      */
     public static function assertString($varName, $value) {
         self::assertNotNil($varName, $value);
-        return !is_string($value) ? Exceptions::InvalidTypeException('string', $varName, $value) : null;
+        return !is_string($value) ? Exceptions::InvalidTypeException('string', $varName, $value) : $value;
     }
 
     /**
@@ -114,6 +114,8 @@ class Assertions {
     public static function assertHashMap($varName, $value) {
         if(!is_array($value)) return Exceptions::InvalidTypeException('HashMap', $varName, $value);
         foreach($value as $key => $v) self::assertHashMapEntry($varName, [$key => $v]);
+
+        return $value;
     }
 
     /**
@@ -144,7 +146,7 @@ class Assertions {
      */
     public static function assertHashMapEntryExists($varName, $hashMap, $entryName) {
         self::assertHashMap($varName, $hashMap);
-        return array_key_exists($entryName, $hashMap) ? null : Exceptions::InvalidTypeException('HashMapEntry', $varName . '[\'' . $entryName . '\']', 'undefined');
+        return array_key_exists($entryName, $hashMap) ? $hashMap : Exceptions::InvalidTypeException('HashMapEntry', $varName . '[\'' . $entryName . '\']', 'undefined');
     }
 
     /**
@@ -179,7 +181,7 @@ class Assertions {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function assertSupportedFetchMode($fetchMode) {
-        return $fetchMode !== \PDO::FETCH_ASSOC ? Exceptions::UnsupportedFetchModeException($fetchMode) : null;
+        return $fetchMode !== \PDO::FETCH_ASSOC ? Exceptions::UnsupportedFetchModeException($fetchMode) : $fetchMode;
     }
 
     /**
@@ -201,7 +203,7 @@ class Assertions {
      * @throws InvalidAuthStrategyException
      */
     public static function assertAuthStrategy($instance) {
-        return !$instance instanceof AuthStrategy ? Exceptions::invalidAuthStrategyException(get_class($instance)) : null;
+        return !$instance instanceof AuthStrategy ? Exceptions::invalidAuthStrategyException(get_class($instance)) : $instance;
     }
 
     /**
@@ -212,6 +214,6 @@ class Assertions {
      * @throws InvalidAuthStrategyException
      */
     public static function assertFormatter($instance) {
-        return !$instance instanceof Formatter ? Exceptions::invalidFormatException(get_class($instance)) : null;
+        return !$instance instanceof Formatter ? Exceptions::invalidFormatException(get_class($instance)) : $instance;
     }
 }

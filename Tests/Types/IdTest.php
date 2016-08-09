@@ -72,4 +72,34 @@ class IdTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame('id', Id::alias($tokens));
     }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::column
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function column() {
+        $parser = new PHPSQLParser();
+        $tokens = $parser->parse('SELECT name FROM products WHERE id=1');
+
+        $metaDataEntry = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadataInfo')->disableOriginalConstructor()->getMock();
+        $metaDataEntry
+            ->expects($this->once())
+            ->method('getTableName')
+            ->will($this->returnValue('products'));
+        $metaDataEntry
+            ->expects($this->once())
+            ->method('getIdentifierColumnNames')
+            ->will($this->returnValue(['testId']));
+
+        $metaData = $this->getMockBuilder('Circle\DoctrineRestDriver\MetaData')->disableOriginalConstructor()->getMock();
+        $metaData
+            ->expects($this->once())
+            ->method('get')
+            ->will($this->returnValue([$metaDataEntry]));
+
+        $this->assertSame('testId', Id::column($tokens, $metaData));
+    }
 }

@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\MetaData;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
@@ -59,7 +60,29 @@ class Id {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function alias(array $tokens) {
+        $column     = self::column($tokens, new MetaData());
         $tableAlias = Table::alias($tokens);
-        return empty($tableAlias) ? 'id' : $tableAlias . '.id';
+
+        return empty($tableAlias) ? $column : $tableAlias . '.' . $column;
+    }
+
+    /**
+     * returns the column of the id
+     *
+     * @param  array    $tokens
+     * @param  MetaData $metaData
+     * @return string
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function column(array $tokens, MetaData $metaData) {
+        $table = Table::create($tokens);
+        $meta  = array_filter($metaData->get(), function($meta) use ($table) {
+            return $meta->getTableName() === $table;
+        });
+
+        $idColumns  = !empty($meta) ? end($meta)->getIdentifierColumnNames() : [];
+
+        return !empty($idColumns) ? end($idColumns) : 'id';
     }
 }

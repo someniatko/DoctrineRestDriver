@@ -18,7 +18,6 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Validation;
 
-use Circle\DoctrineRestDriver\Security\HttpAuthentication;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
@@ -40,7 +39,7 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function assertNotNilTest() {
-        $this->assertSame(null, Assertions::assertNotNil('test', 'test'));
+        $this->assertSame('test', Assertions::assertNotNil('test', 'test'));
     }
 
     /**
@@ -51,7 +50,7 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function assertStringTest() {
-        $this->assertSame(null, Assertions::assertString('test', 'test'));
+        $this->assertSame('test', Assertions::assertString('test', 'test'));
     }
 
     /**
@@ -63,9 +62,10 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function assertHashMapTest() {
-        $this->assertSame(null, Assertions::assertHashMap('test', [
+        $hashMap = [
             'test' => 'test'
-        ]));
+        ];
+        $this->assertSame($hashMap, Assertions::assertHashMap('test', $hashMap));
     }
 
     /**
@@ -76,9 +76,10 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function assertHashMapEntryExistsTest() {
-        $this->assertSame(null, Assertions::assertHashMapEntryExists('test', [
+        $hashMap = [
             'test' => 'test'
-        ], 'test'));
+        ];
+        $this->assertSame($hashMap, Assertions::assertHashMapEntryExists('test', $hashMap, 'test'));
     }
 
     /**
@@ -100,7 +101,7 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function assertSupportedFetchModeTest() {
-        $this->assertSame(null, Assertions::assertSupportedFetchMode(\PDO::FETCH_ASSOC));
+        $this->assertSame(\PDO::FETCH_ASSOC, Assertions::assertSupportedFetchMode(\PDO::FETCH_ASSOC));
     }
 
     /**
@@ -149,7 +150,8 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function assertAuthStrategy() {
-        $this->assertSame(null, Assertions::assertAuthStrategy(new HttpAuthentication([])));
+        $authStrategy = $this->getMockBuilder('Circle\DoctrineRestDriver\Security\HttpAuthentication')->disableOriginalConstructor()->getMock();
+        $this->assertSame($authStrategy, Assertions::assertAuthStrategy($authStrategy));
     }
 
     /**
@@ -259,6 +261,6 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      */
     public function assertFormatter() {
         $formatter = $this->getMockBuilder('Circle\DoctrineRestDriver\Formatters\Formatter')->getMock();
-        $this->assertSame(null, Assertions::assertFormatter($formatter));
+        $this->assertSame($formatter, Assertions::assertFormatter($formatter));
     }
 }

@@ -41,9 +41,7 @@ class Authentication {
         $authenticatorClass = !empty($options['driverOptions']['authenticator_class']) ? $options['driverOptions']['authenticator_class'] : 'NoAuthentication';
         $className          = preg_match('/\\\\/', $authenticatorClass) ? $authenticatorClass : 'Circle\DoctrineRestDriver\Security\\' . $authenticatorClass;
         Assertions::assertClassExists($className);
-        $authStrategy = new $className($options);
-        Assertions::assertAuthStrategy($authStrategy);
 
-        return $authStrategy;
+        return Assertions::assertAuthStrategy(new $className($options));
     }
 }

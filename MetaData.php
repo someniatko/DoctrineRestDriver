@@ -29,14 +29,26 @@ use Doctrine\Common\Persistence\ObjectManager;
 class MetaData {
 
     /**
+     * @var ObjectManager
+     */
+    private $em;
+
+    /**
+     * MetaData constructor
+     */
+    public function __construct() {
+        $this->em = array_filter(debug_backtrace(), function($trace) {
+            return isset($trace['object']) && $trace['object'] instanceof ObjectManager;
+        });
+    }
+
+    /**
      * returns all namespaces of managed entities
      *
      * @return array
      */
     public function getEntityNamespaces() {
-        $meta = $this->getMetaData(debug_backtrace());
-
-        return array_reduce($meta, function($carry, $item) {
+        return array_reduce($this->get(), function($carry, $item) {
             $carry[$item->table['name']] = $item->getName();
             return $carry;
         }, []);
@@ -45,14 +57,9 @@ class MetaData {
     /**
      * returns all entity meta data if existing
      *
-     * @param  array $traces
      * @return array
      */
-    private function getMetaData(array $traces) {
-        $em = array_filter($traces, function($trace) {
-            return isset($trace['object']) && $trace['object'] instanceof ObjectManager;
-        });
-
-        return empty($em) ? [] : array_pop($em)['object']->getMetaDataFactory()->getAllMetaData();
+    public function get() {
+        return empty($this->em) ? [] : array_pop($this->em)['object']->getMetaDataFactory()->getAllMetaData();
     }
 }

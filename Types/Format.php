@@ -41,9 +41,7 @@ class Format {
         $formatterClass = ucfirst(!empty($options['driverOptions']['format']) ? $options['driverOptions']['format'] : 'json');
         $className      = preg_match('/\\\\/', $formatterClass) ? $formatterClass : 'Circle\DoctrineRestDriver\Formatters\\' . $formatterClass;
         Assertions::assertClassExists($className);
-        $formatter = new $className($options);
-        Assertions::assertFormatter($formatter);
 
-        return $formatter;
+        return Assertions::assertFormatter(new $className($options));
     }
 }
