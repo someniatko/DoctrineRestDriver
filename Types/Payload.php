@@ -21,7 +21,7 @@ namespace Circle\DoctrineRestDriver\Types;
 use Circle\DoctrineRestDriver\Enums\SqlOperations;
 
 /**
- * Payload type: Union type for UpdatePayload and InsertPayload
+ * Payload type: Union type for InsertChangeSet and InsertChangeSet
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -29,7 +29,7 @@ use Circle\DoctrineRestDriver\Enums\SqlOperations;
 class Payload {
 
     /**
-     * Returns an InsertPayload::create or UpdatePayload::create
+     * Returns an InsertChangeSet::create or InsertChangeSet::create
      * result or null depending on the given tokens array
      *
      * @param  array       $tokens
@@ -45,6 +45,6 @@ class Payload {
         $operation = SqlOperation::create($tokens);
 
         if ($operation === SqlOperations::SELECT || $operation === SqlOperations::DELETE) return null;
-        return $format->encode($operation === SqlOperations::INSERT ? InsertPayload::create($tokens) : UpdatePayload::create($tokens));
+        return $format->encode($operation === SqlOperations::INSERT ? InsertChangeSet::create($tokens) : UpdateChangeSet::create($tokens));
     }
 }

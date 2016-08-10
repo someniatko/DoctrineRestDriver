@@ -27,7 +27,7 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class Id {
+class Identifier {
 
     /**
      * Returns the id in the WHERE clause if exists

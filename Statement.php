@@ -19,20 +19,16 @@
 namespace Circle\DoctrineRestDriver;
 
 use Circle\DoctrineRestDriver\Annotations\RoutingTable;
-use Circle\DoctrineRestDriver\Enums\HttpMethods;
+use Circle\DoctrineRestDriver\Exceptions\DoctrineRestDriverException;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Circle\DoctrineRestDriver\Exceptions\RequestFailedException;
 use Circle\DoctrineRestDriver\Security\AuthStrategy;
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
 use Circle\DoctrineRestDriver\Types\Authentication;
-use Circle\DoctrineRestDriver\Types\Format;
-use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\Result;
 use Circle\DoctrineRestDriver\Types\SqlQuery;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Circle\DoctrineRestDriver\Formatters\Formatter;
 
 /**
  * Executes the statement - sends requests to an api
@@ -100,9 +96,9 @@ class Statement implements \IteratorAggregate, StatementInterface {
     private $routings;
 
     /**
-     * @var Formatter
+     * @var array
      */
-    private $formatter;
+    private $options;
 
     /**
      * Statement constructor
@@ -115,13 +111,13 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct($query, array $options, RoutingTable $routings) {
-        $this->query          = $query;
+        $this->query          = SqlQuery::quoteUrl($query);
         $this->routings       = $routings;
         $this->mysqlToRequest = new MysqlToRequest($options, $this->routings);
         $this->restClient     = new RestClient();
 
         $this->authStrategy = Authentication::create($options);
-        $this->formatter    = Format::create($options);
+        $this->options      = $options;
     }
 
     /**
@@ -162,17 +158,22 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function execute($params = null) {
-        $transformedQuery = SqlQuery::quoteUrl(SqlQuery::setParams($this->query, $params !== null ? $params : $this->params));
-        $rawRequest       = $this->mysqlToRequest->transform($transformedQuery);
-        $request          = $this->authStrategy->transformRequest($rawRequest);
+        $query   = SqlQuery::setParams($this->query, $params !== null ? $params : $this->params);
+        $request = $this->authStrategy->transformRequest($this->mysqlToRequest->transform($query));
 
-        $response = $this->restClient->send($request);
-        $result   = new Result($transformedQuery, $this->formatter->decode($response->getContent()));
+        try {
+            $response     = $this->restClient->send($request);
+            $result       = new Result($query, $response, $this->options);
+            $this->result = $result->get();
+            $this->id     = $result->id();
 
-        $this->result = $result->get();
-        $this->id     = $result->id();
-
-        return true;
+            return true;
+        } catch(RequestFailedException $e) {
+            // as the error handling proposed by doctrine
+            // does not work, we use the way of PDO_mysql
+            // which just throws the possible errors
+            throw new DoctrineRestDriverException($e->getMessage(), $e->getCode());
+        }
     }
 
     /**

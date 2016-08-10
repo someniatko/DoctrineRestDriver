@@ -67,7 +67,7 @@ class Url {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function createFromTokens(array $tokens, $apiUrl, DataSource $annotation = null) {
-        $id    = Id::create($tokens);
+        $id    = Identifier::create($tokens);
         $route = empty($annotation) || $annotation->getRoute() === null ? Table::create($tokens) : $annotation->getRoute();
 
         return self::create($route, $apiUrl, $id);

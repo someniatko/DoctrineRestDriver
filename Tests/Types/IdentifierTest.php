@@ -18,18 +18,18 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\Id;
+use Circle\DoctrineRestDriver\Types\Identifier;
 use PHPSQLParser\PHPSQLParser;
 
 /**
- * Tests the id type
+ * Tests the identifier type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\Id
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\Identifier
  */
-class IdTest extends \PHPUnit_Framework_TestCase {
+class IdentifierTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
@@ -42,7 +42,7 @@ class IdTest extends \PHPUnit_Framework_TestCase {
         $parser = new PHPSQLParser();
         $tokens = $parser->parse('SELECT name FROM products WHERE id=1');
 
-        $this->assertSame('1', Id::create($tokens));
+        $this->assertSame('1', Identifier::create($tokens));
     }
 
     /**
@@ -56,7 +56,7 @@ class IdTest extends \PHPUnit_Framework_TestCase {
         $parser = new PHPSQLParser();
         $tokens = $parser->parse('SELECT name FROM products WHERE name="test"');
 
-        $this->assertSame('', Id::create($tokens));
+        $this->assertSame('', Identifier::create($tokens));
     }
 
     /**
@@ -70,7 +70,7 @@ class IdTest extends \PHPUnit_Framework_TestCase {
         $parser = new PHPSQLParser();
         $tokens = $parser->parse('SELECT name FROM products WHERE id=1');
 
-        $this->assertSame('id', Id::alias($tokens));
+        $this->assertSame('id', Identifier::alias($tokens));
     }
 
     /**
@@ -100,6 +100,6 @@ class IdTest extends \PHPUnit_Framework_TestCase {
             ->method('get')
             ->will($this->returnValue([$metaDataEntry]));
 
-        $this->assertSame('testId', Id::column($tokens, $metaData));
+        $this->assertSame('testId', Identifier::column($tokens, $metaData));
     }
 }

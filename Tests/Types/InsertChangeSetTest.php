@@ -18,19 +18,18 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
-use Circle\DoctrineRestDriver\Types\Id;
-use Circle\DoctrineRestDriver\Types\InsertPayload;
+use Circle\DoctrineRestDriver\Types\InsertChangeSet;
 use PHPSQLParser\PHPSQLParser;
 
 /**
- * Tests the insert payload type
+ * Tests the insert change set type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\InsertPayload
+ * @coversDefaultClass Circle\DoctrineRestDriver\Types\InsertChangeSet
  */
-class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
+class InsertChangeSetTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
@@ -48,7 +47,7 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
             'value' => 'testvalue',
         ];
 
-        $this->assertSame($expected, InsertPayload::create($tokens));
+        $this->assertSame($expected, InsertChangeSet::create($tokens));
     }
 
     /**
@@ -67,7 +66,7 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
             'value' => 'testvalue',
         ];
 
-        $this->assertSame($expected, InsertPayload::create($tokens));
+        $this->assertSame($expected, InsertChangeSet::create($tokens));
     }
 
     /**
@@ -86,7 +85,7 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
             'value' => 1,
         ];
 
-        $this->assertSame($expected, InsertPayload::create($tokens));
+        $this->assertSame($expected, InsertChangeSet::create($tokens));
     }
 
     /**
@@ -101,7 +100,7 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
         $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES (testname, testvalue)');
         $expected = ['testname', 'testvalue'];
 
-        $this->assertEquals($expected, InsertPayload::values($tokens));
+        $this->assertEquals($expected, InsertChangeSet::values($tokens));
     }
 
     /**
@@ -116,6 +115,6 @@ class InsertPayloadTest extends \PHPUnit_Framework_TestCase {
         $tokens   = $parser->parse('INSERT INTO products (name, value) VALUES (testname, testvalue)');
         $expected = ['name', 'value'];
 
-        $this->assertEquals($expected, InsertPayload::columns($tokens));
+        $this->assertEquals($expected, InsertChangeSet::columns($tokens));
     }
 }

@@ -17,9 +17,11 @@
  */
 
 namespace Circle\DoctrineRestDriver\Types;
+
 use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\MetaData;
 use PHPSQLParser\PHPSQLParser;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Maps the response content of any query to a valid
@@ -43,11 +45,16 @@ class Result {
     /**
      * Result constructor
      *
-     * @param string $query
-     * @param array  $content
+     * @param string   $query
+     * @param Response $response
+     * @param array    $options
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function __construct($query, array $content = null) {
-        $tokens       = (new PHPSQLParser())->parse($query);
+    public function __construct($query, Response $response, array $options = []) {
+        $tokens  = (new PHPSQLParser())->parse($query);
+        $content = Format::create($options)->decode($response->getContent());
+
         $this->result = $this->createResult($tokens, $content);
         $this->id     = $this->createId($tokens);
     }
@@ -77,7 +84,7 @@ class Result {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     private function createId(array $tokens) {
-        $idColumn = Id::column($tokens, new MetaData());
+        $idColumn = Identifier::column($tokens, new MetaData());
         return empty($this->result[$idColumn]) ? null : $this->result[$idColumn];
     }
 

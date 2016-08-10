@@ -19,12 +19,12 @@
 namespace Circle\DoctrineRestDriver\Types;
 
 /**
- * InsertPayload type
+ * InsertChangeSet type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class InsertPayload {
+class InsertChangeSet {
 
     /**
      * Converts the string with format (key) VALUES (value)

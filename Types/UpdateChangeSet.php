@@ -16,36 +16,38 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Types;
-
-use Circle\DoctrineRestDriver\Types\UpdatePayload;
-use PHPSQLParser\PHPSQLParser;
+namespace Circle\DoctrineRestDriver\Types;
 
 /**
- * Tests the UpdatePayload type
+ * UpdateChangeSet type
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\UpdatePayload
  */
-class UpdatePayloadTest extends \PHPUnit_Framework_TestCase {
+class UpdateChangeSet {
 
     /**
-     * @test
-     * @group  unit
-     * @covers ::create
+     * Converts the string with format key="value",[key2="value2",]*
+     * into json
+     *
+     * @param  array $tokens
+     * @return string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('UPDATE products set name="testname", value="testvalue" WHERE id=1');
-        $expected = [
-            'name'  => 'testname',
-            'value' => 'testvalue',
-        ];
+    public static function create(array $tokens) {
+        HashMap::assert($tokens, 'tokens');
 
-        $this->assertSame($expected, UpdatePayload::create($tokens));
+        $columns = array_map(function($token) {
+            $segments = explode('=', $token['base_expr']);
+            return $segments[0];
+        }, $tokens['SET']);
+
+        $values = array_map(function($token) {
+            $segments = explode('=', $token['base_expr']);
+            return Value::create($segments[1]);
+        }, $tokens['SET']);
+
+        return array_combine($columns, $values);
     }
 }
