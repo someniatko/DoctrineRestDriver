@@ -21,6 +21,7 @@ namespace Circle\DoctrineRestDriver;
 use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Exceptions\Exceptions;
+use Circle\DoctrineRestDriver\Exceptions\RequestFailedException;
 use Circle\DoctrineRestDriver\Security\AuthStrategy;
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
 use Circle\DoctrineRestDriver\Types\Authentication;
@@ -114,10 +115,10 @@ class Statement implements \IteratorAggregate, StatementInterface {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct($query, array $options, RoutingTable $routings) {
-        $this->query             = $query;
-        $this->routings          = $routings;
-        $this->mysqlToRequest    = new MysqlToRequest($options, $this->routings);
-        $this->restClient        = new RestClient();
+        $this->query          = $query;
+        $this->routings       = $routings;
+        $this->mysqlToRequest = new MysqlToRequest($options, $this->routings);
+        $this->restClient     = new RestClient();
 
         $this->authStrategy = Authentication::create($options);
         $this->formatter    = Format::create($options);
@@ -156,6 +157,7 @@ class Statement implements \IteratorAggregate, StatementInterface {
 
     /**
      * {@inheritdoc}
+     * @throws RequestFailedException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
@@ -165,10 +167,10 @@ class Statement implements \IteratorAggregate, StatementInterface {
         $request          = $this->authStrategy->transformRequest($rawRequest);
 
         $response = $this->restClient->send($request);
+        $result   = new Result($transformedQuery, $this->formatter->decode($response->getContent()));
 
-        $this->result = Result::create($transformedQuery, $this->formatter->decode($response->getContent()));
-        $this->id     = !empty($this->result['id']) ? $this->result['id'] : null;
-        krsort($this->result);
+        $this->result = $result->get();
+        $this->id     = $result->id();
 
         return true;
     }

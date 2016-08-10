@@ -43,8 +43,9 @@ class Value {
         if (empty($value)) return null;
 
         $unquoted = preg_replace('/\"|\\\'|\`$/', '', preg_replace('/^\"|\\\'|\`/', '', $value));
-        if (!is_numeric($unquoted)) return $unquoted;
+        if (!is_numeric($unquoted))                   return $unquoted;
+        if ((string) intval($unquoted) === $unquoted) return intval($unquoted);
 
-        return ((string) intval($unquoted) === $unquoted) ? intval($unquoted) : floatval($unquoted);
+        return floatval($unquoted);
     }
 }

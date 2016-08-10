@@ -41,10 +41,10 @@ class Payload {
     public static function create(array $tokens, array $options) {
         HashMap::assert($tokens, 'tokens');
 
-        $formatter = Format::create($options);
+        $format    = Format::create($options);
         $operation = SqlOperation::create($tokens);
 
         if ($operation === SqlOperations::SELECT || $operation === SqlOperations::DELETE) return null;
-        return $formatter->encode($operation === SqlOperations::INSERT ? InsertPayload::create($tokens) : UpdatePayload::create($tokens));
+        return $format->encode($operation === SqlOperations::INSERT ? InsertPayload::create($tokens) : UpdatePayload::create($tokens));
     }
 }

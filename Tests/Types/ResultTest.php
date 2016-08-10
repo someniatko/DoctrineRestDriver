@@ -33,11 +33,12 @@ class ResultTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      * @group  unit
-     * @covers ::create
+     * @covers ::get
+     * @covers ::<private>
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createWithSelect() {
+    public function getWithSelect() {
         $content = [
             'name' => 'testname'
         ];
@@ -48,34 +49,36 @@ class ResultTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, Result::create('SELECT name FROM products WHERE id=1', $content));
+        $this->assertEquals($expected, (new Result('SELECT name FROM products WHERE id=1', $content))->get());
     }
 
     /**
      * @test
      * @group  unit
-     * @covers ::create
+     * @covers ::get
+     * @covers ::<private>
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createWithDelete() {
+    public function getWithDelete() {
         $content = [
             'name' => 'testname'
         ];
 
         $expected = [];
 
-        $this->assertEquals($expected, Result::create('DELETE FROM products WHERE id=1', $content));
+        $this->assertEquals($expected, (new Result('DELETE FROM products WHERE id=1', $content))->get());
     }
 
     /**
      * @test
      * @group  unit
-     * @covers ::create
+     * @covers ::get
+     * @covers ::<private>
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createWithInsert() {
+    public function getWithInsert() {
         $content = [
             'name' => 'testname'
         ];
@@ -84,17 +87,18 @@ class ResultTest extends \PHPUnit_Framework_TestCase {
             'name' => 'testname'
         ];
 
-        $this->assertEquals($expected, Result::create('INSERT INTO products (name) VALUES ("testname")', $content));
+        $this->assertEquals($expected, (new Result('INSERT INTO products (name) VALUES ("testname")', $content))->get());
     }
 
     /**
      * @test
      * @group  unit
-     * @covers ::create
+     * @covers ::get
+     * @covers ::<private>
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createWithUpdate() {
+    public function getWithUpdate() {
         $content = [
             'name' => 'testname'
         ];
@@ -103,6 +107,6 @@ class ResultTest extends \PHPUnit_Framework_TestCase {
             'name' => 'testname'
         ];
 
-        $this->assertEquals($expected, Result::create('UPDATE products SET name = "testname" WHERE id=1', $content));
+        $this->assertEquals($expected, (new Result('UPDATE products SET name = "testname" WHERE id=1', $content))->get());
     }
 }

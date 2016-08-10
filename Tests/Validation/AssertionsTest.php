@@ -27,7 +27,6 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @coversDefaultClass Circle\DoctrineRestDriver\Validation\Assertions
- * @SuppressWarnings("PHPMD.TooManyPublicMethods")
  */
 class AssertionsTest extends \PHPUnit_Framework_TestCase {
 

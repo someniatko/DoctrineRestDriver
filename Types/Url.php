@@ -49,10 +49,11 @@ class Url {
 
         $idPath = empty($id) ? '' : '/' . $id;
 
-        if (!self::is($route))      return $apiUrl . '/' . $route . $idPath;
+        if (!self::is($route))               return $apiUrl . '/' . $route . $idPath;
         if (!preg_match('/\{id\}/', $route)) return $route . $idPath;
+        if (!empty($id))                     return str_replace('{id}', $id, $route);
 
-        return !empty($id) ? str_replace('{id}', $id, $route) : str_replace('/{id}', '', $route);
+        return str_replace('/{id}', '', $route);
     }
 
     /**

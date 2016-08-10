@@ -87,7 +87,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectOne() {
-        $query  = 'SELECT name FROM products WHERE id = 1';
+        $query    = 'SELECT name FROM products WHERE id = 1';
         $expected = new Request([
             'method'      => 'get',
             'url'         => $this->apiUrl . '/products/1',
@@ -105,7 +105,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectOneBy() {
-        $query  = 'SELECT name FROM products WHERE id=1 AND name=myName';
+        $query    = 'SELECT name FROM products WHERE id=1 AND name=myName';
         $expected = new Request([
             'method'      => 'get',
             'url'         => $this->apiUrl . '/products/1',
@@ -124,7 +124,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectBy() {
-        $query  = 'SELECT name FROM products WHERE name=myName';
+        $query    = 'SELECT name FROM products WHERE name=myName';
         $expected = new Request([
             'method'      => 'get',
             'url'         => $this->apiUrl . '/products',
@@ -180,7 +180,6 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      */
     public function insert() {
         $query    = 'INSERT INTO products (name) VALUES ("myName")';
-
         $expected = new Request([
             'method'              => 'post',
             'url'                 => $this->apiUrl . '/products',
@@ -200,7 +199,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function update() {
-        $query  = 'UPDATE products SET name="myValue" WHERE id=1';
+        $query    = 'UPDATE products SET name="myValue" WHERE id=1';
         $expected = new Request([
             'method'      => 'put',
             'url'         => $this->apiUrl . '/products/1',
@@ -238,7 +237,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function delete() {
-        $query  = 'DELETE FROM products WHERE id=1';
+        $query    = 'DELETE FROM products WHERE id=1';
         $expected = new Request([
             'method'              => 'delete',
             'url'                 => $this->apiUrl . '/products/1',
@@ -258,7 +257,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @expectedException \Exception
      */
     public function brokenQuery() {
-        $query  = 'SHIT products WHERE dirt=1';
+        $query = 'SHIT products WHERE dirt=1';
         $this->mysqlToRequest->transform($query);
     }
 }
