@@ -18,48 +18,29 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Annotations\DataSource;
+use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Extracts id information from a sql token array
+ * Type for HTTP method
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  */
-class Id {
+class HttpMethod {
 
     /**
-     * Returns the id in the WHERE clause if exists
+     * Returns the right HTTP method
      *
-     * @param  array  $tokens
+     * @param  string     $method
+     * @param  DataSource $annotation
      * @return string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
-
-        if (empty($tokens['WHERE'])) return '';
-
-        $idAlias = self::alias($tokens);
-
-        return array_reduce($tokens['WHERE'], function($carry, $token) use ($tokens, $idAlias) {
-            if (!is_int($carry)) return $carry;
-            if ($token['expr_type'] === 'colref' && $token['base_expr'] === $idAlias) return $tokens['WHERE'][$carry+2]['base_expr'];
-            if (!isset($tokens[$carry+1])) return '';
-        }, 0);
-    }
-
-    /**
-     * Returns the id alias
-     *
-     * @param  array $tokens
-     * @return string
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public static function alias(array $tokens) {
-        $tableAlias = Table::alias($tokens);
-        return empty($tableAlias) ? 'id' : $tableAlias . '.id';
+    public static function create($method, DataSource $annotation = null) {
+        Str::assert($method, 'method');
+        return empty($annotation) || $annotation->getMethod() === null ? $method : $annotation->getMethod();
     }
 }

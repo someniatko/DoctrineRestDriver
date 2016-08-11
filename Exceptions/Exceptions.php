@@ -42,7 +42,7 @@ class Exceptions {
      * @throws InvalidTypeException
      */
     public static function InvalidTypeException($expectedType, $key, $value) {
-        throw new InvalidTypeException($expectedType, $key, $value);
+        throw new InvalidTypeException($expectedType, $key, is_array($value) ? serialize($value) : $value);
     }
 
     /**
@@ -83,6 +83,16 @@ class Exceptions {
      */
     public static function InvalidAuthStrategyException($class) {
         throw new InvalidAuthStrategyException($class);
+    }
+
+    /**
+     * throws an invalid format exception
+     *
+     * @param  string $class
+     * @throws InvalidFormatException
+     */
+    public static function InvalidFormatException($class) {
+        throw new InvalidFormatException($class);
     }
 
     /**

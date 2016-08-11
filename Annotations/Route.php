@@ -18,8 +18,11 @@
 
 namespace Circle\DoctrineRestDriver\Annotations;
 
-use Circle\DoctrineRestDriver\Exceptions\Exceptions;
-use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Types\MaybeInt;
+use Circle\DoctrineRestDriver\Types\MaybeList;
+use Circle\DoctrineRestDriver\Types\MaybeString;
+use Circle\DoctrineRestDriver\Types\Url;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Trait for all annotations regarding routes
@@ -37,6 +40,21 @@ trait Route {
     private $route;
 
     /**
+     * @var string
+     */
+    private $method;
+
+    /**
+     * @var int
+     */
+    private $statusCode;
+
+    /**
+     * @var array
+     */
+    private $options = [];
+
+    /**
      * Constructor
      *
      * @param array $values
@@ -44,9 +62,12 @@ trait Route {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct(array $values) {
-        $route = $values['value'];
-        if (!Assertions::isUrl($route)) return Exceptions::InvalidTypeException('Url', 'route', $route);
-        $this->route = $route;
+        $settings = new ArrayCollection($values);
+
+        $this->route      = Url::assert($settings->get('value'), 'value');
+        $this->statusCode = MaybeInt::assert($settings->get('statusCode'), 'statusCode');
+        $this->method     = MaybeString::assert($settings->get('method'), 'method');
+        $this->options    = MaybeList::assert($settings->get('options'), 'options');
     }
 
     /**
@@ -56,5 +77,32 @@ trait Route {
      */
     public function getRoute() {
         return $this->route;
+    }
+
+    /**
+     * returns the status code
+     *
+     * @return int|null
+     */
+    public function getStatusCode() {
+        return $this->statusCode;
+    }
+
+    /**
+     * returns the method
+     *
+     * @return string|null
+     */
+    public function getMethod() {
+        return $this->method;
+    }
+
+    /**
+     * returns the options
+     *
+     * @return array|null
+     */
+    public function getOptions() {
+        return $this->options;
     }
 }

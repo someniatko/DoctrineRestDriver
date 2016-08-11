@@ -19,10 +19,9 @@
 namespace Circle\DoctrineRestDriver\Types;
 
 use Circle\DoctrineRestDriver\Enums\SqlOperations;
-use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
- * Payload type: Union type for UpdatePayload and InsertPayload
+ * Payload type: Union type for InsertChangeSet and InsertChangeSet
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
@@ -30,19 +29,24 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class Payload {
 
     /**
-     * Returns an InsertPayload::create or UpdatePayload::create
+     * Returns an InsertChangeSet::create or InsertChangeSet::create
      * result or null depending on the given tokens array
      *
      * @param  array       $tokens
+     * @param  array       $options
      * @return null|string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+    public static function create(array $tokens, array $options) {
+        HashMap::assert($tokens, 'tokens');
 
+        $format    = Format::create($options);
         $operation = SqlOperation::create($tokens);
-        if ($operation === SqlOperations::SELECT || $operation === SqlOperations::DELETE) return null;
-        return $operation === SqlOperations::INSERT ? InsertPayload::create($tokens) : UpdatePayload::create($tokens);
+
+        if ($operation === SqlOperations::INSERT) return $format->encode(InsertChangeSet::create($tokens));
+        if ($operation === SqlOperations::UPDATE) return $format->encode(UpdateChangeSet::create($tokens));
+
+        return null;
     }
 }

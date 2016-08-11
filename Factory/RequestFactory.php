@@ -18,14 +18,14 @@
 
 namespace Circle\DoctrineRestDriver\Factory;
 
-use Circle\DoctrineRestDriver\Annotations\Routing;
-use Circle\DoctrineRestDriver\Enums\HttpMethods;
+use Circle\DoctrineRestDriver\Annotations\DataSource;
 use Circle\DoctrineRestDriver\Types\HttpHeader;
 use Circle\DoctrineRestDriver\Types\CurlOptions;
+use Circle\DoctrineRestDriver\Types\HttpMethod;
 use Circle\DoctrineRestDriver\Types\Payload;
 use Circle\DoctrineRestDriver\Types\HttpQuery;
 use Circle\DoctrineRestDriver\Types\Request;
-use Circle\DoctrineRestDriver\Types\SqlOperation;
+use Circle\DoctrineRestDriver\Types\StatusCode;
 use Circle\DoctrineRestDriver\Types\Url;
 
 /**
@@ -33,27 +33,28 @@ use Circle\DoctrineRestDriver\Types\Url;
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
- *
- * @SuppressWarnings("PHPMD.StaticAccess")
  */
 class RequestFactory {
 
     /**
      * Creates a new Request with the given options
      *
-     * @param  array   $tokens
-     * @param  string  $apiUrl
-     * @param  array   $options
+     * @param  string     $method
+     * @param  array      $tokens
+     * @param  array      $options
+     * @param  DataSource $annotation
      * @return Request
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createOne(array $tokens, $apiUrl, array $options) {
-        $method  = HttpMethods::ofSqlOperation(SqlOperation::create($tokens));
-        $url     = Url::create($tokens, $apiUrl);
-        $query   = HttpQuery::create($tokens);
-        $payload = $method === HttpMethods::GET || $method === HttpMethods::DELETE ? null : Payload::create($tokens);
-
-        $options = array_merge($options, HttpHeader::create($options, $tokens));
-
-        return new Request($method, $url, CurlOptions::create($options), $query, $payload);
+    public function createOne($method, array $tokens, array $options, DataSource $annotation = null) {
+        return new Request([
+            'method'              => HttpMethod::create($method, $annotation),
+            'url'                 => Url::createFromTokens($tokens, $options['host'], $annotation),
+            'curlOptions'         => CurlOptions::create(array_merge($options['driverOptions'], HttpHeader::create($options['driverOptions'], $tokens))),
+            'query'               => HttpQuery::create($tokens),
+            'payload'             => Payload::create($tokens, $options),
+            'expectedStatusCode'  => StatusCode::create($method, $annotation)
+        ]);
     }
 }

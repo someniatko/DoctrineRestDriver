@@ -17,8 +17,11 @@
  */
 
 namespace Circle\DoctrineRestDriver\Types;
+
 use Circle\DoctrineRestDriver\Enums\SqlOperations;
+use Circle\DoctrineRestDriver\MetaData;
 use PHPSQLParser\PHPSQLParser;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Maps the response content of any query to a valid
@@ -30,20 +33,77 @@ use PHPSQLParser\PHPSQLParser;
 class Result {
 
     /**
-     * Returns a valid Doctrine result
+     * @var array
+     */
+    private $result;
+
+    /**
+     * @var mixed
+     */
+    private $id;
+
+    /**
+     * Result constructor
      *
-     * @param  string $query
-     * @param  array  $content
-     * @return string
+     * @param string   $query
+     * @param Response $response
+     * @param array    $options
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create($query, $content) {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse($query);
+    public function __construct($query, Response $response, array $options = []) {
+        $tokens  = (new PHPSQLParser())->parse($query);
+        $content = Format::create($options)->decode($response->getContent());
+
+        $this->result = $this->createResult($tokens, $content);
+        $this->id     = $this->createId($tokens);
+    }
+
+    /**
+     * Returns a valid Doctrine result
+     *
+     * @return array
+     */
+    public function get() {
+        return $this->result;
+    }
+
+    /**
+     * returns the id of the result
+     */
+    public function id() {
+        return $this->id;
+    }
+
+    /**
+     * returns the id
+     *
+     * @param  array $tokens
+     * @return mixed
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    private function createId(array $tokens) {
+        $idColumn = Identifier::column($tokens, new MetaData());
+        return empty($this->result[$idColumn]) ? null : $this->result[$idColumn];
+    }
+
+    /**
+     * returns the result
+     *
+     * @param  array      $tokens
+     * @param  array|null $content
+     * @return array
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    private function createResult(array $tokens, array $content = null) {
         $operator = strtolower(array_keys($tokens)[0]);
 
         if ($operator === SqlOperations::DELETE) return [];
-        return $operator === SqlOperations::SELECT ? SelectResult::create($tokens, $content) : $content;
+        $result = $operator === SqlOperations::SELECT ? SelectResult::create($tokens, $content) : $content;
+        krsort($result);
+
+        return $result;
     }
 }

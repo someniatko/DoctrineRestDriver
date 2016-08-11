@@ -17,9 +17,13 @@
             <property name="exceptions" description="Comma-separated list of exceptions" value=""/>
         </properties>
     </rule>
+    <rule ref="rulesets/naming.xml/ShortMethodName">
+        <properties>
+            <property name="minimum" description="Minimum length for a method or function name" value="2"/>
+        </properties>
+    </rule>
     <rule ref="rulesets/naming.xml/BooleanGetMethodName" />
     <rule ref="rulesets/naming.xml/ConstantNamingConventions" />
     <rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass" />
     <rule ref="rulesets/naming.xml/LongVariable" />
-    <rule ref="rulesets/naming.xml/ShortMethodName" />
 </ruleset>

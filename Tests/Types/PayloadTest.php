@@ -46,7 +46,7 @@ class PayloadTest extends \PHPUnit_Framework_TestCase {
             'value' => 'testvalue',
         ]);
 
-        $this->assertSame($expected, Payload::create($tokens));
+        $this->assertSame($expected, Payload::create($tokens, []));
     }
 
     /**
@@ -64,6 +64,20 @@ class PayloadTest extends \PHPUnit_Framework_TestCase {
             'value' => 'testvalue',
         ]);
 
-        $this->assertSame($expected, Payload::create($tokens));
+        $this->assertSame($expected, Payload::create($tokens, []));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createSelect() {
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('SELECT name FROM products WHERE id=1');
+
+        $this->assertSame(null, Payload::create($tokens, []));
     }
 }

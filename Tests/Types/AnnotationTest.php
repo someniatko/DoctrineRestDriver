@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
 use Circle\DoctrineRestDriver\Annotations\RoutingTable;
+use Circle\DoctrineRestDriver\Annotations\Select;
 use Circle\DoctrineRestDriver\Types\Annotation;
 use PHPSQLParser\PHPSQLParser;
 
@@ -44,5 +45,21 @@ class AnnotationTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertTrue(Annotation::exists($routings, 'products', 'get'));
         $this->assertFalse(Annotation::exists($routings, 'products', 'post'));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::get
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function get() {
+        $routings   = new RoutingTable(['products' => 'Circle\DoctrineRestDriver\Tests\Entity\TestEntity']);
+        $annotation = new Select([
+            'value' => 'http://127.0.0.1:3000/app_dev.php/mockapi/products'
+        ]);
+
+        $this->assertEquals($annotation, Annotation::get($routings, 'products', 'get'));
     }
 }

@@ -18,8 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Annotations;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
-use Doctrine\Common\Annotations\AnnotationReader;
+use Circle\DoctrineRestDriver\Types\HashMap;
 
 /**
  * Contains all routing information about all entities
@@ -42,7 +41,7 @@ class RoutingTable {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function __construct(array $entities) {
-        Assertions::assertHashMap('entities', $entities);
+        HashMap::assert($entities, 'entities');
 
         $aliases            = array_flip($entities);
         $this->routingTable = array_reduce($entities, function ($carry, $namespace) use ($aliases) {

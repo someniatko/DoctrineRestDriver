@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver\Tests\Types;
 
 use Circle\DoctrineRestDriver\Types\Result;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Tests the result type
@@ -33,14 +34,16 @@ class ResultTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      * @group  unit
-     * @covers ::create
+     * @covers ::__construct
+     * @covers ::get
+     * @covers ::<private>
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createWithSelect() {
-        $content = [
+    public function getWithSelect() {
+        $response = new Response(json_encode([
             'name' => 'testname'
-        ];
+        ]));
 
         $expected = [
             [
@@ -48,61 +51,87 @@ class ResultTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $this->assertEquals($expected, Result::create('SELECT name FROM products WHERE id=1', $content));
+        $this->assertEquals($expected, (new Result('SELECT name FROM products WHERE id=1', $response))->get());
     }
 
     /**
      * @test
      * @group  unit
-     * @covers ::create
+     * @covers ::__construct
+     * @covers ::get
+     * @covers ::<private>
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createWithDelete() {
-        $content = [
+    public function getWithDelete() {
+        $response = new Response(json_encode([
             'name' => 'testname'
-        ];
+        ]));
 
         $expected = [];
 
-        $this->assertEquals($expected, Result::create('DELETE FROM products WHERE id=1', $content));
+        $this->assertEquals($expected, (new Result('DELETE FROM products WHERE id=1', $response))->get());
     }
 
     /**
      * @test
      * @group  unit
-     * @covers ::create
+     * @covers ::__construct
+     * @covers ::get
+     * @covers ::<private>
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createWithInsert() {
-        $content = [
+    public function getWithInsert() {
+        $response = new Response(json_encode([
             'name' => 'testname'
-        ];
+        ]));
 
         $expected = [
             'name' => 'testname'
         ];
 
-        $this->assertEquals($expected, Result::create('INSERT INTO products (name) VALUES ("testname")', $content));
+        $this->assertEquals($expected, (new Result('INSERT INTO products (name) VALUES ("testname")', $response))->get());
     }
 
     /**
      * @test
      * @group  unit
-     * @covers ::create
+     * @covers ::__construct
+     * @covers ::get
+     * @covers ::<private>
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function createWithUpdate() {
-        $content = [
+    public function getWithUpdate() {
+        $response = new Response(json_encode([
             'name' => 'testname'
-        ];
+        ]));
 
         $expected = [
             'name' => 'testname'
         ];
 
-        $this->assertEquals($expected, Result::create('UPDATE products SET name = "testname" WHERE id=1', $content));
+        $this->assertEquals($expected, (new Result('UPDATE products SET name = "testname" WHERE id=1', $response))->get());
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::__construct
+     * @covers ::id
+     * @covers ::<private>
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function id() {
+        $response = new Response(json_encode([
+            'name' => 'testname',
+            'id'   => 1
+        ]));
+
+        $expected = 1;
+
+        $this->assertEquals($expected, (new Result('UPDATE products SET name = "testname" WHERE id=1', $response))->id());
     }
 }

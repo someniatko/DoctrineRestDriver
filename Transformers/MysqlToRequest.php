@@ -21,10 +21,13 @@ namespace Circle\DoctrineRestDriver\Transformers;
 use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 use Circle\DoctrineRestDriver\Enums\HttpMethods;
 use Circle\DoctrineRestDriver\Factory\RequestFactory;
+use Circle\DoctrineRestDriver\Types\Annotation;
 use Circle\DoctrineRestDriver\Types\Id;
 use Circle\DoctrineRestDriver\Types\Request;
 use Circle\DoctrineRestDriver\Types\SqlOperation;
+use Circle\DoctrineRestDriver\Types\SqlQuery;
 use Circle\DoctrineRestDriver\Types\Table;
+use Circle\DoctrineRestDriver\Types\Url;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 use PHPSQLParser\PHPSQLParser;
 
@@ -37,11 +40,6 @@ use PHPSQLParser\PHPSQLParser;
 class MysqlToRequest {
 
     /**
-     * @var string
-     */
-    private $apiUrl;
-
-    /**
      * @var PHPSQLParser
      */
     private $parser;
@@ -52,7 +50,7 @@ class MysqlToRequest {
     private $requestFactory;
 
     /**
-     * @var string
+     * @var array
      */
     private $options;
 
@@ -67,9 +65,8 @@ class MysqlToRequest {
      * @param array        $options
      * @param RoutingTable $routings
      */
-    public function __construct(array $options, RoutingTable $routings = null) {
-        $this->apiUrl         = $options['host'];
-        $this->options        = $options['driverOptions'];
+    public function __construct(array $options, RoutingTable $routings) {
+        $this->options        = $options;
         $this->parser         = new PHPSQLParser();
         $this->requestFactory = new RequestFactory();
         $this->routings       = $routings;
@@ -79,21 +76,15 @@ class MysqlToRequest {
      * Transforms the given query into a request object
      *
      * @param  string $query
-     * @param  array  $params
      * @return Request
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function transform($query, array $params = []) {
-        $query = array_reduce($params, function($query, $param) {
-            return strpos($query, '?') ? substr_replace($query, $param, strpos($query, '?'), strlen('?')) : $query;
-        }, $query);
+    public function transform($query) {
+        $tokens     = $this->parser->parse($query);
+        $method     = HttpMethods::ofSqlOperation(SqlOperation::create($tokens));
+        $annotation = Annotation::get($this->routings, Table::create($tokens), $method);
 
-        $queryParts       = explode(' ', $query);
-        $transformedQuery = array_reduce($queryParts, function($carry, $part) {
-            return $carry . (Assertions::isUrl($part) ? ('"' . $part . '" ') : ($part . ' '));
-        });
-
-        return $this->requestFactory->createOne(Table::replaceWithAnnotation($this->parser->parse($transformedQuery), $this->routings), $this->apiUrl, $this->options);
+        return $this->requestFactory->createOne($method, $tokens, $this->options, $annotation);
     }
 }

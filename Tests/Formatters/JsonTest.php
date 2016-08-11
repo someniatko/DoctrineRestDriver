@@ -16,36 +16,41 @@
  * along with DoctrineRestDriver.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Circle\DoctrineRestDriver\Tests\Types;
+namespace Circle\DoctrineRestDriver\Tests\Formatters;
 
-use Circle\DoctrineRestDriver\Types\UpdatePayload;
-use PHPSQLParser\PHPSQLParser;
+use Circle\DoctrineRestDriver\Formatters\Json;
 
 /**
- * Tests the UpdatePayload type
+ * Tests the json formatter
  *
  * @author    Tobias Hauck <tobias@circle.ai>
  * @copyright 2015 TeeAge-Beatz UG
  *
- * @coversDefaultClass Circle\DoctrineRestDriver\Types\UpdatePayload
+ * @coversDefaultClass Circle\DoctrineRestDriver\Formatters\Json
  */
-class UpdatePayloadTest extends \PHPUnit_Framework_TestCase {
+class JsonTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @test
      * @group  unit
-     * @covers ::create
+     * @covers ::encode
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function create() {
-        $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('UPDATE products set name="testname", value="testvalue" WHERE id=1');
-        $expected = json_encode([
-            'name'  => 'testname',
-            'value' => 'testvalue',
-        ]);
+    public function encode() {
+        $json = new Json();
+        $this->assertSame('{"test":"test"}', $json->encode(['test' => 'test']));
+    }
 
-        $this->assertSame($expected, UpdatePayload::create($tokens));
+    /**
+     * @test
+     * @group  unit
+     * @covers ::decode
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function decode() {
+        $json = new Json();
+        $this->assertEquals(['test' => 'test'], $json->decode('{"test": "test"}'));
     }
 }

@@ -49,13 +49,16 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
      * @var array
      */
     private $factoryOptions = [
-        'CURLOPT_HTTPHEADER'     => 'Content-Type: application/json',
-        'CURLOPT_MAXREDIRS'      => 25,
-        'CURLOPT_TIMEOUT'        => 25,
-        'CURLOPT_CONNECTTIMEOUT' => 25,
-        'CURLOPT_CRLF'           => true,
-        'CURLOPT_SSLVERSION'     => 3,
-        'CURLOPT_FOLLOWLOCATION' => true,
+        'host'          => 'http://circle.ai',
+        'driverOptions' => [
+            'CURLOPT_HTTPHEADER'     => 'Content-Type: application/json',
+            'CURLOPT_MAXREDIRS'      => 25,
+            'CURLOPT_TIMEOUT'        => 25,
+            'CURLOPT_CONNECTTIMEOUT' => 25,
+            'CURLOPT_CRLF'           => true,
+            'CURLOPT_SSLVERSION'     => 3,
+            'CURLOPT_FOLLOWLOCATION' => true,
+        ]
     ];
 
     /**
@@ -67,8 +70,14 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
         $query    = 'SELECT name FROM products WHERE id=1';
         $parser   = new PHPSQLParser();
         $factory  = new RequestFactory();
-        $expected = new Request('get', 'http://circle.ai/products/1', $this->requestOptions);
+        $expected = new Request([
+            'method'      => 'get',
+            'url'         => 'http://circle.ai/products/1',
+            'curlOptions' => $this->requestOptions
+        ]);
 
-        $this->assertEquals($expected, $factory->createOne($parser->parse($query), 'http://circle.ai', $this->factoryOptions));
+        $routings = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\DataSource')->getMock();
+
+        $this->assertEquals($expected, $factory->createOne('get', $parser->parse($query), $this->factoryOptions, $routings));
     }
 }

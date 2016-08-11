@@ -18,7 +18,6 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Validation;
 
-use Circle\DoctrineRestDriver\Security\HttpAuthentication;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
@@ -30,55 +29,6 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
  * @coversDefaultClass Circle\DoctrineRestDriver\Validation\Assertions
  */
 class AssertionsTest extends \PHPUnit_Framework_TestCase {
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertNotNil
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertNotNilTest() {
-        $this->assertSame(null, Assertions::assertNotNil('test', 'test'));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertString
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertStringTest() {
-        $this->assertSame(null, Assertions::assertString('test', 'test'));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertHashMap
-     * @covers ::assertHashMapEntry
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertHashMapTest() {
-        $this->assertSame(null, Assertions::assertHashMap('test', [
-            'test' => 'test'
-        ]));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertHashMapEntryExists
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertHashMapEntryExistsTest() {
-        $this->assertSame(null, Assertions::assertHashMapEntryExists('test', [
-            'test' => 'test'
-        ], 'test'));
-    }
 
     /**
      * @test
@@ -99,55 +49,6 @@ class AssertionsTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function assertSupportedFetchModeTest() {
-        $this->assertSame(null, Assertions::assertSupportedFetchMode(\PDO::FETCH_ASSOC));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::isUrl
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function isUrlTest() {
-        $this->assertTrue(Assertions::isUrl('http://www.circle.ai'));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::isUrl
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function isUrlLocalhostTest() {
-        $this->assertTrue(Assertions::isUrl('http://localhost:3000'));
-        $this->assertTrue(Assertions::isUrl('http://localhost:3000/api?filter=true'));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::isUrl
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function isNoUrlTest() {
-        $this->assertFalse(Assertions::isUrl('http:/localhost:3000'));
-        $this->assertFalse(Assertions::isUrl('localhost:3000'));
-        $this->assertFalse(Assertions::isUrl('www.circle.ai'));
-        $this->assertFalse(Assertions::isUrl('noUrl'));
-        $this->assertFalse(Assertions::isUrl(1));
-    }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::assertAuthStrategy
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function assertAuthStrategy() {
-        $this->assertSame(null, Assertions::assertAuthStrategy(new HttpAuthentication([])));
+        $this->assertSame(\PDO::FETCH_ASSOC, Assertions::assertSupportedFetchMode(\PDO::FETCH_ASSOC));
     }
 }

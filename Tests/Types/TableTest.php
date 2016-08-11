@@ -227,38 +227,4 @@ class TableTest extends \PHPUnit_Framework_TestCase {
         $tokens = $parser->parse('SELECT * FROM products');
         $this->assertSame('http://www.circle.ai/get', Table::create(Table::replace($tokens, 'http://www.circle.ai/get')));
     }
-
-    /**
-     * @test
-     * @group  unit
-     * @covers ::replaceWithAnnotation
-     * @covers ::<private>
-     *
-     * @SuppressWarnings("PHPMD.StaticAccess")
-     */
-    public function replaceWithAnnotation() {
-        $parser      = new PHPSQLParser();
-        $routing     = new Routing('Circle\DoctrineRestDriver\Tests\Entity\TestEntity');
-
-        $annotations = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\RoutingTable')->disableOriginalConstructor()->getMock();
-        $annotations
-            ->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($routing));
-
-        $tokens = $parser->parse('UPDATE products p0 set name="name"');
-        $this->assertSame('products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
-
-        $tokens = $parser->parse('INSERT INTO products (test) VALUES ("test")');
-        $this->assertSame('products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
-
-        $tokens = $parser->parse('SELECT * FROM products');
-        $this->assertSame('products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
-
-        $tokens = $parser->parse('SELECT * FROM products WHERE id = 1');
-        $this->assertSame('http://127.0.0.1:3000/app_dev.php/mockapi/products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
-
-        $tokens = $parser->parse('DELETE FROM products');
-        $this->assertSame('products', Table::create(Table::replaceWithAnnotation($tokens, $annotations)));
-    }
 }

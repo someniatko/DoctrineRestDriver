@@ -18,9 +18,6 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Enums\SqlOperations;
-use Circle\DoctrineRestDriver\Validation\Assertions;
-
 /**
  * Handles creation http headers for ordering/sorting
  *
@@ -38,7 +35,7 @@ class OrderingHeaders {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create(array $tokens) {
-        Assertions::assertHashMap('tokens', $tokens);
+        HashMap::assert($tokens, 'tokens');
 
         if (empty($tokens['ORDER'])) return [];
 

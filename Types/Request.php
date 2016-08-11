@@ -44,7 +44,7 @@ class Request {
     /**
      * @var array
      */
-    private $curlOptions;
+    private $curlOptions = [];
 
     /**
      * @var string
@@ -52,20 +52,40 @@ class Request {
     private $query;
 
     /**
+     * @var int
+     */
+    private $expectedStatusCode = 200;
+
+    /**
      * Request constructor
      *
-     * @param string      $method
-     * @param string      $url
-     * @param array       $curlOptions
-     * @param string|null $query
-     * @param string|null $payload
+     * @param array $options
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public function __construct($method, $url, array $curlOptions, $query = null, $payload = null) {
-        $this->method      = $method;
-        $this->url         = $url;
-        $this->payload     = $payload;
-        $this->curlOptions = $curlOptions;
-        $this->query       = $query;
+    public function __construct(array $options) {
+        HashMap::assert($options, 'options');
+        HashMapEntry::assertExists($options, 'method', 'options.method');
+        HashMapEntry::assertExists($options, 'url', 'options.url');
+
+        foreach($options as $key => $value) $this->$key = $value;
+    }
+
+    /**
+     * sets the curl options
+     *
+     * @param  array $options
+     * @return Request
+     */
+    public function setCurlOptions(array $options) {
+        return new Request([
+            'method'              => $this->method,
+            'url'                 => $this->url,
+            'curlOptions'         => $options,
+            'query'               => $this->query,
+            'payload'             => $this->payload,
+            'expectedStatusCode'  => $this->expectedStatusCode
+        ]);
     }
 
     /**
@@ -123,9 +143,18 @@ class Request {
     }
 
     /**
+     * returns the expected response http code
+     *
+     * @return int
+     */
+    public function getExpectedStatusCode() {
+        return $this->expectedStatusCode;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __toString() {
-        return $this->method . ' ' . $this->getUrlAndQuery() . ' HTTP/1.1' . (!empty($this->payload) ? ' ' . $this->payload : '');
+        return strtoupper($this->method) . ' ' . $this->getUrlAndQuery() . ' HTTP/1.1' . (!empty($this->payload) ? ' ' . $this->payload : '');
     }
 }

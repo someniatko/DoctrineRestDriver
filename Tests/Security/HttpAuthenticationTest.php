@@ -62,8 +62,16 @@ class HttpAuthenticationTest extends \PHPUnit_Framework_TestCase {
             ]
         ];
 
-        $request  = new Request(HttpMethods::GET, 'http://circle.ai', []);
-        $expected = new Request(HttpMethods::GET, 'http://circle.ai', $expectedOptions);
+        $request  = new Request([
+            'method' => HttpMethods::GET,
+            'url'    => 'http://circle.ai'
+        ]);
+
+        $expected = new Request([
+            'method'      => HttpMethods::GET,
+            'url'         => 'http://circle.ai',
+            'curlOptions' => $expectedOptions
+        ]);
 
         $this->assertEquals($expected, $this->authentication->transformRequest($request));
     }

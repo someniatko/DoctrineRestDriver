@@ -18,7 +18,10 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Annotations\DataSource;
+use Circle\DoctrineRestDriver\Exceptions\Exceptions;
 use Circle\DoctrineRestDriver\Validation\Assertions;
+use Circle\DoctrineRestDriver\Validation\Exceptions\InvalidTypeException;
 
 /**
  * Url type
@@ -29,23 +32,70 @@ use Circle\DoctrineRestDriver\Validation\Assertions;
 class Url {
 
     /**
-     * Returns an url depending on the given sql tokens
+     * returns an url depending on the given route, apiUrl
+     * and id
      *
-     * @param  array  $tokens
-     * @param  string $apiUrl
+     * @param  string      $route
+     * @param  string      $apiUrl
+     * @param  string|null $id
      * @return string
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens, $apiUrl) {
-        Assertions::assertHashMap('tokens', $tokens);
+    public static function create($route, $apiUrl, $id = null) {
+        Str::assert($route, 'route');
+        Str::assert($apiUrl, 'apiUrl');
+        MaybeString::assert($id, 'id');
 
-        $table  = Table::create($tokens);
-        $id     = Id::create($tokens);
         $idPath = empty($id) ? '' : '/' . $id;
 
-        if (!Assertions::isUrl($table))      return $apiUrl . '/' . $table . $idPath;
-        if (!preg_match('/\{id\}/', $table)) return $table . $idPath;
-        return !empty($id) ? str_replace('{id}', $id, $table) : str_replace('/{id}', '', $table);
+        if (!self::is($route))               return $apiUrl . '/' . $route . $idPath;
+        if (!preg_match('/\{id\}/', $route)) return $route . $idPath;
+        if (!empty($id))                     return str_replace('{id}', $id, $route);
+
+        return str_replace('/{id}', '', $route);
+    }
+
+    /**
+     * returns an url depending on the given tokens
+     *
+     * @param  array      $tokens
+     * @param  string     $apiUrl
+     * @param  DataSource $annotation
+     * @return string
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function createFromTokens(array $tokens, $apiUrl, DataSource $annotation = null) {
+        $id    = Identifier::create($tokens);
+        $route = empty($annotation) || $annotation->getRoute() === null ? Table::create($tokens) : $annotation->getRoute();
+
+        return self::create($route, $apiUrl, $id);
+    }
+
+    /**
+     * Checks if the given value is an url
+     *
+     * @param  $value
+     * @return bool
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function is($value) {
+        return (bool) (preg_match('/^(http|ftp|https):\/\/([0-9a-zA-Z_-]+(\.[0-9a-zA-Z_-]+)+|localhost)([0-9a-zA-Z_\-.,@?^=%&amp;:\/~+#-]*[0-9a-zA-Z_\-@?^=%&amp;\/~+#-])?/', $value));
+    }
+
+    /**
+     * Asserts if the given value is an url
+     *
+     * @param  mixed  $value
+     * @param  string $varName
+     * @return string
+     * @throws InvalidTypeException
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function assert($value, $varName) {
+        return !self::is($value) ? Exceptions::InvalidTypeException('Url', $varName, $value) : $value;
     }
 }

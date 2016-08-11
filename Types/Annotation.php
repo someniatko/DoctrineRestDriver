@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
+use Circle\DoctrineRestDriver\Annotations\DataSource;
 use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 
 /**
@@ -27,6 +28,20 @@ use Circle\DoctrineRestDriver\Annotations\RoutingTable;
  * @copyright 2015 TeeAge-Beatz UG
  */
 class Annotation {
+
+    /**
+     * returns the corresponding data source annotation if exists
+     *
+     * @param  RoutingTable $annotations
+     * @param  string       $entityAlias
+     * @param  string       $method
+     * @return DataSource|null
+     */
+    public static function get(RoutingTable $annotations, $entityAlias, $method) {
+        if (!self::exists($annotations, $entityAlias, $method)) return null;
+
+        return $annotations->get($entityAlias)->$method();
+    }
 
     /**
      * checks if the annotation exists

@@ -18,8 +18,6 @@
 
 namespace Circle\DoctrineRestDriver\Types;
 
-use Circle\DoctrineRestDriver\Validation\Assertions;
-
 /**
  * Converts a given options set into a valid array
  * containing CURLOPT options that can be added to
@@ -53,7 +51,7 @@ class CurlOptions extends \ArrayObject {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public static function create(array $options) {
-        Assertions::assertHashMap('options', $options);
+        HashMap::assert($options, 'options');
 
         $filteredKeys = array_filter(array_keys($options), function ($key) {
             return strpos($key, 'CURLOPT_') === 0;
