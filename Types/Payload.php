@@ -44,7 +44,9 @@ class Payload {
         $format    = Format::create($options);
         $operation = SqlOperation::create($tokens);
 
-        if ($operation === SqlOperations::SELECT || $operation === SqlOperations::DELETE) return null;
-        return $format->encode($operation === SqlOperations::INSERT ? InsertChangeSet::create($tokens) : UpdateChangeSet::create($tokens));
+        if ($operation === SqlOperations::INSERT) return $format->encode(InsertChangeSet::create($tokens));
+        if ($operation === SqlOperations::UPDATE) return $format->encode(UpdateChangeSet::create($tokens));
+
+        return null;
     }
 }

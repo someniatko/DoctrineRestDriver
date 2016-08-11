@@ -68,7 +68,7 @@ class Request {
         HashMapEntry::assertExists($options, 'method', 'options.method');
         HashMapEntry::assertExists($options, 'url', 'options.url');
 
-        foreach ($options as $key => $value) $this->$key = $value;
+        foreach($options as $key => $value) $this->$key = $value;
     }
 
     /**
