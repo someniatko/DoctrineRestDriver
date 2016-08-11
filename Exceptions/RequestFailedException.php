@@ -29,7 +29,7 @@ use Circle\DoctrineRestDriver\Types\Request;
  *
  * @SuppressWarnings("PHPMD.StaticAccess")
  */
-class RequestFailedException extends \Exception {
+class RequestFailedException extends DoctrineRestDriverException {
 
     /**
      * RequestFailedException constructor

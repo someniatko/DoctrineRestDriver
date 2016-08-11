@@ -26,7 +26,7 @@ namespace Circle\DoctrineRestDriver\Exceptions;
  *
  * @SuppressWarnings("PHPMD.StaticAccess")
  */
-class InvalidFormatException extends \Exception {
+class InvalidFormatException extends DoctrineRestDriverException {
 
     /**
      * InvalidFormatException constructor

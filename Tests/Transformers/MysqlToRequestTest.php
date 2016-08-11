@@ -181,11 +181,11 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
     public function insert() {
         $query    = 'INSERT INTO products (name) VALUES ("myName")';
         $expected = new Request([
-            'method'              => 'post',
-            'url'                 => $this->apiUrl . '/products',
-            'curlOptions'         => $this->options,
-            'payload'             => json_encode(['name' => 'myName']),
-            'expectedStatusCode'  => 201
+            'method'             => 'post',
+            'url'                => $this->apiUrl . '/products',
+            'curlOptions'        => $this->options,
+            'payload'            => json_encode(['name' => 'myName']),
+            'expectedStatusCode' => 201
         ]);
 
         $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
