@@ -409,7 +409,7 @@ class UserController extends Controller {
 }
 ```
 
-#Examples
+# Examples
 
 Need some more examples? Here they are:
 
@@ -783,7 +783,7 @@ GET  http://api.addresses.your-url.com/addresses/1 HTTP/1.1
 
 Afterwards both entities are persisted in the default MySQL database.
 
-#Testing
+# Testing
 
 To test the bundle just type:
 
@@ -791,7 +791,7 @@ To test the bundle just type:
 make test
 ```
 
-#Contributing
+# Contributing
 If you want to contribute to this repository, please ensure ...
   - to follow the existing coding style.
   - to use the linting tools that are listed in the ```composer.json``` (which you get for free when using ```make```).
