@@ -35,6 +35,7 @@ class StatusCode {
     private static $expectedStatusCodes = [
         'get'    => 200,
         'put'    => 200,
+        'patch'  => 200,
         'post'   => 201,
         'delete' => 204
     ];
