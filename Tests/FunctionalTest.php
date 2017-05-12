@@ -291,6 +291,19 @@ class FunctionalTest extends WebTestCase {
      * @expectedException \Exception
      */
     public function nonImplementedEntity() {
-        $this->em->find('Circle\DoctrineRestDriver\Entity\NonImplementedEntity', 1);
+        $this->em->find('Circle\DoctrineRestDriver\Tests\Entity\NonImplementedEntity', 1);
+    }
+
+    /**
+     * @test
+     * @group  functional
+     * @covers Circle\DoctrineRestDriver\Driver
+     * @covers Circle\DoctrineRestDriver\Connection
+     * @covers Circle\DoctrineRestDriver\Statement
+     * @covers Circle\DoctrineRestDriver\Statement::<private>
+     * @covers Circle\DoctrineRestDriver\MetaData
+     */
+    public function customIdentifierEntity() {
+        $this->em->find('Circle\DoctrineRestDriver\Tests\Entity\CustomIdentifierEntity', 1);
     }
 }

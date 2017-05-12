@@ -58,9 +58,10 @@ class RestClientTest extends \PHPUnit_Framework_TestCase {
         ]);
 
         $response = new Response(json_encode([
-            'id'    => 1,
-            'name'  => 'MyName',
-            'value' => 'MyValue'
+            'id'                          => 1,
+            'extremelyStrange_identifier' => 1,
+            'name'                        => 'MyName',
+            'value'                       => 'MyValue'
         ]));
 
         $this->assertEquals($response->getContent(), $this->restClient->send($request)->getContent());

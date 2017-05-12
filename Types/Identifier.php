@@ -81,7 +81,7 @@ class Identifier {
             return $meta->getTableName() === $table;
         });
 
-        $idColumns  = !empty($meta) ? end($meta)->getIdentifierColumnNames() : [];
+        $idColumns = !empty($meta) ? end($meta)->getIdentifierColumnNames() : [];
 
         return !empty($idColumns) ? end($idColumns) : 'id';
     }
