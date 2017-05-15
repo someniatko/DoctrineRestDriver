@@ -108,7 +108,7 @@ class Routing {
     }
 
     /**
-     * returns the put route
+     * returns the patch route
      *
      * @return \Circle\DoctrineRestDriver\Annotations\Update|null
      */
