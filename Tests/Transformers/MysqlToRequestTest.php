@@ -30,6 +30,7 @@ use Circle\DoctrineRestDriver\Types\Request;
  * @copyright 2015 TeeAge-Beatz UG
  *
  * @coversDefaultClass Circle\DoctrineRestDriver\Transformers\MysqlToRequest
+ * @SuppressWarnings("TooManyPublicMethods")
  */
 class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
 
