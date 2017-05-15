@@ -34,20 +34,40 @@ class HttpQuery {
      * clause of the parsed sql tokens
      *
      * @param  array $tokens
+     * @param  array $options
      * @return string|null
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens) {
+    public static function create(array $tokens, array $options = []) {
         HashMap::assert($tokens, 'tokens');
 
         $operation = SqlOperation::create($tokens);
-        if ($operation !== SqlOperations::SELECT || empty($tokens['WHERE'])) return null;
+        if ($operation !== SqlOperations::SELECT) return null;
 
         $tableAlias = Table::alias($tokens);
-        $query      = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
-            return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($tableAlias . '.', '', $token['base_expr']))));
-        });
+        
+        if(isset($tokens['WHERE'])) {
+            $query = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
+                return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($tableAlias . '.', '', $token['base_expr']))));
+            });
+        } else {
+            $query = '';
+        }
+        
+        // Add query pagination only if option is set
+        if(isset($options['driverOptions']['pagination_as_query']) && $options['driverOptions']['pagination_as_query']) {
+            $perPageParam = isset($options['driverOptions']['per_page_param']) ? $options['driverOptions']['per_page_param'] : PaginationQuery::DEFAULT_PER_PAGE_PARAM;
+            $pageParam = isset($options['driverOptions']['page_param']) ? $options['driverOptions']['page_param'] : PaginationQuery::DEFAULT_PAGE_PARAM;
+
+            $paginationParameters = PaginationQuery::create($tokens, $perPageParam, $pageParam);
+
+            if($paginationParameters) {
+                $paginationQuery = http_build_query($paginationParameters);
+
+                $query .= '&' . $paginationQuery;
+            }
+        }
 
         return preg_replace('/id\=\d*&*/', '', $query);
     }

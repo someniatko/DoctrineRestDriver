@@ -52,7 +52,7 @@ class RequestFactory {
             'method'              => HttpMethod::create($method, $annotation),
             'url'                 => Url::createFromTokens($tokens, $options['host'], $annotation),
             'curlOptions'         => CurlOptions::create(array_merge($options['driverOptions'], HttpHeader::create($options['driverOptions'], $tokens))),
-            'query'               => HttpQuery::create($tokens),
+            'query'               => HttpQuery::create($tokens, $options),
             'payload'             => Payload::create($tokens, $options),
             'expectedStatusCode'  => StatusCode::create($method, $annotation)
         ]);

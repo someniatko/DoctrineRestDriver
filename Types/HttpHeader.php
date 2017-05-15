@@ -41,9 +41,16 @@ class HttpHeader {
         $headers = empty($headers) ? [] : $headers;
         $headers = is_string($headers) ? explode(',', $headers) : $headers;
 
+        // Do not send pagination headers if pagination is sent as query params
+        if(isset($options['driverOptions']['pagination_as_query']) && !$options['driverOptions']['pagination_as_query']) {
+            $headers = array_merge(
+                $headers,
+                PaginationHeaders::create($tokens)
+            );
+        }
+        
         $headers = array_merge(
             $headers,
-            PaginationHeaders::create($tokens),
             OrderingHeaders::create($tokens)
         );
         return ['CURLOPT_HTTPHEADER'=>$headers];
