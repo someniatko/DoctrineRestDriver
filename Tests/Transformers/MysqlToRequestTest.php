@@ -18,6 +18,7 @@
 
 namespace Circle\DoctrineRestDriver\Tests\Transformers;
 
+use Circle\DoctrineRestDriver\Annotations\RoutingTable;
 use Circle\DoctrineRestDriver\Transformers\MysqlToRequest;
 use Circle\DoctrineRestDriver\Types\CurlOptions;
 use Circle\DoctrineRestDriver\Types\Request;
@@ -31,6 +32,12 @@ use Circle\DoctrineRestDriver\Types\Request;
  * @coversDefaultClass Circle\DoctrineRestDriver\Transformers\MysqlToRequest
  */
 class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
+
+    /**
+     *
+     * @var RoutingTable
+     */
+    private $routings;
 
     /**
      * @var MysqlToRequest
@@ -59,24 +66,36 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * {@inheritdoc}
      */
     public function setUp() {
-        $routings = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\RoutingTable')->disableOriginalConstructor()->getMock();
-        $routings
+        $this->routings = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\RoutingTable')->disableOriginalConstructor()->getMock();
+        $this->routings
             ->expects($this->any())
             ->method('get')
             ->will($this->returnValue(null));
-
-        $this->mysqlToRequest = new MysqlToRequest([
-            'host'          => 'http://www.test.de',
-            'driverOptions' => [
-                'CURLOPT_HTTPHEADER'     => 'Content-Type: application/json',
-                'CURLOPT_MAXREDIRS'      => 25,
-                'CURLOPT_TIMEOUT'        => 25,
-                'CURLOPT_CONNECTTIMEOUT' => 25,
-                'CURLOPT_CRLF'           => true,
-                'CURLOPT_SSLVERSION'     => 3,
-                'CURLOPT_FOLLOWLOCATION' => true,
-            ]
-        ], $routings);
+    }
+    
+    /**
+     * Create a MysqlToRequest instance with the given options.
+     * 
+     * @param array $optionsOverride
+     * @return MysqlToRequest
+     * 
+     * @author Rob Treacy <email@roberttreacy.com>
+     */
+    private function createMysqlToRequest($optionsOverride = []) {
+        $options = array_replace_recursive([
+                'host'          => 'http://www.test.de',
+                'driverOptions' => [
+                    'CURLOPT_HTTPHEADER'     => 'Content-Type: application/json',
+                    'CURLOPT_MAXREDIRS'      => 25,
+                    'CURLOPT_TIMEOUT'        => 25,
+                    'CURLOPT_CONNECTTIMEOUT' => 25,
+                    'CURLOPT_CRLF'           => true,
+                    'CURLOPT_SSLVERSION'     => 3,
+                    'CURLOPT_FOLLOWLOCATION' => true,
+                ]
+            ], $optionsOverride);
+        
+        return new MysqlToRequest($options, $this->routings);
     }
 
     /**
@@ -94,7 +113,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'curlOptions' => $this->options
         ]);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
+        $this->assertEquals($expected, $this->createMysqlToRequest()->transform($query));
     }
 
     /**
@@ -113,7 +132,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'query'       => 'name=myName'
         ]);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
+        $this->assertEquals($expected, $this->createMysqlToRequest()->transform($query));
     }
 
     /**
@@ -132,7 +151,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'query'       => 'name=myName'
         ]);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
+        $this->assertEquals($expected, $this->createMysqlToRequest()->transform($query));
     }
 
     /**
@@ -150,7 +169,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'curlOptions' => $this->options
         ]);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
+        $this->assertEquals($expected, $this->createMysqlToRequest()->transform($query));
     }
 
     /**
@@ -168,7 +187,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'curlOptions' => $this->options
         ]);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
+        $this->assertEquals($expected, $this->createMysqlToRequest()->transform($query));
     }
 
     /**
@@ -188,7 +207,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'expectedStatusCode' => 201
         ]);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
+        $this->assertEquals($expected, $this->createMysqlToRequest()->transform($query));
     }
 
     /**
@@ -207,7 +226,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'payload'     => json_encode(['name' => 'myValue'])
         ]);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
+        $this->assertEquals($expected, $this->createMysqlToRequest()->transform($query));
     }
 
     /**
@@ -226,7 +245,32 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'payload'     => json_encode(['name' => 'myValue'])
         ]);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
+        $this->assertEquals($expected, $this->createMysqlToRequest()->transform($query));
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::__construct
+     * @covers ::transform
+     * @covers ::<private>
+     */
+    public function updatePatch() {
+        $query    = 'UPDATE products SET name="myValue" WHERE id=1';
+        $expected = new Request([
+            'method'      => 'patch',
+            'url'         => $this->apiUrl . '/products/1',
+            'curlOptions' => $this->options,
+            'payload'     => json_encode(['name' => 'myValue'])
+        ]);
+
+        $optionsOverride = [
+            'driverOptions' => [
+                'use_patch' => true,
+            ],
+        ];
+
+        $this->assertEquals($expected, $this->createMysqlToRequest($optionsOverride)->transform($query));
     }
 
     /**
@@ -245,7 +289,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
             'expectedStatusCode'  => 204
         ]);
 
-        $this->assertEquals($expected, $this->mysqlToRequest->transform($query));
+        $this->assertEquals($expected, $this->createMysqlToRequest()->transform($query));
     }
 
     /**
@@ -258,6 +302,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      */
     public function brokenQuery() {
         $query = 'SHIT products WHERE dirt=1';
-        $this->mysqlToRequest->transform($query);
+
+        $this->createMysqlToRequest()->transform($query);
     }
 }

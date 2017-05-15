@@ -42,10 +42,10 @@ class HttpMethods {
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function ofSqlOperation($operation) {
+    public static function ofSqlOperation($operation, $patchInsert = false) {
         if ($operation === SqlOperations::INSERT) return HttpMethods::POST;
         if ($operation === SqlOperations::SELECT) return HttpMethods::GET;
-        if ($operation === SqlOperations::UPDATE) return HttpMethods::PATCH;
+        if ($operation === SqlOperations::UPDATE) return $patchInsert ? HttpMethods::PATCH : HttpMethods::PUT;
         if ($operation === SqlOperations::DELETE) return HttpMethods::DELETE;
 
         return Exceptions::InvalidSqlOperationException($operation);
