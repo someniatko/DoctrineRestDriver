@@ -41,6 +41,7 @@ class HttpMethods {
      * @throws InvalidSqlOperationException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
+     * @SuppressWarnings("PHPMD.BooleanArgumentFlag")
      */
     public static function ofSqlOperation($operation, $patchInsert = false) {
         if ($operation === SqlOperations::INSERT) return HttpMethods::POST;
