@@ -40,11 +40,6 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
     private $routings;
 
     /**
-     * @var MysqlToRequest
-     */
-    private $mysqlToRequest;
-
-    /**
      * @var string
      */
     private $apiUrl = 'http://www.test.de';
