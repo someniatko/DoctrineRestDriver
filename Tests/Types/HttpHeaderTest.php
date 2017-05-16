@@ -73,9 +73,9 @@ class HttpHeaderTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function createWithPaginationIsDefault() {
-        $query = 'SELECT name FROM products LIMIT 5 OFFSET 2';
+        $query  = 'SELECT name FROM products LIMIT 5 OFFSET 2';
         $parser = new PHPSQLParser();
-        $token = $parser->parse($query);
+        $token  = $parser->parse($query);
         $header = HttpHeader::create($this->options, $token);
         
         $expectedHeader = [
@@ -83,7 +83,7 @@ class HttpHeaderTest extends \PHPUnit_Framework_TestCase {
                 'Content-Type: text/plain',
                 'Limit: 5',
                 'Offset: 2',
-                ],
+            ],
         ];
         $this->assertEquals($expectedHeader, $header);
     }
@@ -96,9 +96,9 @@ class HttpHeaderTest extends \PHPUnit_Framework_TestCase {
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
     public function createWithoutPagination() {
-        $query = 'SELECT name FROM products LIMIT 5 OFFSET 2';
+        $query  = 'SELECT name FROM products LIMIT 5 OFFSET 2';
         $parser = new PHPSQLParser();
-        $token = $parser->parse($query);
+        $token  = $parser->parse($query);
         $this->options['pagination_as_query'] = true;
         $header = HttpHeader::create($this->options, $token);
         

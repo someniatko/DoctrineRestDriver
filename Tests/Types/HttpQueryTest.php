@@ -89,8 +89,8 @@ class HttpQueryTest extends \PHPUnit_Framework_TestCase {
     public function createWithCustomPagination() {
         $options = [
             'pagination_as_query' => true,
-            'per_page_param' => 'newkey_per_page',
-            'page_param' => 'newkey_page',
+            'per_page_param'      => 'newkey_per_page',
+            'page_param'          => 'newkey_page',
         ];
         $parser   = new PHPSQLParser();
         $tokens   = $parser->parse('SELECT name FROM products WHERE foo="bar" LIMIT 5 OFFSET 10');

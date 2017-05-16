@@ -42,7 +42,7 @@ class PaginationQuery {
         if (empty($tokens['LIMIT'])) return [];
         
         $perPage = $tokens['LIMIT']['rowcount'];
-        $offset = isset($tokens['LIMIT']['offset']) ? (int) $tokens['LIMIT']['offset'] : 0;
+        $offset  = isset($tokens['LIMIT']['offset']) ? (int) $tokens['LIMIT']['offset'] : 0;
         
         $page = ($offset + $perPage) / $perPage;
 
