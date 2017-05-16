@@ -45,4 +45,57 @@ class HttpQueryTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame($expected, HttpQuery::create($tokens));
     }
+    
+    /**
+     * @test
+     * @group unit
+     * @covers ::create
+     * 
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createWithoutPaginationIsDefault() {
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('SELECT name FROM products WHERE foo="bar" LIMIT 5 OFFSET 15');
+        $expected = 'foo=bar';
+
+        $this->assertSame($expected, HttpQuery::create($tokens));
+    }
+    
+    /**
+     * @test
+     * @group unit
+     * @covers ::create
+     * 
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createWithPagination() {
+        $options = [
+            'pagination_as_query' => true,
+        ];
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('SELECT name FROM products WHERE foo="bar" LIMIT 5 OFFSET 10');
+        $expected = 'foo=bar&per_page=5&page=3';
+
+        $this->assertSame($expected, HttpQuery::create($tokens, $options));
+    }
+    
+    /**
+     * @test
+     * @group unit
+     * @covers ::create
+     * 
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createWithCustomPagination() {
+        $options = [
+            'pagination_as_query' => true,
+            'per_page_param' => 'newkey_per_page',
+            'page_param' => 'newkey_page',
+        ];
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('SELECT name FROM products WHERE foo="bar" LIMIT 5 OFFSET 10');
+        $expected = 'foo=bar&newkey_per_page=5&newkey_page=3';
+
+        $this->assertSame($expected, HttpQuery::create($tokens, $options));
+    }
 }

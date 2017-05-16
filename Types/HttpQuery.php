@@ -56,9 +56,9 @@ class HttpQuery {
         }
         
         // Add query pagination only if option is set
-        if(isset($options['driverOptions']['pagination_as_query']) && $options['driverOptions']['pagination_as_query']) {
-            $perPageParam = isset($options['driverOptions']['per_page_param']) ? $options['driverOptions']['per_page_param'] : PaginationQuery::DEFAULT_PER_PAGE_PARAM;
-            $pageParam = isset($options['driverOptions']['page_param']) ? $options['driverOptions']['page_param'] : PaginationQuery::DEFAULT_PAGE_PARAM;
+        if(isset($options['pagination_as_query']) && $options['pagination_as_query']) {
+            $perPageParam = isset($options['per_page_param']) ? $options['per_page_param'] : PaginationQuery::DEFAULT_PER_PAGE_PARAM;
+            $pageParam = isset($options['page_param']) ? $options['page_param'] : PaginationQuery::DEFAULT_PAGE_PARAM;
 
             $paginationParameters = PaginationQuery::create($tokens, $perPageParam, $pageParam);
 
@@ -66,6 +66,7 @@ class HttpQuery {
                 $paginationQuery = http_build_query($paginationParameters);
 
                 $query .= '&' . $paginationQuery;
+                $query = ltrim($query, '&');
             }
         }
 

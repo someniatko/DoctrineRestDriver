@@ -36,11 +36,6 @@ class HttpHeaderTest extends \PHPUnit_Framework_TestCase {
     private $options;
 
     /**
-     * @var array
-     */
-    private $expected;
-
-    /**
      * {@inheritdoc}
      */
     public function setUp() {
@@ -48,10 +43,6 @@ class HttpHeaderTest extends \PHPUnit_Framework_TestCase {
             'security_strategy'  => 'none',
             'CURLOPT_MAXREDIRS'  => 22,
             'CURLOPT_HTTPHEADER' => 'Content-Type: text/plain'
-        ];
-
-        $this->expected = [
-            'CURLOPT_HTTPHEADER' => ['Content-Type: text/plain']
         ];
     }
 
@@ -67,6 +58,53 @@ class HttpHeaderTest extends \PHPUnit_Framework_TestCase {
         $parser = new PHPSQLParser();
         $token  = $parser->parse($query);
         $header = HttpHeader::create($this->options, $token);
-        $this->assertEquals($this->expected, $header);
+        
+        $expectedHeader = [
+            'CURLOPT_HTTPHEADER' => ['Content-Type: text/plain']
+        ];
+        $this->assertEquals($expectedHeader, $header);
+    }
+    
+    /**
+     * @test
+     * @group unit
+     * @covers ::create
+     * 
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createWithPaginationIsDefault() {
+        $query = 'SELECT name FROM products LIMIT 5 OFFSET 2';
+        $parser = new PHPSQLParser();
+        $token = $parser->parse($query);
+        $header = HttpHeader::create($this->options, $token);
+        
+        $expectedHeader = [
+            'CURLOPT_HTTPHEADER' => [
+                'Content-Type: text/plain',
+                'Limit: 5',
+                'Offset: 2',
+                ],
+        ];
+        $this->assertEquals($expectedHeader, $header);
+    }
+    
+    /**
+     * @test
+     * @group unit
+     * @covers ::create
+     * 
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createWithoutPagination() {
+        $query = 'SELECT name FROM products LIMIT 5 OFFSET 2';
+        $parser = new PHPSQLParser();
+        $token = $parser->parse($query);
+        $this->options['pagination_as_query'] = true;
+        $header = HttpHeader::create($this->options, $token);
+        
+        $expectedHeader = [
+            'CURLOPT_HTTPHEADER' => ['Content-Type: text/plain'],
+        ];
+        $this->assertEquals($expectedHeader, $header);
     }
 }
