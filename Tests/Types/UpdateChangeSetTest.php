@@ -48,4 +48,22 @@ class UpdateChangeSetTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame($expected, UpdateChangeSet::create($tokens));
     }
+    
+    /**
+     * @test
+     * @group  unit
+     * @covers ::create
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public function createRemovesWhitespace() {
+        $parser   = new PHPSQLParser();
+        $tokens   = $parser->parse('UPDATE products set name = "testname", value = "testvalue" WHERE id = 1');
+        $expected = [
+            'name'  => 'testname',
+            'value' => 'testvalue',
+        ];
+
+        $this->assertSame($expected, UpdateChangeSet::create($tokens));
+    }
 }
