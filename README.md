@@ -409,6 +409,40 @@ class UserController extends Controller {
 }
 ```
 
+## Pagination
+
+Queries in Doctrine can be paginated using the OFFSET and LIMIT keywords.
+Pagination will be sent as request headers by default, but this can be
+configured to have pagination sent as query parameters:
+
+```yml
+doctrine:
+  dbal:
+    options:
+      pagination_as_query: true
+```
+
+This will convert to the following:
+
+```sql
+SELECT name FROM users LIMIT 5 OFFSET 10
+```
+
+```
+https://api.example.com/users?per_page=5&page=3
+```
+
+The parameter keys used for `per_page` and `page` can also be set in the
+configuration file:
+
+```yml
+doctrine:
+  dbal:
+    options:
+      per_page_param: count
+      page_param: p
+```
+
 # Examples
 
 Need some more examples? Here they are:
