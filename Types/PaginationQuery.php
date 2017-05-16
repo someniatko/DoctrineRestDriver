@@ -27,7 +27,7 @@ namespace Circle\DoctrineRestDriver\Types;
 class PaginationQuery {
 
     const DEFAULT_PER_PAGE_PARAM = 'per_page';
-    const DEFAULT_PAGE_PARAM = 'page';
+    const DEFAULT_PAGE_PARAM     = 'page';
     /**
      * Returns Limit and Offset headers
      *
@@ -44,7 +44,7 @@ class PaginationQuery {
         $perPage = $tokens['LIMIT']['rowcount'];
         $offset  = isset($tokens['LIMIT']['offset']) ? (int) $tokens['LIMIT']['offset'] : 0;
         
-        $page = ($offset + $perPage) / $perPage;
+        $page = (int) floor(($offset + $perPage) / $perPage);
 
         $parameters = array(
             $perPageParam => $tokens['LIMIT']['rowcount'],

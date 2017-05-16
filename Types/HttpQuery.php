@@ -87,7 +87,7 @@ class HttpQuery {
         if(!isset($options['pagination_as_query']) || !$options['pagination_as_query']) return '';
 
         $perPageParam = isset($options['per_page_param']) ? $options['per_page_param'] : PaginationQuery::DEFAULT_PER_PAGE_PARAM;
-        $pageParam = isset($options['page_param']) ? $options['page_param'] : PaginationQuery::DEFAULT_PAGE_PARAM;
+        $pageParam    = isset($options['page_param']) ? $options['page_param'] : PaginationQuery::DEFAULT_PAGE_PARAM;
 
         $paginationParameters = PaginationQuery::create($tokens, $perPageParam, $pageParam);
 
