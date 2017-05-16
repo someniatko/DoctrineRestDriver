@@ -10,6 +10,12 @@ circle_doctrine_rest_driver_mock_get:
     methods: [ GET ]
     condition: "request.getScriptName() == '/app_dev.php'"
 
+circle_doctrine_rest_driver_mock_get_custom_identifier:
+    path:   /mockapi/other_products/{id}
+    defaults:  { _controller: Circle\DoctrineRestDriver\Tests\Controller\MockController::getAction }
+    methods: [ GET ]
+    condition: "request.getScriptName() == '/app_dev.php'"
+
 circle_doctrine_rest_driver_mock_post:
     path:   /mockapi/products
     defaults:  { _controller: Circle\DoctrineRestDriver\Tests\Controller\MockController::postAction }

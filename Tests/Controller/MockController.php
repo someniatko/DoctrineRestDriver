@@ -40,9 +40,10 @@ class MockController extends Controller {
         if ($id != 1) return new Response('', 404);
 
         return new Response(json_encode([
-            'id'    => 1,
-            'name'  => 'MyName',
-            'value' => 'MyValue',
+            'id'                          => 1,
+            'extremelyStrange_identifier' => 1,
+            'name'                        => 'MyName',
+            'value'                       => 'MyValue',
         ]));
     }
 

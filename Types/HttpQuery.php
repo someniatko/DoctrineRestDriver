@@ -19,6 +19,7 @@
 namespace Circle\DoctrineRestDriver\Types;
 
 use Circle\DoctrineRestDriver\Enums\SqlOperations;
+use Circle\DoctrineRestDriver\MetaData;
 use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
@@ -71,6 +72,6 @@ class HttpQuery {
         }
 
         $query = ltrim($query, '&');
-        return preg_replace('/id\=\d*&*/', '', $query);
+        return preg_replace('/' . Identifier::column($tokens, new MetaData()) . '\=\d*&*/', '', $query);
     }
 }
