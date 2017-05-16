@@ -53,12 +53,27 @@ doctrine:
 
 A full list of all possible options can be found here: http://php.net/manual/en/function.curl-setopt.php
 
+By default, ```UPDATE queries are converted to PUT to work with the majority of
+APIs however, when persisting an updated entity, Doctrine will compare the
+edited entity to the original data and create a query that only contains the
+changed fields. In a REST API, this would be converted to a PATCH request as a
+PUT is meant to include the entire entity even if some properties have not
+changed.
+
+To use PATCH instead of PUT simply add a config value:
+
+```doctrine:
+  dbal:
+    options:
+      use_patch: true
+```
+
 # Usage
 
 If your API routes follow these few conventions, using the driver is very easy:
 
 - Each route must be structured the same: ```{apiHost}/{pathToApi}/{tableName}```
-- The PUT, GET (single) and UPDATE routes need to contain an additional ```id```: ```{apiHost}/{pathToApi}/{tableName}/{id}```
+- The PUT/PATCH, GET (single) and UPDATE routes need to contain an additional ```id```: ```{apiHost}/{pathToApi}/{tableName}/{id}```
 - POST and GET (all) must follow the basic structure: ```{apiHost}/{pathToApi}/{tableName}```
 
 Don't worry, if this is not the case: Luckily, we provide a few annotations for you to configure your own routes.
