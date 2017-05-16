@@ -29,6 +29,7 @@ use Circle\DoctrineRestDriver\Exceptions\InvalidSqlOperationException;
 class HttpMethods {
     const POST   = 'post';
     const PUT    = 'put';
+    const PATCH  = 'patch';
     const DELETE = 'delete';
     const GET    = 'get';
 
@@ -40,11 +41,12 @@ class HttpMethods {
      * @throws InvalidSqlOperationException
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
+     * @SuppressWarnings("PHPMD.BooleanArgumentFlag")
      */
-    public static function ofSqlOperation($operation) {
+    public static function ofSqlOperation($operation, $patchInsert = false) {
         if ($operation === SqlOperations::INSERT) return HttpMethods::POST;
         if ($operation === SqlOperations::SELECT) return HttpMethods::GET;
-        if ($operation === SqlOperations::UPDATE) return HttpMethods::PUT;
+        if ($operation === SqlOperations::UPDATE) return $patchInsert ? HttpMethods::PATCH : HttpMethods::PUT;
         if ($operation === SqlOperations::DELETE) return HttpMethods::DELETE;
 
         return Exceptions::InvalidSqlOperationException($operation);

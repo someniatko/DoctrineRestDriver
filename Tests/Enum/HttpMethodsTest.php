@@ -44,6 +44,7 @@ class HttpMethodsTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(HttpMethods::PUT, HttpMethods::ofSqlOperation(SqlOperations::UPDATE));
         $this->assertEquals(HttpMethods::DELETE, HttpMethods::ofSqlOperation(SqlOperations::DELETE));
         $this->assertEquals(HttpMethods::POST, HttpMethods::ofSqlOperation(SqlOperations::INSERT));
+        $this->assertEquals(HttpMethods::PATCH, HttpMethods::ofSqlOperation(SqlOperations::UPDATE, true));
 
         HttpMethods::ofSqlOperation('invalid');
     }

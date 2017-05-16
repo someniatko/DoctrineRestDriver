@@ -66,6 +66,16 @@ class RoutingTest extends \PHPUnit_Framework_TestCase {
      * @test
      * @group  unit
      * @covers ::__construct
+     * @covers ::patch
+     */
+    public function patch() {
+        $this->assertSame(null, $this->routing->patch());
+    }
+
+    /**
+     * @test
+     * @group  unit
+     * @covers ::__construct
      * @covers ::get
      */
     public function get() {

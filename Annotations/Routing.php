@@ -37,6 +37,11 @@ class Routing {
     private $put;
 
     /**
+     * @var Update
+     */
+    private $patch;
+
+    /**
      * @var Select
      */
     private $get;
@@ -57,6 +62,7 @@ class Routing {
     private static $annotations = [
         'post'   => 'Circle\DoctrineRestDriver\Annotations\Insert',
         'put'    => 'Circle\DoctrineRestDriver\Annotations\Update',
+        'patch'  => 'Circle\DoctrineRestDriver\Annotations\Update',
         'get'    => 'Circle\DoctrineRestDriver\Annotations\Select',
         'delete' => 'Circle\DoctrineRestDriver\Annotations\Delete',
         'getAll' => 'Circle\DoctrineRestDriver\Annotations\Fetch'
@@ -99,6 +105,15 @@ class Routing {
      */
     public function put() {
         return $this->put;
+    }
+
+    /**
+     * returns the patch route
+     *
+     * @return \Circle\DoctrineRestDriver\Annotations\Update|null
+     */
+    public function patch() {
+        return $this->patch;
     }
 
     /**
