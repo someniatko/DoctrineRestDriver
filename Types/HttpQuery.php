@@ -47,12 +47,12 @@ class HttpQuery {
 
         $tableAlias = Table::alias($tokens);
         
+        $query = '';
+        
         if(isset($tokens['WHERE'])) {
-            $query = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
+            $query .= array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
                 return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($tableAlias . '.', '', $token['base_expr']))));
             });
-        } else {
-            $query = '';
         }
         
         // Add query pagination only if option is set
@@ -66,10 +66,11 @@ class HttpQuery {
                 $paginationQuery = http_build_query($paginationParameters);
 
                 $query .= '&' . $paginationQuery;
-                $query = ltrim($query, '&');
+
             }
         }
 
+        $query = ltrim($query, '&');
         return preg_replace('/id\=\d*&*/', '', $query);
     }
 }
