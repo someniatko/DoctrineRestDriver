@@ -428,6 +428,8 @@ This will convert to the following:
 SELECT name FROM users LIMIT 5 OFFSET 10
 ```
 
+To:
+
 ```
 https://api.example.com/users?per_page=5&page=3
 ```
