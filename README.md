@@ -53,7 +53,7 @@ doctrine:
 
 A full list of all possible options can be found here: http://php.net/manual/en/function.curl-setopt.php
 
-By default, ```UPDATE queries are converted to PUT to work with the majority of
+By default, UPDATE queries are converted to PUT to work with the majority of
 APIs however, when persisting an updated entity, Doctrine will compare the
 edited entity to the original data and create a query that only contains the
 changed fields. In a REST API, this would be converted to a PATCH request as a
