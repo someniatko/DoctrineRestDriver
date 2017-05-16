@@ -46,32 +46,51 @@ class HttpQuery {
         $operation = SqlOperation::create($tokens);
         if ($operation !== SqlOperations::SELECT) return null;
 
-        $tableAlias = Table::alias($tokens);
-        
-        $query = '';
-        
-        if(isset($tokens['WHERE'])) {
-            $query .= array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
-                return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($tableAlias . '.', '', $token['base_expr']))));
-            });
-        }
-        
-        // Add query pagination only if option is set
-        if(isset($options['pagination_as_query']) && $options['pagination_as_query']) {
-            $perPageParam = isset($options['per_page_param']) ? $options['per_page_param'] : PaginationQuery::DEFAULT_PER_PAGE_PARAM;
-            $pageParam = isset($options['page_param']) ? $options['page_param'] : PaginationQuery::DEFAULT_PAGE_PARAM;
+        $query = implode('&', array_filter([
+            self::createConditionals($tokens),
+            self::createPagination($tokens, $options),
+        ]));
 
-            $paginationParameters = PaginationQuery::create($tokens, $perPageParam, $pageParam);
-
-            if($paginationParameters) {
-                $paginationQuery = http_build_query($paginationParameters);
-
-                $query .= '&' . $paginationQuery;
-
-            }
-        }
-
-        $query = ltrim($query, '&');
         return preg_replace('/' . Identifier::column($tokens, new MetaData()) . '\=\d*&*/', '', $query);
+    }
+
+    /**
+     * Create a string of conditional parameters.
+     * 
+     * @param array $tokens
+     * @return string
+     * 
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function createConditionals(array $tokens) {
+        if(!isset($tokens['WHERE'])) return '';
+
+        $tableAlias = Table::alias($tokens);
+
+        $conditionalString = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
+            return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($tableAlias . '.', '', $token['base_expr']))));
+        });
+
+        return $conditionalString;
+    }
+
+    /**
+     * Create a string of pagination parameters
+     * 
+     * @param array $tokens
+     * @param array $options
+     * @return string
+     * 
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function createPagination(array $tokens, array $options) {
+        if(!isset($options['pagination_as_query']) || !$options['pagination_as_query']) return '';
+
+        $perPageParam = isset($options['per_page_param']) ? $options['per_page_param'] : PaginationQuery::DEFAULT_PER_PAGE_PARAM;
+        $pageParam = isset($options['page_param']) ? $options['page_param'] : PaginationQuery::DEFAULT_PAGE_PARAM;
+
+        $paginationParameters = PaginationQuery::create($tokens, $perPageParam, $pageParam);
+
+        return $paginationParameters ? http_build_query($paginationParameters) : '';
     }
 }
