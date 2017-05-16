@@ -62,7 +62,8 @@ changed.
 
 To use PATCH instead of PUT simply add a config value:
 
-```doctrine:
+```yml
+doctrine:
   dbal:
     options:
       use_patch: true
