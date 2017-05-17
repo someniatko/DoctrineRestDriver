@@ -43,7 +43,8 @@ class HttpHeader {
 
         $headers = array_merge(
             $headers,
-            PaginationHeaders::create($tokens),
+            // Send pagination headers if pagination is not sent as query params
+            !isset($options['pagination_as_query']) || !$options['pagination_as_query'] ? PaginationHeaders::create($tokens) : [],
             OrderingHeaders::create($tokens)
         );
         return ['CURLOPT_HTTPHEADER'=>$headers];

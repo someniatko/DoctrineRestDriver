@@ -80,4 +80,49 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals($expected, $factory->createOne('get', $parser->parse($query), $this->factoryOptions, $routings));
     }
+    
+    /**
+     * @test
+     * @group  unit
+     * @covers ::createOne
+     */
+    public function createOneWithPaginationHeadersDefault() {
+        $query    = 'SELECT name FROM products WHERE LIMIT 5 OFFSET 10';
+        $parser   = new PHPSQLParser();
+        $factory  = new RequestFactory();
+        $this->requestOptions[CURLOPT_HTTPHEADER][] = 'Limit: 5';
+        $this->requestOptions[CURLOPT_HTTPHEADER][] = 'Offset: 10';
+        $expected = new Request([
+            'method'      => 'get',
+            'url'         => 'http://circle.ai/products',
+            'curlOptions' => $this->requestOptions,
+            'query'       => '',
+        ]);
+
+        $routings = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\DataSource')->getMock();
+
+        $this->assertEquals($expected, $factory->createOne('get', $parser->parse($query), $this->factoryOptions, $routings));
+    }
+    
+    /**
+     * @test
+     * @group  unit
+     * @covers ::createOne
+     */
+    public function createWithPaginationParameters() {
+        $query    = 'SELECT name FROM products WHERE LIMIT 5 OFFSET 10';
+        $parser   = new PHPSQLParser();
+        $factory  = new RequestFactory();
+        $this->factoryOptions['driverOptions']['pagination_as_query'] = true;
+        $expected = new Request([
+            'method'      => 'get',
+            'url'         => 'http://circle.ai/products',
+            'curlOptions' => $this->requestOptions,
+            'query'       => 'per_page=5&page=3',
+        ]);
+
+        $routings = $this->getMockBuilder('Circle\DoctrineRestDriver\Annotations\DataSource')->getMock();
+
+        $this->assertEquals($expected, $factory->createOne('get', $parser->parse($query), $this->factoryOptions, $routings));
+    }
 }

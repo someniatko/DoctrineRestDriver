@@ -35,21 +35,62 @@ class HttpQuery {
      * clause of the parsed sql tokens
      *
      * @param  array $tokens
+     * @param  array $options
      * @return string|null
      *
      * @SuppressWarnings("PHPMD.StaticAccess")
      */
-    public static function create(array $tokens) {
+    public static function create(array $tokens, array $options = []) {
         HashMap::assert($tokens, 'tokens');
 
         $operation = SqlOperation::create($tokens);
-        if ($operation !== SqlOperations::SELECT || empty($tokens['WHERE'])) return null;
+        if ($operation !== SqlOperations::SELECT) return null;
+
+        $query = implode('&', array_filter([
+            self::createConditionals($tokens),
+            self::createPagination($tokens, $options),
+        ]));
+
+        return preg_replace('/' . Identifier::column($tokens, new MetaData()) . '\=\d*&*/', '', $query);
+    }
+
+    /**
+     * Create a string of conditional parameters.
+     * 
+     * @param array $tokens
+     * @return string
+     * 
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function createConditionals(array $tokens) {
+        if(!isset($tokens['WHERE'])) return '';
 
         $tableAlias = Table::alias($tokens);
-        $query      = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
+
+        $conditionalString = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
             return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($tableAlias . '.', '', $token['base_expr']))));
         });
 
-        return preg_replace('/' . Identifier::column($tokens, new MetaData()) . '\=\d*&*/', '', $query);
+        return $conditionalString;
+    }
+
+    /**
+     * Create a string of pagination parameters
+     * 
+     * @param array $tokens
+     * @param array $options
+     * @return string
+     * 
+     * @SuppressWarnings("PHPMD.StaticAccess")
+     */
+    public static function createPagination(array $tokens, array $options) {
+        if(!isset($options['pagination_as_query']) || !$options['pagination_as_query']) return '';
+
+        $perPageParam = isset($options['per_page_param']) ? $options['per_page_param'] : PaginationQuery::DEFAULT_PER_PAGE_PARAM;
+        $pageParam    = isset($options['page_param']) ? $options['page_param'] : PaginationQuery::DEFAULT_PAGE_PARAM;
+
+        $paginationParameters = PaginationQuery::create($tokens, $perPageParam, $pageParam);
+
+        return $paginationParameters ? http_build_query($paginationParameters) : '';
     }
 }
