@@ -102,7 +102,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectOne() {
-        $query    = 'SELECT name FROM products WHERE id = 1';
+        $query    = 'SELECT name FROM products t0 WHERE t0.id = 1';
         $expected = new Request([
             'method'      => 'get',
             'url'         => $this->apiUrl . '/products/1',
@@ -120,7 +120,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectOneBy() {
-        $query    = 'SELECT name FROM products WHERE id=1 AND name=myName';
+        $query    = 'SELECT name FROM products t0 WHERE t0.id=1 AND t0.name=myName';
         $expected = new Request([
             'method'      => 'get',
             'url'         => $this->apiUrl . '/products/1',
@@ -139,7 +139,7 @@ class MysqlToRequestTest extends \PHPUnit_Framework_TestCase {
      * @covers ::<private>
      */
     public function selectBy() {
-        $query    = 'SELECT name FROM products WHERE name=myName';
+        $query    = 'SELECT name FROM products t0 WHERE t0.name=myName';
         $expected = new Request([
             'method'      => 'get',
             'url'         => $this->apiUrl . '/products',
