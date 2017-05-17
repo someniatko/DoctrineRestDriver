@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of DoctrineRestDriver.
  *
@@ -20,7 +21,6 @@ namespace Circle\DoctrineRestDriver\Types;
 
 use Circle\DoctrineRestDriver\Enums\SqlOperations;
 use Circle\DoctrineRestDriver\MetaData;
-use Circle\DoctrineRestDriver\Validation\Assertions;
 
 /**
  * HttpQuery type
@@ -51,7 +51,7 @@ class HttpQuery {
             self::createPagination($tokens, $options),
         ]));
 
-        return preg_replace('/' . Identifier::column($tokens, new MetaData()) . '\=\d*&*/', '', $query);
+        return $query;
     }
 
     /**
@@ -66,12 +66,15 @@ class HttpQuery {
         if(!isset($tokens['WHERE'])) return '';
 
         $tableAlias = Table::alias($tokens);
+        $primaryKeyColumn = sprintf('%s.%s', $tableAlias, Identifier::column($tokens, new MetaData));
 
-        $conditionalString = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
-            return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', str_replace($tableAlias . '.', '', $token['base_expr']))));
+        // Get WHERE conditions as string including table alias and primary key column if present
+        $sqlWhereString = array_reduce($tokens['WHERE'], function($query, $token) use ($tableAlias) {
+            return $query . str_replace('"', '', str_replace('OR', '|', str_replace('AND', '&', $token['base_expr'])));
         });
 
-        return $conditionalString;
+        // Remove primary key column before removing table alias and returning
+        return str_replace($tableAlias . '.', '', preg_replace('/' . $primaryKeyColumn . '=[\w\d]*&*/', '', $sqlWhereString));
     }
 
     /**
