@@ -40,7 +40,7 @@ class HttpQueryTest extends \PHPUnit_Framework_TestCase {
      */
     public function create() {
         $parser   = new PHPSQLParser();
-        $tokens   = $parser->parse('SELECT name FROM products WHERE id=1 AND value="testvalue" AND name="testname"');
+        $tokens   = $parser->parse('SELECT name FROM products t0 WHERE t0.id=1 AND t0.value="testvalue" AND t0.name="testname"');
         $expected = 'value=testvalue&name=testname';
 
         $this->assertSame($expected, HttpQuery::create($tokens));

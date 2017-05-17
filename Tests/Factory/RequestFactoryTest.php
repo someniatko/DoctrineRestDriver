@@ -67,7 +67,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase {
      * @covers ::createOne
      */
     public function createOne() {
-        $query    = 'SELECT name FROM products WHERE id=1';
+        $query    = 'SELECT name FROM products t0 WHERE t0.id=1';
         $parser   = new PHPSQLParser();
         $factory  = new RequestFactory();
         $expected = new Request([
