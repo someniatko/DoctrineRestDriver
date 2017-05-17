@@ -74,7 +74,7 @@ class HttpQuery {
         });
 
         // Remove primary key column before removing table alias and returning
-        return str_replace($tableAlias . '.', '', preg_replace('/' . $primaryKeyColumn . '=[\w\d]*&*/', '', $sqlWhereString));
+        return str_replace($tableAlias . '.', '', preg_replace('/' . preg_quote($primaryKeyColumn) . '=[\w\d]*&*/', '', $sqlWhereString));
     }
 
     /**
