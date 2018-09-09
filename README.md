@@ -837,11 +837,18 @@ Afterwards both entities are persisted in the default MySQL database.
 
 # Testing
 
-To test the bundle just type:
+To test the bundle just type
+```
+phpunit
+```
+at the project root.
 
+Functional tests use mock REST API to communicate with.
+For them to succeed, you'll have to first set up PHP dev server at 127.0.0.1:3000. Run
 ```
-make test
+php -S 127.0.0.1 -t ./Tests/app
 ```
+at the project root.
 
 # Contributing
 If you want to contribute to this repository, please ensure ...

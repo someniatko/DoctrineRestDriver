@@ -16,13 +16,15 @@
   ],
   "require-dev": {
     "symfony/expression-language": "^3.0",
-    "phpmd/phpmd" : "@stable",
-    "phpunit/phpunit" : "@stable",
+    "phpmd/phpmd" : "^2.6",
+    "phpunit/phpunit" : "^5.0",
     "symfony/yaml": "3.*",
     "sensio/framework-extra-bundle": "3.*",
     "symfony/framework-bundle": "3.*",
     "doctrine/doctrine-bundle": "^1.6",
-    "symfony/validator": "3.*"
+    "symfony/validator": "3.*",
+    "symfony/security-csrf": "^4.1",
+    "symfony/form": "^4.1"
   },
   "autoload": {
     "psr-0": {
@@ -43,10 +45,11 @@
     }
   },
   "require": {
-    "php": ">=5.5",
-    "doctrine/dbal": "2.*",
-    "greenlion/php-sql-parser": "^4.0",
-    "doctrine/orm": "2.*",
+    "php": "^7.1",
+    "ext-curl": "*",
+    "doctrine/dbal": "^2.8",
+    "greenlion/php-sql-parser": "^4.1",
+    "doctrine/orm": "^2.6",
     "ci/restclientbundle": "^2.0.2"
   }
 }
